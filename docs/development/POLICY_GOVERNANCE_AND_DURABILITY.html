@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Policy Governance, Durability, and Maintenance Conventions - ZQK Core Documentation</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/zqk-logo.svg">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0d1117',
+        primaryColor: '#1f6feb',
+        primaryTextColor: '#c9d1d9',
+        primaryBorderColor: '#30363d',
+        lineColor: '#58a6ff',
+        secondaryColor: '#161b22',
+        tertiaryColor: '#0d1117'
+      }
+    });
+  </script>
+</head>
+<body data-root-rel="../../">
+  <header class="header">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="../../index.html" class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" class="logo-mark">
+  <defs>
+    <filter id="cursor-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#00e676" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+  <!-- Background icon frame -->
+  <rect width="100" height="100" rx="22" fill="#05070a" stroke="#1f2937" stroke-width="1.5"/>
+  <!-- ZQK glyphs in pure vector geometry fill-rule evenodd for Q hole -->
+  <path d="M54.70,35.38 L59.41,35.38 L59.41,44.46 L59.74,44.46 L59.74,44.12 L60.08,44.12 L60.08,43.78 L60.75,43.45 L60.75,42.78 L61.09,42.78 L61.09,42.44 L61.76,42.10 L61.76,41.43 L62.10,41.43 L62.10,41.10 L62.43,41.10 L62.43,40.76 L63.10,40.42 L63.10,39.75 L63.44,39.75 L63.44,39.42 L63.78,39.42 L63.78,39.08 L64.45,38.74 L64.45,38.07 L64.78,38.07 L64.78,37.74 L65.46,37.40 L65.46,36.73 L65.79,36.73 L65.79,36.39 L66.13,36.39 L66.13,36.06 L66.46,36.06 L66.80,35.38 L71.84,35.38 L71.84,35.72 L71.50,35.72 L71.50,36.39 L71.17,36.39 L71.17,36.73 L70.83,36.73 L70.83,37.06 L70.16,37.40 L70.16,38.07 L69.82,38.07 L69.82,38.41 L69.49,38.41 L69.49,38.74 L68.82,39.08 L68.82,39.75 L68.48,39.75 L68.48,40.09 L68.14,40.09 L68.14,40.42 L67.47,40.76 L67.47,41.43 L67.14,41.43 L67.14,41.77 L66.80,41.77 L66.80,42.10 L66.13,42.44 L66.13,43.11 L65.79,43.11 L65.79,43.45 L65.46,43.45 L65.46,43.78 L64.78,44.12 L64.78,45.13 L65.12,45.13 L65.12,45.80 L65.46,45.80 L65.46,46.47 L65.79,46.47 L65.79,47.14 L66.13,47.14 L66.46,48.49 L67.14,48.82 L67.14,49.50 L67.47,49.50 L67.47,50.17 L67.81,50.17 L67.81,50.84 L68.14,50.84 L68.14,51.51 L68.48,51.51 L68.82,52.86 L69.49,53.19 L69.49,53.86 L69.82,53.86 L69.82,54.54 L70.16,54.54 L70.16,55.21 L70.50,55.21 L70.50,55.88 L70.83,55.88 L71.17,57.22 L71.84,57.56 L72.18,58.90 L67.14,58.90 L67.14,58.57 L66.80,58.57 L66.80,57.90 L66.46,57.90 L66.46,57.22 L66.13,57.22 L66.13,56.55 L65.79,56.55 L65.79,55.88 L65.46,55.88 L65.46,55.21 L64.78,54.87 L64.78,54.20 L64.45,54.20 L64.45,53.53 L64.11,53.53 L64.11,52.86 L63.78,52.86 L63.78,52.18 L63.44,52.18 L63.44,51.51 L63.10,51.51 L63.10,50.84 L62.77,50.84 L62.77,50.17 L62.43,50.17 L62.43,49.50 L62.10,49.50 L62.10,48.82 L61.76,48.82 L61.76,48.49 L61.42,48.49 L61.42,48.82 L61.09,48.82 L61.09,49.16 L60.42,49.50 L60.42,50.17 L60.08,50.17 L60.08,50.50 L59.41,50.84 L59.41,58.90 L54.70,58.90Z M8.00,54.87 L8.34,54.87 L8.34,54.20 L9.01,53.86 L9.01,53.19 L9.68,52.86 L9.68,52.18 L10.35,51.85 L10.35,51.18 L11.02,50.84 L11.02,50.17 L11.70,49.83 L11.70,49.16 L12.37,48.82 L12.37,48.15 L13.04,47.82 L13.04,47.14 L13.38,47.14 L13.38,46.81 L13.71,46.81 L13.71,46.14 L14.05,46.14 L14.05,45.80 L14.72,45.46 L14.72,44.79 L15.39,44.46 L15.39,43.78 L16.06,43.45 L16.06,42.78 L16.74,42.44 L16.74,41.77 L17.41,41.43 L17.41,40.76 L17.74,40.76 L17.74,40.42 L18.08,40.42 L18.08,39.75 L18.42,39.75 L18.42,39.42 L8.34,39.42 L8.34,35.38 L24.13,35.38 L24.13,39.42 L23.79,39.42 L23.79,40.09 L23.12,40.42 L23.12,41.10 L22.45,41.43 L22.45,42.10 L22.11,42.10 L22.11,42.44 L21.44,42.78 L21.44,43.45 L20.77,43.78 L20.77,44.46 L20.10,44.79 L20.10,45.46 L19.76,45.46 L19.76,45.80 L19.09,46.14 L19.09,46.81 L18.42,47.14 L18.42,47.82 L17.74,48.15 L17.74,48.82 L17.41,48.82 L17.41,49.16 L16.74,49.50 L16.74,50.17 L16.06,50.50 L16.06,51.18 L15.73,51.18 L15.73,51.51 L15.39,51.51 L15.39,52.18 L15.06,52.18 L15.06,52.52 L14.38,52.86 L14.38,53.53 L13.71,53.86 L13.71,54.54 L13.38,54.54 L13.38,54.87 L24.46,54.87 L24.46,58.90 L8.00,58.90Z M31.18,42.78 L31.52,42.78 L31.86,40.09 L32.19,40.09 L32.19,39.42 L32.53,39.42 L32.86,38.07 L33.20,38.07 L33.20,37.74 L33.54,37.74 L33.54,37.40 L33.87,37.40 L33.87,37.06 L34.21,37.06 L34.21,36.73 L34.54,36.73 L34.88,36.06 L35.55,36.06 L35.55,35.72 L36.22,35.72 L36.22,35.38 L37.23,35.38 L37.23,35.05 L41.26,35.05 L41.26,35.38 L43.28,35.72 L43.28,36.06 L43.62,36.06 L43.95,36.73 L44.62,36.73 L44.62,37.06 L44.96,37.06 L44.96,37.74 L45.63,38.07 L45.63,38.74 L45.97,38.74 L45.97,39.42 L46.30,39.42 L46.30,40.09 L46.64,40.09 L46.64,41.10 L46.98,41.10 L46.98,42.44 L47.31,42.44 L47.31,45.46 L47.65,45.46 L47.65,49.16 L47.31,49.16 L47.31,51.85 L46.98,51.85 L46.98,53.19 L46.64,53.19 L46.30,55.21 L45.97,55.21 L45.97,55.88 L45.30,56.22 L45.30,56.89 L44.96,56.89 L44.96,57.22 L44.62,57.22 L44.29,57.90 L43.62,57.90 L43.62,58.23 L43.95,58.23 L43.95,58.57 L44.29,58.57 L44.29,58.90 L44.62,58.90 L44.62,59.24 L44.96,59.24 L44.96,59.58 L45.30,59.58 L45.30,59.91 L45.63,59.91 L45.63,60.25 L46.30,60.58 L46.30,61.26 L45.97,61.26 L45.63,61.93 L44.96,61.93 L44.96,62.26 L44.62,62.26 L44.29,62.94 L43.62,62.94 L43.62,63.27 L43.28,63.27 L43.28,62.94 L42.94,62.94 L42.94,62.60 L42.61,62.60 L42.61,62.26 L41.94,61.93 L41.94,61.26 L41.60,61.26 L41.60,60.92 L41.26,60.92 L41.26,60.58 L40.93,60.58 L40.93,60.25 L40.59,60.25 L40.59,59.91 L40.26,59.91 L39.92,59.24 L36.90,59.24 L36.90,58.90 L35.89,58.90 L35.55,58.23 L34.88,58.23 L34.88,57.90 L34.54,57.90 L34.54,57.56 L34.21,57.56 L34.21,57.22 L33.87,57.22 L33.87,56.89 L33.54,56.89 L33.54,56.55 L32.86,56.22 L32.86,55.54 L32.53,55.54 L32.53,54.87 L32.19,54.87 L32.19,54.20 L31.86,54.20 L31.52,51.51 L31.18,51.51Z M35.89,43.45 L35.89,50.84 L36.22,50.84 L36.22,52.52 L36.56,52.52 L36.56,53.53 L36.90,53.53 L36.90,53.86 L37.23,53.86 L37.23,54.54 L37.90,54.54 L38.24,55.21 L40.26,55.21 L40.26,54.87 L40.93,54.87 L40.93,54.54 L41.60,54.20 L41.60,53.53 L41.94,53.53 L41.94,52.52 L42.27,52.52 L42.27,51.18 L42.61,51.18 L42.61,43.11 L42.27,43.11 L42.27,41.77 L41.94,41.77 L41.94,40.76 L41.60,40.76 L41.60,40.09 L41.26,40.09 L40.93,39.42 L39.92,39.42 L39.92,39.08 L38.58,39.08 L38.58,39.42 L37.23,39.75 L37.23,40.42 L36.56,40.76 L36.56,41.77 L36.22,41.77 L36.22,43.45Z" fill="#ffffff" fill-rule="evenodd"/>
+  <!-- Terminal cursor prompt _ with emerald green glow -->
+  <path d="M72.51,61.93 L92.00,61.93 L92.00,64.95 L72.51,64.95Z" fill="#00e676" filter="url(#cursor-glow)"/>
+</svg>
+          <span class="logo-text">ZQK <span class="logo-accent">Core</span></span>
+        </a>
+        <span class="badge-tag">Maintenance &amp; Development</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search core documentation..." onkeyup="runSearch()">
+        <div id="search-results"></div>
+      </div>
+    </div>
+  </header>
+  <main class="content-container">
+    <aside class="sidebar">
+      
+      <nav>
+        <div class="sidebar-section">
+          <h3>Getting Started</h3>
+          <ul>
+            <li><a href="../../index.html">Overview</a></li>
+            <li><a href="../../docs/INDEX.html">Core Docs Index</a></li>
+            <li><a href="../../docs/onboarding/COMMUNITY_FIRST_RUN.html">Community First-Run</a></li>
+            <li><a href="../../docs/onboarding/QUICKSTART.html">Quickstart & MCP</a></li>
+            <li><a href="../../docs/onboarding/AI_AGENT_ONBOARDING.html">AI Agent Directives</a></li>
+            <li><a href="../../docs/onboarding/FIRST_RUN_OBJECT_TUTORIAL.html">First-Run Object Tutorial</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Core Architecture</h3>
+          <ul>
+            <li><a href="../../docs/architecture/README.html">Architecture Overview</a></li>
+            <li><a href="../../docs/architecture/CELLULAR_MEMBRANE_MODE_B_CONFIGURATION.html">Cellular Membrane Mode B</a></li>
+            <li><a href="../../docs/architecture/CLI_COMMAND_TAXONOMY_STANDARDS.html">CLI Command Taxonomy</a></li>
+            <li><a href="../../docs/architecture/TIERED_STORAGE_AND_ARCHIVAL_LIFECYCLE.html">Tiered Storage Lifecycle</a></li>
+            <li><a href="../../docs/architecture/TRAY_COMMAND_CRYPTOGRAPHIC_SECURITY.html">Tray Cryptographic Security</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Maintenance & Development</h3>
+          <ul>
+            <li><a href="../../docs/development/README.html">Development Overview</a></li>
+            <li><a href="../../docs/development/POLICY_GOVERNANCE_AND_DURABILITY.html">Policy Governance & Durability</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Operations & Guides</h3>
+          <ul>
+            <li><a href="../../docs/howto/README.html">How-To Overview</a></li>
+            <li><a href="../../docs/howto/SCHEDULER_AND_MAINTENANCE.html">Scheduler & Maintenance</a></li>
+            <li><a href="../../docs/onboarding/EDGE_HEADLESS_FIRST_RUN.html">Edge / Headless Mode</a></li>
+            <li><a href="../../docs/quality/README.html">Quality & Verification Gates</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Open Core Governance</h3>
+          <ul>
+            <li><a href="../../CONTRIBUTING.html">Contributing & DCO</a></li>
+            <li><a href="../../SECURITY.html">Security Policy</a></li>
+            <li><a href="../../GOVERNANCE.html">Open-Core Governance</a></li>
+          </ul>
+        </div>
+      </nav>
+        
+    </aside>
+    <article class="doc-body">
+      <div class="breadcrumb">
+        <div class="breadcrumb-trail">
+          <a href="../../index.html">Docs</a> &raquo; <span>Maintenance &amp; Development</span> &raquo; <span class="current">Policy Governance, Durability, and Maintenance Conventions</span>
+        </div>
+        <a href="../../docs/development/POLICY_GOVERNANCE_AND_DURABILITY.md" class="raw-md-link" title="View canonical Markdown source">Raw .md</a>
+      </div>
+      <div class="markdown-body">
+        <h1 id="policy-governance-durability-and-maintenance-conventions">Policy Governance, Durability, and Maintenance Conventions</h1>
+<p>In the ZQK Cellular Knowledge Operating System, policies (<code>kind: policy</code>) are first-class system objects that encode operational rules, code quality invariants, documentation standards, and agent swarm behaviors into the Knowledge Kernel graph.</p>
+<p>This document defines the <strong>authoritative taxonomy</strong>, <strong>cross-instance durability model</strong>, and <strong>development conventions</strong> for creating, referencing, and maintaining policies across all ZQK environments.</p>
+<hr />
+<h2 id="1-overview-architectural-role">1. Overview &amp; Architectural Role</h2>
+<p>Policies serve as the immutable rulebook for both human engineers and autonomous agent swarms. Unlike passive text files or disconnected wiki pages, ZQK policies are:</p>
+<ul>
+<li><strong>Indexed &amp; Queryable</strong>: Stored as graph nodes within the Knowledge Kernel and queryable via <code>./bin/zqk object list policy</code> or the Model Context Protocol (MCP) mesh.</li>
+<li><strong>Fail-Closed Gateways</strong>: Bound directly into compiler linters, intake reasoners (<code>pkg/intake/reasoner.go</code>), and git pre-commit hooks (<code>scripts/git-hooks/pre-commit</code>).</li>
+<li><strong>Cross-Instance Invariants</strong>: Structured so that independent clones, developer laptops, CI/CD runners, and edge instances agree on policy semantics without centralized authority.</li>
+</ul>
+<pre class="mermaid">flowchart TD
+    subgraph Governance[&quot;Governance &amp;amp; Rule Sources&quot;]
+        P_Spec[&quot;Authoritative Specs (POL-DOC-*, POL-CODE-*)&quot;]
+        P_Seed[&quot;Default Policy Pack (POL-DEFAULT-*)&quot;]
+        P_Adhoc[&quot;Local Instance Policies (POL-&lt;nanos&gt;-*)&quot;]
+    end
+
+    subgraph Kernel[&quot;Knowledge Kernel &amp;amp; Validation&quot;]
+        SIR[&quot;Semantic Intake Reasoner&lt;br/&gt;(Fail-Closed Boundary)&quot;]
+        AST[&quot;AST Linters &amp;amp; Code Checks&lt;br/&gt;(pkg/validation/qa)&quot;]
+        VDS[&quot;Verifiable Decomposition Spine&lt;br/&gt;(pkg/vds)&quot;]
+    end
+
+    subgraph Enforcement[&quot;System Enforcement Points&quot;]
+        PC[&quot;Pre-Commit Hooks&quot;]
+        SCH[&quot;Scheduler Survival Daemons&quot;]
+        AGT[&quot;Autonomous Swarm Seats&quot;]
+    end
+
+    P_Spec --&gt; SIR
+    P_Seed --&gt; SIR
+    P_Adhoc --&gt; SIR
+
+    SIR --&gt; AST
+    SIR --&gt; VDS
+
+    AST --&gt; PC
+    VDS --&gt; AGT
+    SIR --&gt; SCH
+</pre>
+<hr />
+<h2 id="2-the-three-durability-tiers">2. The Three Durability Tiers</h2>
+<p>To balance universal standardization with local flexibility, ZQK organizes policy identifiers into three distinct architectural tiers:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Tier</th>
+<th style="text-align: left;">Prefix Schema</th>
+<th style="text-align: left;">Example Identifier</th>
+<th style="text-align: left;">Durability Scope</th>
+<th style="text-align: left;">Derivation Mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Tier 1: Specification Invariants</strong></td>
+<td style="text-align: left;"><code>POL-&lt;DOMAIN&gt;-&lt;NUM&gt;</code></td>
+<td style="text-align: left;"><code>POL-DOC-001</code>, <code>POL-CODE-007</code></td>
+<td style="text-align: left;"><strong>Universal</strong> (all instances &amp; nodes)</td>
+<td style="text-align: left;">Hardcoded system RFC standard in code/linters.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tier 2: Seeded Default Policies</strong></td>
+<td style="text-align: left;"><code>POL-DEFAULT-&lt;16-hex&gt;</code></td>
+<td style="text-align: left;"><code>POL-DEFAULT-37173b5595dc3bad</code></td>
+<td style="text-align: left;"><strong>Cryptographically Deterministic</strong></td>
+<td style="text-align: left;"><code>sha256("default-policy:" + lower(title))[:8]</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tier 3: Instance-Local Policies</strong></td>
+<td style="text-align: left;"><code>POL-&lt;nanos&gt;-&lt;8-hex&gt;</code></td>
+<td style="text-align: left;"><code>POL-1789456123456-a1b2c3d4</code></td>
+<td style="text-align: left;"><strong>Instance-Local</strong></td>
+<td style="text-align: left;">Monotonic nanosecond timestamp + random hex.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="tier-1-canonical-specification-invariants-pol-domain-num">Tier 1: Canonical Specification Invariants (<code>POL-&lt;DOMAIN&gt;-&lt;NUM&gt;</code>)</h3>
+<p>Tier 1 policies represent the constitutional invariants of the operating system. They are fixed identifiers referenced directly in Go source code, abstract syntax tree (AST) linters, and verification test suites.</p>
+<h4 id="key-invariant-families">Key Invariant Families</h4>
+<ol>
+<li>
+<p><strong>Documentation Governance (<code>POL-DOC-*</code>)</strong>:
+   - <code>POL-DOC-001</code> (<em>Document Type Classification</em>): Enforces mandatory non-empty description attributes on all intake objects; missing descriptions are rejected fail-closed at the cellular membrane boundary.
+   - <code>POL-DOC-002</code> (<em>Single Source of Truth</em>): Prohibits title and semantic collisions between documentation entries.
+   - <code>POL-DOC-003</code> (<em>Document Archival Policy</em>): Regulates deprecation lifecycles and physical movement into <code>_archive</code> spaces.
+   - <code>POL-DOC-004</code> (<em>Vendor-Neutral Primacy</em>): Mandates that canonical knowledge remains vendor-neutral, with vendor files (<code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>GEMINI.md</code>) functioning purely as projections.
+   - <code>POL-DOC-005</code> (<em>Agent Pre-Flight Check</em>): Mandates consultation of <code>PROMPT-DOC-STEWARD-001</code> before modifying core documentation.</p>
+</li>
+<li>
+<p><strong>Code Quality &amp; Concurrency (<code>POL-CODE-*</code>)</strong>:
+   - <code>POL-CODE-004</code> (<em>Deterministic Waits</em>): Enforces bounded synchronization loops in async pipelines to prevent deadlocks.
+   - <code>POL-CODE-006</code> (<em>Test Data Isolation</em>): Mandates ephemeral, sandboxed test fixtures with zero cross-test pollution.
+   - <code>POL-CODE-007</code> (<em>Structured Logging Standard</em>): Prohibits raw <code>fmt.Print*</code> calls in production packages; all logging must use structured fluent builders (<code>logging.Fluent</code>).
+   - <code>POL-CODE-011</code> (<em>String Literal Elimination</em>): Mandates typed constant identifiers over ad-hoc strings in storage operations.</p>
+</li>
+<li>
+<p><strong>Workflow &amp; Verification (<code>POL-WORKFLOW-*</code> / <code>POL-CLI-*</code>)</strong>:
+   - <code>POL-WORKFLOW-002</code> (<em>Plan-Scoped Integration Branches</em>): Requires that all deliverable work map to a priority plan and single feature/integration PR.
+   - <code>POL-WORKFLOW-VDS</code> (<em>Verifiable Decomposition Spine</em>): Evaluates chunk contracts and automated acceptance rubrics.
+   - <code>POL-CLI-001</code> (<em>CLI DNA &amp; Taxonomy</em>): Enforces standard flag conventions, <code>--format json</code> support, and structured exit codes.</p>
+</li>
+</ol>
+<hr />
+<h3 id="tier-2-seeded-default-policies-pol-default-sha2568">Tier 2: Seeded Default Policies (<code>POL-DEFAULT-&lt;sha256[:8]&gt;</code>)</h3>
+<p>When a new repository or workspace is initialized (<code>./bin/zqk system init</code>), the system seeds a foundational policy pack into the Knowledge Kernel via <code>SeedDefaultPolicyPack</code> in <code>cmd/zqk/system/init_default_policies.go</code>.</p>
+<h4 id="cryptographic-derivation-function">Cryptographic Derivation Function</h4>
+<p>To ensure that independent ZQK instances compute identical identifiers without coordinating across a network, default policies derive their ID deterministically:</p>
+<pre><code class="language-go">func stableDefaultPolicyID(title string) string {
+    sum := sha256.Sum256([]byte(&quot;default-policy:&quot; + strings.ToLower(strings.TrimSpace(title))))
+    return &quot;POL-DEFAULT-&quot; + hex.EncodeToString(sum[:8])
+}
+</code></pre>
+<h4 id="why-this-matters">Why This Matters</h4>
+<ul>
+<li><strong>Zero ID Collisions</strong>: Re-running initialization is completely idempotent. If <code>POL-DEFAULT-37173b5595dc3bad</code> already exists, <code>SeedDefaultPolicyPack</code> skips creation cleanly.</li>
+<li><strong>Cross-Instance Graph Merging</strong>: When repositories or sub-workspaces exchange objects via git or export bundles, their foundational policies align seamlessly because their cryptographic keys match.</li>
+</ul>
+<hr />
+<h3 id="tier-3-instance-local-dynamic-policies-pol-nanos-hex">Tier 3: Instance-Local Dynamic Policies (<code>POL-&lt;nanos&gt;-&lt;hex&gt;</code>)</h3>
+<p>Teams and swarms frequently create custom operational policies for specific projects or domains.</p>
+<p>When an agent or developer executes:</p>
+<pre><code class="language-bash">./bin/zqk object create policy \
+  --title &quot;Rust FFI Memory Boundary Rules&quot; \
+  --field &quot;category=code_quality&quot; \
+  --field &quot;policy_type=requirement&quot; \
+  --field &quot;body=All unsafe Rust blocks interfacing with Go must be wrapped in isolated FFI crates.&quot;
+</code></pre>
+<p>If no explicit <code>--id</code> is supplied, the kernel mints a standard nanosecond-timestamped identifier (e.g., <code>POL-1789456123456-a1b2c3d4</code>). These policies are unique to that particular repository instance and participate in normal git versioning under <code>.zqk/process/</code>.</p>
+<hr />
+<h2 id="3-id-prefix-registry-configuration">3. ID Prefix Registry Configuration</h2>
+<p>All recognized policy prefix patterns are centrally registered in two synchronized locations:</p>
+<ol>
+<li>
+<p><strong>Kernel Configuration</strong>: <code>.zqk/specs/configs/id_prefixes_config.yaml</code>:
+   ```yaml
+   policy:</p>
+<ul>
+<li>POL-CODE-</li>
+<li>POL-SEC-</li>
+<li>POL-DATA-</li>
+<li>POL-OPS-</li>
+<li>POL-ARCH-</li>
+<li>POL-DEBUG-</li>
+<li>POL-DOC-</li>
+<li>POL-EST-</li>
+<li>POL-FEATURE-</li>
+<li>POL-MCP-</li>
+<li>POL-ONBOARD-</li>
+<li>POL-PLAN-</li>
+<li>POL-TRACK-</li>
+<li>POL-WORKFLOW-</li>
+<li>POL-AGENT-</li>
+<li>POL-OBS-</li>
+<li>POL-DEFAULT-
+   ```</li>
+</ul>
+</li>
+<li>
+<p><strong>Go Core Validator</strong>: <code>pkg/validation/id_prefixes_config.go</code> and <code>pkg/validation/id_validator_loading.go</code>.</p>
+</li>
+</ol>
+<p>This registry guarantees that <code>InferKindFromID("POL-DEFAULT-...")</code> and <code>InferKindFromID("POL-DOC-001")</code> immediately resolve to <code>kind: policy</code> in O(1) time without requiring disk I/O.</p>
+<hr />
+<h2 id="4-ast-linters-and-automated-enforcement">4. AST Linters and Automated Enforcement</h2>
+<p>Policy compliance is not left to manual code review. ZQK runs automated AST checks during pre-commit and scheduler maintenance runs:</p>
+<pre class="mermaid">sequenceDiagram
+    autonumber
+    actor Dev as Developer / Agent
+    participant Git as Git Pre-Commit Hook
+    participant AST as AST Linters (pkg/validation/qa)
+    participant Kernel as Knowledge Kernel
+
+    Dev-&gt;&gt;Git: git commit -m &quot;feat: new logging helper&quot;
+    Git-&gt;&gt;AST: Run AST Audit (POL-CODE-007, etc.)
+    alt Code uses direct fmt.Println
+        AST--&gt;&gt;Git: Reject (Violation of POL-CODE-007)
+        Git--&gt;&gt;Dev: Commit Aborted: Use logging.Fluent instead
+    else Code adheres to policy
+        AST--&gt;&gt;Git: Validation PASSED
+        Git-&gt;&gt;Kernel: Verify VDS and Criteria Traceability
+        Kernel--&gt;&gt;Git: Kernel Integrity OK
+        Git--&gt;&gt;Dev: Commit Accepted
+    end
+</pre>
+<h3 id="example-ast-rule-implementation-pol-code-007">Example AST Rule Implementation: <code>POL-CODE-007</code></h3>
+<p>In <code>pkg/validation/qa/ast_audit_fmt.go</code>:</p>
+<pre><code class="language-go">// Enforces POL-CODE-007: direct fmt.Print* or raw os.Stderr calls are prohibited outside allowed packages.
+if sel.Sel.Name == &quot;Println&quot; || sel.Sel.Name == &quot;Printf&quot; {
+    return Violation{
+        RuleID:   &quot;POL-CODE-007&quot;,
+        Message:  fmt.Sprintf(&quot;POL-CODE-007 violation: direct %s call detected. Use logger.Info/Warn/Error or cli.WriteOutput.&quot;, sel.Sel.Name),
+        Severity: SeverityError,
+    }
+}
+</code></pre>
+<hr />
+<h2 id="5-development-conventions-best-practices">5. Development Conventions &amp; Best Practices</h2>
+<p>When adding new policies or modifying existing systems, follow these conventions:</p>
+<h3 id="rule-1-never-hardcode-ephemeral-nanos-ids">Rule 1: Never Hardcode Ephemeral Nanos IDs</h3>
+<ul>
+<li><strong>Forbidden</strong>: Hardcoding <code>POL-1789334232564133000-02789aa2</code> into Go code, documentation guides, or public CLI help outputs.</li>
+<li><strong>Allowed</strong>: Referencing authoritative constants (<code>POL-DOC-001</code>, <code>POL-CODE-007</code>) or querying dynamic objects at runtime via <code>zqk object get &lt;id&gt;</code>.</li>
+</ul>
+<h3 id="rule-2-explicit-titles-and-mandatory-descriptions">Rule 2: Explicit Titles and Mandatory Descriptions</h3>
+<p>Every policy must provide a clear, human-readable title and a concise semantic description explaining the rationale, failure mode, and remediation steps. Under <code>POL-DOC-001</code>, missing descriptions are rejected fail-closed.</p>
+<h3 id="rule-3-use-the-seed-pack-for-multi-node-standards">Rule 3: Use the Seed Pack for Multi-Node Standards</h3>
+<p>If you are introducing an organization-wide or product-wide policy intended to exist across all greenfield projects, add the YAML template to <code>scripts/default_policies/</code> with standard category attributes. The kernel will automatically seed it with a stable <code>POL-DEFAULT-&lt;sha256[:8]&gt;</code> ID during initialization.</p>
+<h3 id="rule-4-verify-with-cli-commands">Rule 4: Verify with CLI Commands</h3>
+<p>Always verify policy objects using the canonical CLI:</p>
+<pre><code class="language-bash"># List all active policies in the repository
+./bin/zqk object list policy
+
+# Inspect a specific authoritative or seeded policy
+./bin/zqk object get POL-DEFAULT-37173b5595dc3bad
+
+# Check kernel integrity and policy invariants
+./bin/zqk system kernel-integrity report
+</code></pre>
+      </div>
+    </article>
+  </main>
+  <script src="../../search/search-index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code.language-mermaid').forEach(el => {
+        const pre = el.parentElement;
+        pre.className = 'mermaid';
+        pre.textContent = el.textContent;
+      });
+    });
+  </script>
+</body>
+</html>
