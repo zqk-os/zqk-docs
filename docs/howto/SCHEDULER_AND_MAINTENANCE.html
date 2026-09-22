@@ -160,7 +160,7 @@
 </table>
 <p>A knowledge-only or orchestration project (backlog, Gantt, feed, no product tree) should run <strong>kernel survival</strong> and skip the source-code pack. Shipping those timers as required is how you get exit <strong>126</strong> on missing <code>scripts/pre-commit-*.sh</code>.</p>
 <p>The list of jobs <code>ensure-retention-jobs</code> will mint lives in <code>.zqk/specs/configs/scheduler_maintenance_config.yaml</code> (<code>required_jobs</code>). That file is the contract. Templates live under <code>scripts/scheduler_jobs/</code>.</p>
-<h2 id="kernel-survival-required-on-this-sku">Kernel survival (required on this SKU)</h2>
+<h2 id="core-kernel-survival-jobs">Core Kernel Survival Jobs</h2>
 <p>Read <strong>title</strong>, not the opaque id. <code>scheduler list</code> shows both. The id is a handle for <code>trigger</code> / <code>history</code>; the title is what the job does.</p>
 <table>
 <thead>
@@ -241,26 +241,26 @@
 <table>
 <thead>
 <tr>
-<th style="text-align: left;">Id</th>
-<th style="text-align: left;">What you think it is</th>
-<th style="text-align: left;">What it actually is</th>
+<th style="text-align: left;">Job ID</th>
+<th style="text-align: left;">Category</th>
+<th style="text-align: left;">Target Script / Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align: left;"><code>SCH-pre-commit-lint</code></td>
-<td style="text-align: left;">“Required maintenance”</td>
-<td style="text-align: left;">Timer: <code>scripts/pre-commit-lint.sh</code> (golangci-lint / go vet)</td>
+<td style="text-align: left;">Source Linting</td>
+<td style="text-align: left;">Static analysis via <code>scripts/pre-commit-lint.sh</code> (golangci-lint / go vet)</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>SCH-pre-commit-policy</code></td>
-<td style="text-align: left;">“Required maintenance”</td>
-<td style="text-align: left;">Timer: logging + architecture policy scripts</td>
+<td style="text-align: left;">Policy Verification</td>
+<td style="text-align: left;">Logging, architecture, and resource policy checks</td>
 </tr>
 <tr>
 <td style="text-align: left;"><code>SCH-pre-commit-integrity</code></td>
-<td style="text-align: left;">“Required maintenance”</td>
-<td style="text-align: left;">Timer: <code>system check</code> snapshot for the hook</td>
+<td style="text-align: left;">System Integrity</td>
+<td style="text-align: left;">Pre-commit health check snapshot for git commit gates</td>
 </tr>
 </tbody>
 </table>
@@ -276,7 +276,7 @@ test -x scripts/pre-commit-integrity.sh &amp;&amp; \
 <p>Force a hook-shaped run (writes the pre-commit aggregate the git hook reads):</p>
 <pre><code class="language-bash">./bin/zqk scheduler trigger SCH-pre-commit-lint --pre-commit
 </code></pre>
-<p><strong>Leave them off</strong> for non-code orchestrations, knowledge-only kernels, and this Community SKU until you add those scripts. Missing scripts are not a configuration mystery — the job was never meant for that project shape.</p>
+<p><strong>Leave them off</strong> for non-code orchestrations, knowledge-only kernels, and fresh installations until you add those scripts. Missing scripts are not a configuration mystery — the job was never meant for that project shape.</p>
 <p>If you need a one-off check without a timer:</p>
 <pre><code class="language-bash">./bin/zqk scheduler submit &quot;./bin/zqk system check&quot; --title &quot;integrity once&quot; --max-runtime 600
 </code></pre>

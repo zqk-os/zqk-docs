@@ -1,7 +1,6 @@
 # First-run object tutorial (template → create → get → update)
 
-**Audience:** New users after `zqk init` (see [community first-run](./COMMUNITY_FIRST_RUN.md) and [architecture (this SKU)](../architecture/README.md)).
-**Backlog:** Tracked as part of alpha CLI launch work (see priority plan *CLI alpha launch readiness*).
+**Audience:** Developers and operators learning the ZQK Knowledge Kernel object lifecycle (see [Community First-Run](./COMMUNITY_FIRST_RUN.md) and [Architecture Overview](../architecture/README.md)).
 
 This path uses the **`question`** kind as a **small** object: few required fields, suitable for learning `object template` / `object create` without editing large YAML. Adjust the kind if your org standardizes another “low-risk” kind.
 

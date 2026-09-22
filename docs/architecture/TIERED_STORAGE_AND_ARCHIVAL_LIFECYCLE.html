@@ -356,15 +356,11 @@ Warm capsules are mathematically immutable. To modify this object, run:
   - Number of Cold Vault references.
   - Verification that 0 apoptotic objects participate in active edges.</p>
 <hr />
-<h2 id="7-traceability-backlog-verification">7. Traceability &amp; Backlog Verification</h2>
-<p>This architecture is implemented and verified by <code>pkg/resourcehygiene</code> and CLI commands under <code>zqk system resource-hygiene</code>.</p>
-<ul>
-<li><strong>Priority Plan:</strong> <code>PRI-IO-RESOURCE-HYGIENE-001</code></li>
-<li><strong>Backlog Items Verified:</strong></li>
-<li><code>BLI-IO-MANDATORY-LIFECYCLE-001</code> (Mandatory I/O Resource Lifecycle &amp; Lock/Temp Cleanup)</li>
-<li><code>BLI-IO-CLEANUP-RESOURCE-RETENTION-001</code> (Automated Log Rolling, Stream Retention, and Stale Lock/Temp Reaping)</li>
-<li><code>BLI-IO-TELEMETRY-REPORTING-001</code> (I/O Resource Telemetry and Diagnostics Reporting)</li>
-</ul>
+<h2 id="7-verification-telemetry-inspection">7. Verification &amp; Telemetry Inspection</h2>
+<p>This architecture is implemented and verified by <code>pkg/resourcehygiene</code> and can be inspected on demand via:</p>
+<pre><code class="language-bash">./bin/zqk system resource-hygiene
+./bin/zqk system check all
+</code></pre>
       </div>
     </article>
   </main>

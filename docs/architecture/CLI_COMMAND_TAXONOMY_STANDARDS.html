@@ -259,22 +259,10 @@ Every command in <code>zqk</code> must have a valid declarative specification in
 <li>Eliminates undocumented flags, hidden arguments, and stale guidance.</li>
 </ul>
 <hr />
-<h2 id="5-verification-acceptance-reference">5. Verification &amp; Acceptance Reference</h2>
-<p>This standard is verified by the automated test suite in <code>cmd/zqk/system/validate_command_specs_test.go</code> and executed via <code>zqk system validate-command-specs</code>.</p>
-<ul>
-<li><strong>Priority Plan:</strong> <code>PRI-CLI-TAXONOMY-OVERHAUL-001</code></li>
-<li><strong>Backlog Items Verified:</strong></li>
-<li><code>BLI-CLI-TAXONOMY-HARMONIZE-001</code> (Harmonized CLI Taxonomy &amp; 100% Spec Coverage)</li>
-<li><code>BLI-CLI-AGENT-FEED-001</code> (Unify Swarm &amp; Feed Families)</li>
-<li><code>BLI-CLI-CONVERGENCE-001</code> (Convergence Management Parent)</li>
-<li><code>BLI-CLI-DEPRECATE-PURGE-001</code> (Purge Obsolete Commands &amp; Specs)</li>
-<li><code>BLI-CLI-SCHEDULER-REORG-001</code> (Job &amp; State Management Reorg)</li>
-<li><code>BLI-CLI-SERVICES-MGT-001</code> (Services Management Daemon Lifecycle)</li>
-<li><code>BLI-CLI-SPECS-LAYOUT-001</code> (Specs Directory Layout Restructuring)</li>
-<li><code>BLI-CLI-SPECS-COVERAGE-001</code> (100% Command Spec Coverage Audit)</li>
-<li><code>BLI-CLI-TAXONOMY-STANDARDS-001</code> (Taxonomy Standards Governance)</li>
-<li><code>BLI-CLI-VENDOR-ISOLATION-001</code> (Vendor Adapter Pluggable Isolation)</li>
-</ul>
+<h2 id="5-verification-spec-compliance">5. Verification &amp; Spec Compliance</h2>
+<p>This standard is continuously verified by automated tests in <code>cmd/zqk/system/validate_command_specs_test.go</code> and can be evaluated on demand via:</p>
+<pre><code class="language-bash">./bin/zqk system validate-command-specs
+</code></pre>
       </div>
     </article>
   </main>
