@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canonical CLI Command Taxonomy &amp; Architectural Standards - ZQK Core Documentation</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+  <link rel="icon" type="image/svg+xml" href="../../assets/zqk-logo.svg">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0d1117',
+        primaryColor: '#1f6feb',
+        primaryTextColor: '#c9d1d9',
+        primaryBorderColor: '#30363d',
+        lineColor: '#58a6ff',
+        secondaryColor: '#161b22',
+        tertiaryColor: '#0d1117'
+      }
+    });
+  </script>
+</head>
+<body data-root-rel="../../">
+  <header class="header">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="../../index.html" class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" class="logo-mark">
+  <defs>
+    <filter id="cursor-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#00e676" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+  <!-- Background icon frame -->
+  <rect width="100" height="100" rx="22" fill="#05070a" stroke="#1f2937" stroke-width="1.5"/>
+  <!-- ZQK glyphs in pure vector geometry fill-rule evenodd for Q hole -->
+  <path d="M54.70,35.38 L59.41,35.38 L59.41,44.46 L59.74,44.46 L59.74,44.12 L60.08,44.12 L60.08,43.78 L60.75,43.45 L60.75,42.78 L61.09,42.78 L61.09,42.44 L61.76,42.10 L61.76,41.43 L62.10,41.43 L62.10,41.10 L62.43,41.10 L62.43,40.76 L63.10,40.42 L63.10,39.75 L63.44,39.75 L63.44,39.42 L63.78,39.42 L63.78,39.08 L64.45,38.74 L64.45,38.07 L64.78,38.07 L64.78,37.74 L65.46,37.40 L65.46,36.73 L65.79,36.73 L65.79,36.39 L66.13,36.39 L66.13,36.06 L66.46,36.06 L66.80,35.38 L71.84,35.38 L71.84,35.72 L71.50,35.72 L71.50,36.39 L71.17,36.39 L71.17,36.73 L70.83,36.73 L70.83,37.06 L70.16,37.40 L70.16,38.07 L69.82,38.07 L69.82,38.41 L69.49,38.41 L69.49,38.74 L68.82,39.08 L68.82,39.75 L68.48,39.75 L68.48,40.09 L68.14,40.09 L68.14,40.42 L67.47,40.76 L67.47,41.43 L67.14,41.43 L67.14,41.77 L66.80,41.77 L66.80,42.10 L66.13,42.44 L66.13,43.11 L65.79,43.11 L65.79,43.45 L65.46,43.45 L65.46,43.78 L64.78,44.12 L64.78,45.13 L65.12,45.13 L65.12,45.80 L65.46,45.80 L65.46,46.47 L65.79,46.47 L65.79,47.14 L66.13,47.14 L66.46,48.49 L67.14,48.82 L67.14,49.50 L67.47,49.50 L67.47,50.17 L67.81,50.17 L67.81,50.84 L68.14,50.84 L68.14,51.51 L68.48,51.51 L68.82,52.86 L69.49,53.19 L69.49,53.86 L69.82,53.86 L69.82,54.54 L70.16,54.54 L70.16,55.21 L70.50,55.21 L70.50,55.88 L70.83,55.88 L71.17,57.22 L71.84,57.56 L72.18,58.90 L67.14,58.90 L67.14,58.57 L66.80,58.57 L66.80,57.90 L66.46,57.90 L66.46,57.22 L66.13,57.22 L66.13,56.55 L65.79,56.55 L65.79,55.88 L65.46,55.88 L65.46,55.21 L64.78,54.87 L64.78,54.20 L64.45,54.20 L64.45,53.53 L64.11,53.53 L64.11,52.86 L63.78,52.86 L63.78,52.18 L63.44,52.18 L63.44,51.51 L63.10,51.51 L63.10,50.84 L62.77,50.84 L62.77,50.17 L62.43,50.17 L62.43,49.50 L62.10,49.50 L62.10,48.82 L61.76,48.82 L61.76,48.49 L61.42,48.49 L61.42,48.82 L61.09,48.82 L61.09,49.16 L60.42,49.50 L60.42,50.17 L60.08,50.17 L60.08,50.50 L59.41,50.84 L59.41,58.90 L54.70,58.90Z M8.00,54.87 L8.34,54.87 L8.34,54.20 L9.01,53.86 L9.01,53.19 L9.68,52.86 L9.68,52.18 L10.35,51.85 L10.35,51.18 L11.02,50.84 L11.02,50.17 L11.70,49.83 L11.70,49.16 L12.37,48.82 L12.37,48.15 L13.04,47.82 L13.04,47.14 L13.38,47.14 L13.38,46.81 L13.71,46.81 L13.71,46.14 L14.05,46.14 L14.05,45.80 L14.72,45.46 L14.72,44.79 L15.39,44.46 L15.39,43.78 L16.06,43.45 L16.06,42.78 L16.74,42.44 L16.74,41.77 L17.41,41.43 L17.41,40.76 L17.74,40.76 L17.74,40.42 L18.08,40.42 L18.08,39.75 L18.42,39.75 L18.42,39.42 L8.34,39.42 L8.34,35.38 L24.13,35.38 L24.13,39.42 L23.79,39.42 L23.79,40.09 L23.12,40.42 L23.12,41.10 L22.45,41.43 L22.45,42.10 L22.11,42.10 L22.11,42.44 L21.44,42.78 L21.44,43.45 L20.77,43.78 L20.77,44.46 L20.10,44.79 L20.10,45.46 L19.76,45.46 L19.76,45.80 L19.09,46.14 L19.09,46.81 L18.42,47.14 L18.42,47.82 L17.74,48.15 L17.74,48.82 L17.41,48.82 L17.41,49.16 L16.74,49.50 L16.74,50.17 L16.06,50.50 L16.06,51.18 L15.73,51.18 L15.73,51.51 L15.39,51.51 L15.39,52.18 L15.06,52.18 L15.06,52.52 L14.38,52.86 L14.38,53.53 L13.71,53.86 L13.71,54.54 L13.38,54.54 L13.38,54.87 L24.46,54.87 L24.46,58.90 L8.00,58.90Z M31.18,42.78 L31.52,42.78 L31.86,40.09 L32.19,40.09 L32.19,39.42 L32.53,39.42 L32.86,38.07 L33.20,38.07 L33.20,37.74 L33.54,37.74 L33.54,37.40 L33.87,37.40 L33.87,37.06 L34.21,37.06 L34.21,36.73 L34.54,36.73 L34.88,36.06 L35.55,36.06 L35.55,35.72 L36.22,35.72 L36.22,35.38 L37.23,35.38 L37.23,35.05 L41.26,35.05 L41.26,35.38 L43.28,35.72 L43.28,36.06 L43.62,36.06 L43.95,36.73 L44.62,36.73 L44.62,37.06 L44.96,37.06 L44.96,37.74 L45.63,38.07 L45.63,38.74 L45.97,38.74 L45.97,39.42 L46.30,39.42 L46.30,40.09 L46.64,40.09 L46.64,41.10 L46.98,41.10 L46.98,42.44 L47.31,42.44 L47.31,45.46 L47.65,45.46 L47.65,49.16 L47.31,49.16 L47.31,51.85 L46.98,51.85 L46.98,53.19 L46.64,53.19 L46.30,55.21 L45.97,55.21 L45.97,55.88 L45.30,56.22 L45.30,56.89 L44.96,56.89 L44.96,57.22 L44.62,57.22 L44.29,57.90 L43.62,57.90 L43.62,58.23 L43.95,58.23 L43.95,58.57 L44.29,58.57 L44.29,58.90 L44.62,58.90 L44.62,59.24 L44.96,59.24 L44.96,59.58 L45.30,59.58 L45.30,59.91 L45.63,59.91 L45.63,60.25 L46.30,60.58 L46.30,61.26 L45.97,61.26 L45.63,61.93 L44.96,61.93 L44.96,62.26 L44.62,62.26 L44.29,62.94 L43.62,62.94 L43.62,63.27 L43.28,63.27 L43.28,62.94 L42.94,62.94 L42.94,62.60 L42.61,62.60 L42.61,62.26 L41.94,61.93 L41.94,61.26 L41.60,61.26 L41.60,60.92 L41.26,60.92 L41.26,60.58 L40.93,60.58 L40.93,60.25 L40.59,60.25 L40.59,59.91 L40.26,59.91 L39.92,59.24 L36.90,59.24 L36.90,58.90 L35.89,58.90 L35.55,58.23 L34.88,58.23 L34.88,57.90 L34.54,57.90 L34.54,57.56 L34.21,57.56 L34.21,57.22 L33.87,57.22 L33.87,56.89 L33.54,56.89 L33.54,56.55 L32.86,56.22 L32.86,55.54 L32.53,55.54 L32.53,54.87 L32.19,54.87 L32.19,54.20 L31.86,54.20 L31.52,51.51 L31.18,51.51Z M35.89,43.45 L35.89,50.84 L36.22,50.84 L36.22,52.52 L36.56,52.52 L36.56,53.53 L36.90,53.53 L36.90,53.86 L37.23,53.86 L37.23,54.54 L37.90,54.54 L38.24,55.21 L40.26,55.21 L40.26,54.87 L40.93,54.87 L40.93,54.54 L41.60,54.20 L41.60,53.53 L41.94,53.53 L41.94,52.52 L42.27,52.52 L42.27,51.18 L42.61,51.18 L42.61,43.11 L42.27,43.11 L42.27,41.77 L41.94,41.77 L41.94,40.76 L41.60,40.76 L41.60,40.09 L41.26,40.09 L40.93,39.42 L39.92,39.42 L39.92,39.08 L38.58,39.08 L38.58,39.42 L37.23,39.75 L37.23,40.42 L36.56,40.76 L36.56,41.77 L36.22,41.77 L36.22,43.45Z" fill="#ffffff" fill-rule="evenodd"/>
+  <!-- Terminal cursor prompt _ with emerald green glow -->
+  <path d="M72.51,61.93 L92.00,61.93 L92.00,64.95 L72.51,64.95Z" fill="#00e676" filter="url(#cursor-glow)"/>
+</svg>
+          <span class="logo-text">ZQK <span class="logo-accent">Core</span></span>
+        </a>
+        <span class="badge-tag">Architecture &amp; Foundation</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search core documentation..." onkeyup="runSearch()">
+        <div id="search-results"></div>
+      </div>
+    </div>
+  </header>
+  <main class="content-container">
+    <aside class="sidebar">
+      
+      <nav>
+        <div class="sidebar-section">
+          <h3>Getting Started</h3>
+          <ul>
+            <li><a href="../../index.html">Overview</a></li>
+            <li><a href="../../docs/INDEX.html">Core Docs Index</a></li>
+            <li><a href="../../docs/onboarding/COMMUNITY_FIRST_RUN.html">Community First-Run</a></li>
+            <li><a href="../../docs/onboarding/QUICKSTART.html">Quickstart & MCP</a></li>
+            <li><a href="../../docs/onboarding/AI_AGENT_ONBOARDING.html">AI Agent Directives</a></li>
+            <li><a href="../../docs/onboarding/FIRST_RUN_OBJECT_TUTORIAL.html">First-Run Object Tutorial</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Core Architecture</h3>
+          <ul>
+            <li><a href="../../docs/architecture/README.html">Architecture Overview</a></li>
+            <li><a href="../../docs/architecture/CELLULAR_MEMBRANE_MODE_B_CONFIGURATION.html">Cellular Membrane Mode B</a></li>
+            <li><a href="../../docs/architecture/CLI_COMMAND_TAXONOMY_STANDARDS.html">CLI Command Taxonomy</a></li>
+            <li><a href="../../docs/architecture/TIERED_STORAGE_AND_ARCHIVAL_LIFECYCLE.html">Tiered Storage Lifecycle</a></li>
+            <li><a href="../../docs/architecture/TRAY_COMMAND_CRYPTOGRAPHIC_SECURITY.html">Tray Cryptographic Security</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Operations & Guides</h3>
+          <ul>
+            <li><a href="../../docs/howto/README.html">How-To Overview</a></li>
+            <li><a href="../../docs/howto/SCHEDULER_AND_MAINTENANCE.html">Scheduler & Maintenance</a></li>
+            <li><a href="../../docs/onboarding/EDGE_HEADLESS_FIRST_RUN.html">Edge / Headless Mode</a></li>
+            <li><a href="../../docs/quality/README.html">Quality & Verification Gates</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Open Core Governance</h3>
+          <ul>
+            <li><a href="../../CONTRIBUTING.html">Contributing & DCO</a></li>
+            <li><a href="../../SECURITY.html">Security Policy</a></li>
+            <li><a href="../../GOVERNANCE.html">Open-Core Governance</a></li>
+          </ul>
+        </div>
+      </nav>
+        
+    </aside>
+    <article class="doc-body">
+      <div class="breadcrumb">
+        <div class="breadcrumb-trail">
+          <a href="../../index.html">Docs</a> &raquo; <span>Architecture &amp; Foundation</span> &raquo; <span class="current">Canonical CLI Command Taxonomy &amp; Architectural Standards</span>
+        </div>
+        <a href="../../docs/architecture/CLI_COMMAND_TAXONOMY_STANDARDS.md" class="raw-md-link" title="View canonical Markdown source">Raw .md</a>
+      </div>
+      <div class="markdown-body">
+        <h1 id="canonical-cli-command-taxonomy-architectural-standards">Canonical CLI Command Taxonomy &amp; Architectural Standards</h1>
+<p><strong>Document ID:</strong> <code>DOC-CLI-COMMAND-TAXONOMY-STANDARDS-001</code><br />
+<strong>Authoring Personas:</strong><br />
+- <code>PER-INFORMATION-ARCHITECT</code> (Information Architect)<br />
+- <code>PER-TECHNICAL-DOCUMENTARIAN</code> (Technical Documentarian)<br />
+<strong>Governing Goal:</strong> <code>GOAL-CLI-TAXONOMY-CANONICAL-001</code><br />
+<strong>Governing Requirement:</strong> <code>REQ-CLI-TAXONOMY-HARMONIZATION-001</code><br />
+<strong>Status:</strong> Canonical / Enforced  </p>
+<hr />
+<h2 id="1-executive-summary-central-theme">1. Executive Summary &amp; Central Theme</h2>
+<p>The <strong>ZQK Command Interface</strong> is the primary human-agent operating surface for the Knowledge Kernel. As the system scales across multi-agent swarms and varied development environments, command sprawl, ambiguous verbs, un-specced commands, and vendor-specific leakage introduce cognitive fatigue, broken automation, and architectural degradation.</p>
+<p>This document establishes the <strong>authoritative ground rules, naming taxonomy, behavioral standards, and governance protocols</strong> for all commands in <code>zqk</code>.</p>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Zero Tolerance for Un-specced Commands:</strong><br />
+Every command in <code>zqk</code> must have a valid declarative specification in <code>.zqk/cli/specs/</code>. Any command added without a specification is treated as a build-breaking defect and trapped by <code>zqk system validate-command-specs</code>.</p>
+</blockquote>
+<hr />
+<h2 id="2-core-architectural-ground-rules-standards">2. Core Architectural Ground Rules &amp; Standards</h2>
+<h3 id="rule-1-100-declarative-spec-coverage-mandatory">Rule 1: 100% Declarative Spec Coverage Mandatory</h3>
+<ol>
+<li><strong>Spec Location:</strong> Every command and subcommand MUST have a matching YAML specification in <code>.zqk/cli/specs/&lt;domain&gt;/&lt;command&gt;_command.yaml</code>.</li>
+<li><strong>Spec Completeness:</strong> Specifications must document the command purpose, positional arguments, flags (with defaults and descriptions), expected output schema, and at least two realistic usage examples.</li>
+<li><strong>Automated Verification:</strong> The pre-commit gate and local CI run <code>zqk system validate-command-specs</code>. Commits that introduce un-specced commands or spec drift will fail closed.</li>
+</ol>
+<h3 id="rule-2-strict-domain-resource-grammar-noun-verb-hierarchy">Rule 2: Strict Domain-Resource Grammar &amp; Noun-Verb Hierarchy</h3>
+<ol>
+<li><strong>No Orphan Root Verbs:</strong><br />
+   Root-level commands must represent distinct architectural <strong>domains</strong> (<code>system</code>, <code>agent</code>, <code>workflow</code>, <code>object</code>, <code>test</code>, <code>job</code>, <code>service</code>, <code>vendor</code>). Unqualified verbs (such as <code>use</code>, <code>run</code>, <code>check</code>, <code>execute</code>) are prohibited at the root level unless defined as explicitly documented, universal ergonomics aliases.</li>
+<li><strong>Hierarchical Naming:</strong><br />
+   Subcommands must follow either:
+   - <code>&lt;domain&gt; &lt;resource&gt; &lt;verb&gt;</code> (e.g. <code>zqk object requirement create</code>, <code>zqk job trigger list</code>)
+   - <code>&lt;domain&gt; &lt;verb&gt; [resource]</code> (e.g. <code>zqk system check</code>, <code>zqk workflow whats-next</code>)</li>
+<li><strong>Consistency of Common Verbs:</strong>
+   - <code>list</code>: Enumerate resources with optional filtering and pagination.
+   - <code>get</code> / <code>show</code>: Retrieve a single resource by unique identifier.
+   - <code>create</code>: Instantiate a new resource on the draft plane.
+   - <code>update</code>: Mutate fields of an existing resource.
+   - <code>delete</code>: Permanently or soft-delete a resource.
+   - <code>promote</code> / <code>demote</code>: Transition lifecycle status along valid state machine hops.</li>
+</ol>
+<h3 id="rule-3-pluggable-vendor-decoupling-adapter-isolation">Rule 3: Pluggable Vendor Decoupling &amp; Adapter Isolation</h3>
+<ol>
+<li><strong>Vendor Neutrality:</strong> Core commands (<code>system</code>, <code>workflow</code>, <code>object</code>, <code>job</code>, <code>agent</code>) must remain 100% vendor-agnostic. No references to proprietary vendor extensions (e.g., Cursor IDE, VSCode, Gemini CLI, Claude Desktop) may exist in core commands or specs.</li>
+<li><strong>Vendor Namespace:</strong> Vendor-specific integrations, AppleScript terminal paste scripts, and IDE-specific shims must reside under:
+   - <code>zqk vendor &lt;vendor-name&gt; ...</code> (for CLI surfaces)
+   - <code>zqk mcp adapter &lt;vendor-name&gt; ...</code> (for MCP surfaces)</li>
+<li><strong>Decoupled Packaging:</strong> Code implementing vendor adapters must reside in isolated packages (e.g. <code>pkg/adapters/&lt;vendor&gt;</code>), preventing vendor SDKs or protocol quirks from bleeding into the kernel.</li>
+</ol>
+<h3 id="rule-4-cli-command-dna-behavioral-protocol">Rule 4: CLI Command DNA &amp; Behavioral Protocol</h3>
+<p>All commands must implement the standard <strong>Command DNA</strong>:
+1. <strong>Structured Logging (POL-CODE-007):</strong> Every command execution must emit structured logs with stable event keys, execution durations, and contextual fields (seat ID, project root, exit code).
+2. <strong>Standard Output Channels:</strong>
+   - <strong><code>stdout</code>:</strong> Dedicated strictly to deterministic, machine-readable data (JSON, YAML, or structured tables).
+   - <strong><code>stderr</code>:</strong> Dedicated strictly to human status lines, animated spinners, progress counters, warnings, and error diagnostics.
+3. <strong>Universal Flag Support:</strong>
+   - <code>--format [json|yaml|table|stream]</code>: Governs data serialization.
+   - <code>--project-root &lt;path&gt;</code>: Allows explicit workspace scoping.
+   - <code>--dry-run</code>: Validates execution without applying mutations.
+   - <code>--context [ai-agent|human|debug]</code>: Informs output formatting and verbose progress.
+4. <strong>Async Progress Protocol:</strong> Any command with execution latency &gt;200ms must integrate <code>cli.BindAsyncProgress</code> to stream heartbeat pulses and prevent client timeouts.</p>
+<h3 id="rule-5-deprecation-sunsetting-protocol">Rule 5: Deprecation &amp; Sunsetting Protocol</h3>
+<ol>
+<li><strong>Deprecation Notice:</strong> Commands marked for deprecation must be annotated in their command spec:
+   <code>yaml
+   deprecated: true
+   deprecation_message: "zqk pplan is deprecated. Use 'zqk object priority_plan' instead."</code></li>
+<li><strong>Graceful Migration:</strong> Deprecated commands must continue functioning for at least one minor release cycle, outputting a clear deprecation warning on <code>stderr</code> with the replacement syntax.</li>
+<li><strong>Dead Code Purging:</strong> Abandoned prototypes (e.g., <code>pkg/cliexamples</code>), superseded commands (<code>app use</code>), and lingering scratch files must be purged immediately once replacements are promoted.</li>
+</ol>
+<hr />
+<h2 id="3-canonical-domain-taxonomy-matrix">3. Canonical Domain Taxonomy Matrix</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Domain Namespace</th>
+<th style="text-align: left;">Primary Responsibilities</th>
+<th style="text-align: left;">Example Commands</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><code>zqk system</code></strong></td>
+<td style="text-align: left;">Host environment, kernel health, resource hygiene, spec validation, initialization</td>
+<td style="text-align: left;"><code>system check</code>, <code>system resource-hygiene</code>, <code>system init</code>, <code>system validate-command-specs</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk workflow</code></strong></td>
+<td style="text-align: left;">Process flow, next-action discovery, pipeline generation, VDS gating</td>
+<td style="text-align: left;"><code>workflow whats-next</code>, <code>workflow gen-trace-pipeline</code>, <code>workflow vds evaluate</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk object</code></strong></td>
+<td style="text-align: left;">Full CRUD, relationship traversal, draft plane promotion across all kernel objects</td>
+<td style="text-align: left;"><code>object get &lt;id&gt;</code>, <code>object list &lt;kind&gt;</code>, <code>object create &lt;kind&gt;</code>, <code>object promote &lt;id&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk agent</code></strong></td>
+<td style="text-align: left;">Multi-agent swarm orchestration, seating, task claims, execution delegation</td>
+<td style="text-align: left;"><code>agent claim-work</code>, <code>agent orchestrate</code>, <code>agent prepare-context</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk test</code></strong></td>
+<td style="text-align: left;">Test execution, requirement-to-test verification, test suite dashboards</td>
+<td style="text-align: left;"><code>test run &lt;tst-id&gt;</code>, <code>test dashboard</code>, <code>test matrix</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk job</code></strong></td>
+<td style="text-align: left;">Background scheduler job triggers, queues, history, and status</td>
+<td style="text-align: left;"><code>job list</code>, <code>job trigger &lt;id&gt;</code>, <code>job status &lt;id&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk service</code></strong></td>
+<td style="text-align: left;">Persistent daemon lifecycles, MCP service supervise, socket management</td>
+<td style="text-align: left;"><code>service start</code>, <code>service status</code>, <code>service stop</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk vendor</code></strong></td>
+<td style="text-align: left;">Isolated third-party adapters and IDE integration shims</td>
+<td style="text-align: left;"><code>vendor cursor paste</code>, <code>vendor vscode register</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><code>zqk ambient</code></strong></td>
+<td style="text-align: left;">Ambient filesystem monitoring, metric waves, telemetry capture</td>
+<td style="text-align: left;"><code>ambient wave</code>, <code>ambient status</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-persona-governance-roles">4. Persona Governance &amp; Roles</h2>
+<h3 id="information-architecture-persona-per-information-architect">Information Architecture Persona (<code>PER-INFORMATION-ARCHITECT</code>)</h3>
+<ul>
+<li><strong>Mission:</strong> Guard structural clarity, logical hierarchy, intuitive taxonomy, and domain separation across CLI surfaces and kernel schemas.</li>
+<li><strong>Responsibilities:</strong></li>
+<li>Reviews every proposed new command for taxonomy compliance before approval.</li>
+<li>Ensures clean directory layouts in <code>.zqk/cli/specs/</code> and schema integrity.</li>
+<li>Prevents domain bleed and rejects ambiguous command verbs.</li>
+</ul>
+<h3 id="technical-documentarian-persona-per-technical-documentarian">Technical Documentarian Persona (<code>PER-TECHNICAL-DOCUMENTARIAN</code>)</h3>
+<ul>
+<li><strong>Mission:</strong> Guarantee documentation completeness, spec-to-code alignment, manual page accuracy, and user clarity.</li>
+<li><strong>Responsibilities:</strong></li>
+<li>Verifies that 100% of commands have up-to-date specs and accurate manual pages.</li>
+<li>Audits help strings, flag descriptions, and usage examples.</li>
+<li>Eliminates undocumented flags, hidden arguments, and stale guidance.</li>
+</ul>
+<hr />
+<h2 id="5-verification-acceptance-reference">5. Verification &amp; Acceptance Reference</h2>
+<p>This standard is verified by the automated test suite in <code>cmd/zqk/system/validate_command_specs_test.go</code> and executed via <code>zqk system validate-command-specs</code>.</p>
+<ul>
+<li><strong>Priority Plan:</strong> <code>PRI-CLI-TAXONOMY-OVERHAUL-001</code></li>
+<li><strong>Backlog Items Verified:</strong></li>
+<li><code>BLI-CLI-TAXONOMY-HARMONIZE-001</code> (Harmonized CLI Taxonomy &amp; 100% Spec Coverage)</li>
+<li><code>BLI-CLI-AGENT-FEED-001</code> (Unify Swarm &amp; Feed Families)</li>
+<li><code>BLI-CLI-CONVERGENCE-001</code> (Convergence Management Parent)</li>
+<li><code>BLI-CLI-DEPRECATE-PURGE-001</code> (Purge Obsolete Commands &amp; Specs)</li>
+<li><code>BLI-CLI-SCHEDULER-REORG-001</code> (Job &amp; State Management Reorg)</li>
+<li><code>BLI-CLI-SERVICES-MGT-001</code> (Services Management Daemon Lifecycle)</li>
+<li><code>BLI-CLI-SPECS-LAYOUT-001</code> (Specs Directory Layout Restructuring)</li>
+<li><code>BLI-CLI-SPECS-COVERAGE-001</code> (100% Command Spec Coverage Audit)</li>
+<li><code>BLI-CLI-TAXONOMY-STANDARDS-001</code> (Taxonomy Standards Governance)</li>
+<li><code>BLI-CLI-VENDOR-ISOLATION-001</code> (Vendor Adapter Pluggable Isolation)</li>
+</ul>
+      </div>
+    </article>
+  </main>
+  <script src="../../search/search-index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('pre code.language-mermaid').forEach(el => {
+        const pre = el.parentElement;
+        pre.className = 'mermaid';
+        pre.textContent = el.textContent;
+      });
+    });
+  </script>
+</body>
+</html>
