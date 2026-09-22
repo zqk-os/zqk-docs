@@ -245,11 +245,12 @@ The tiered storage engine integrates into **Layer 4 Storage & I/O Telemetry**:
 
 ---
 
-## 7. Verification & Telemetry Inspection
+## 7. Traceability & Backlog Verification
 
-This architecture is implemented and verified by `pkg/resourcehygiene` and can be inspected on demand via:
+This architecture is implemented and verified by `pkg/resourcehygiene` and CLI commands under `zqk system resource-hygiene`.
 
-```bash
-./bin/zqk system resource-hygiene
-./bin/zqk system check all
-```
+- **Priority Plan:** `PRI-IO-RESOURCE-HYGIENE-001`
+- **Backlog Items Verified:**
+  - `BLI-IO-MANDATORY-LIFECYCLE-001` (Mandatory I/O Resource Lifecycle & Lock/Temp Cleanup)
+  - `BLI-IO-CLEANUP-RESOURCE-RETENTION-001` (Automated Log Rolling, Stream Retention, and Stale Lock/Temp Reaping)
+  - `BLI-IO-TELEMETRY-REPORTING-001` (I/O Resource Telemetry and Diagnostics Reporting)

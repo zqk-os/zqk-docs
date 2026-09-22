@@ -125,11 +125,8 @@
 <h2 id="1-executive-summary-central-theme">1. Executive Summary &amp; Central Theme</h2>
 <p>The <strong>ZQK Command Interface</strong> is the primary human-agent operating surface for the Knowledge Kernel. As the system scales across multi-agent swarms and varied development environments, command sprawl, ambiguous verbs, un-specced commands, and vendor-specific leakage introduce cognitive fatigue, broken automation, and architectural degradation.</p>
 <p>This document establishes the <strong>authoritative ground rules, naming taxonomy, behavioral standards, and governance protocols</strong> for all commands in <code>zqk</code>.</p>
-<blockquote>
-<p>[!IMPORTANT]
-<strong>Zero Tolerance for Un-specced Commands:</strong><br />
-Every command in <code>zqk</code> must have a valid declarative specification in <code>.zqk/cli/specs/</code>. Any command added without a specification is treated as a build-breaking defect and trapped by <code>zqk system validate-command-specs</code>.</p>
-</blockquote>
+<div class="alert alert-important"><div class="alert-title"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H9.06l-2.573 2.573A1.458 1.458 0 0 1 4 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25Zm1.75-.25a.25.25 0 0 0-.25.25v9.5c0 .138.112.25.25.25h2.5a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h6a.25.25 0 0 0 .25-.25v-9.5a.25.25 0 0 0-.25-.25Zm6.25 2.75a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm0 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg><span>Important</span></div><div class="alert-body"><p><strong>Zero Tolerance for Un-specced Commands:</strong><br />
+Every command in <code>zqk</code> must have a valid declarative specification in <code>.zqk/cli/specs/</code>. Any command added without a specification is treated as a build-breaking defect and trapped by <code>zqk system validate-command-specs</code>.</p></div></div>
 <hr />
 <h2 id="2-core-architectural-ground-rules-standards">2. Core Architectural Ground Rules &amp; Standards</h2>
 <h3 id="rule-1-100-declarative-spec-coverage-mandatory">Rule 1: 100% Declarative Spec Coverage Mandatory</h3>
@@ -260,10 +257,22 @@ Every command in <code>zqk</code> must have a valid declarative specification in
 <li>Eliminates undocumented flags, hidden arguments, and stale guidance.</li>
 </ul>
 <hr />
-<h2 id="5-verification-spec-compliance">5. Verification &amp; Spec Compliance</h2>
-<p>This standard is continuously verified by automated tests in <code>cmd/zqk/system/validate_command_specs_test.go</code> and can be evaluated on demand via:</p>
-<pre><code class="language-bash">./bin/zqk system validate-command-specs
-</code></pre>
+<h2 id="5-verification-acceptance-reference">5. Verification &amp; Acceptance Reference</h2>
+<p>This standard is verified by the automated test suite in <code>cmd/zqk/system/validate_command_specs_test.go</code> and executed via <code>zqk system validate-command-specs</code>.</p>
+<ul>
+<li><strong>Priority Plan:</strong> <code>PRI-CLI-TAXONOMY-OVERHAUL-001</code></li>
+<li><strong>Backlog Items Verified:</strong></li>
+<li><code>BLI-CLI-TAXONOMY-HARMONIZE-001</code> (Harmonized CLI Taxonomy &amp; 100% Spec Coverage)</li>
+<li><code>BLI-CLI-AGENT-FEED-001</code> (Unify Swarm &amp; Feed Families)</li>
+<li><code>BLI-CLI-CONVERGENCE-001</code> (Convergence Management Parent)</li>
+<li><code>BLI-CLI-DEPRECATE-PURGE-001</code> (Purge Obsolete Commands &amp; Specs)</li>
+<li><code>BLI-CLI-SCHEDULER-REORG-001</code> (Job &amp; State Management Reorg)</li>
+<li><code>BLI-CLI-SERVICES-MGT-001</code> (Services Management Daemon Lifecycle)</li>
+<li><code>BLI-CLI-SPECS-LAYOUT-001</code> (Specs Directory Layout Restructuring)</li>
+<li><code>BLI-CLI-SPECS-COVERAGE-001</code> (100% Command Spec Coverage Audit)</li>
+<li><code>BLI-CLI-TAXONOMY-STANDARDS-001</code> (Taxonomy Standards Governance)</li>
+<li><code>BLI-CLI-VENDOR-ISOLATION-001</code> (Vendor Adapter Pluggable Isolation)</li>
+</ul>
       </div>
     </article>
   </main>

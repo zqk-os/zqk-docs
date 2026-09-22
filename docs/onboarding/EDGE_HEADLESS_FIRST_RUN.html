@@ -162,10 +162,8 @@ echo '{&quot;schema&quot;:&quot;zqk_headless_edge_v1&quot;,&quot;note&quot;:&quo
 <p>Specialization (when meaningful on the node):</p>
 <pre><code class="language-bash">export ZQK_SPECIALIZATION_TIER=neuron   # or muscle|heart|lung — see pkg/specialization
 </code></pre>
-<h2 id="node-specialization-agent-seating">Node Specialization &amp; Agent Seating</h2>
-<p>Headless nodes can report their runtime capabilities and active agent seats using:</p>
-<pre><code class="language-bash">./bin/zqk system agent-onboard --detect-only --format json
-</code></pre>
+<h2 id="market-probes-open-until-evidence">Market probes (open until evidence)</h2>
+<p>Returned under <code>market_probe_open</code> in <code>agent-onboard</code> JSON. Canonical list also in the strategy doc. <strong>Do not</strong> ship organ-named community binaries until human ACK on these signals (<code>BLI-AGENT-ONBOARD-VEC-B-001</code>).</p>
 <h2 id="wake-interrupt">Wake / interrupt</h2>
 <p>Prefer scheduler ticks and feed/<code>delivery_mode=notify</code> — not Terminal paste. See mesh wake policies when multi-agent seats exist.</p>
 <h2 id="after-setup">After Setup</h2>

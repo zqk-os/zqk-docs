@@ -42,7 +42,7 @@ A knowledge-only or orchestration project (backlog, Gantt, feed, no product tree
 
 The list of jobs `ensure-retention-jobs` will mint lives in `.zqk/specs/configs/scheduler_maintenance_config.yaml` (`required_jobs`). That file is the contract. Templates live under `scripts/scheduler_jobs/`.
 
-## Core Kernel Survival Jobs
+## Kernel survival (required on this SKU)
 
 Read **title**, not the opaque id. `scheduler list` shows both. The id is a handle for `trigger` / `history`; the title is what the job does.
 
@@ -71,11 +71,11 @@ If a custom job's command or script is not present on your system, disable it ra
 
 These scheduled jobs are optional and provide automated test and lint checks. They cache output under `.zqk/pre-commit/` for fast evaluation during commit hooks:
 
-| Job ID | Category | Target Script / Description |
+| Id | What you think it is | What it actually is |
 | :--- | :--- | :--- |
-| `SCH-pre-commit-lint` | Source Linting | Static analysis via `scripts/pre-commit-lint.sh` (golangci-lint / go vet) |
-| `SCH-pre-commit-policy` | Policy Verification | Logging, architecture, and resource policy checks |
-| `SCH-pre-commit-integrity` | System Integrity | Pre-commit health check snapshot for git commit gates |
+| `SCH-pre-commit-lint` | “Required maintenance” | Timer: `scripts/pre-commit-lint.sh` (golangci-lint / go vet) |
+| `SCH-pre-commit-policy` | “Required maintenance” | Timer: logging + architecture policy scripts |
+| `SCH-pre-commit-integrity` | “Required maintenance” | Timer: `system check` snapshot for the hook |
 
 **Turn them on only if** (1) this project has source you gate, and (2) the matching scripts exist and are executable.
 
@@ -95,7 +95,7 @@ Force a hook-shaped run (writes the pre-commit aggregate the git hook reads):
 ./bin/zqk scheduler trigger SCH-pre-commit-lint --pre-commit
 ```
 
-**Leave them off** for non-code orchestrations, knowledge-only kernels, and fresh installations until you add those scripts. Missing scripts are not a configuration mystery — the job was never meant for that project shape.
+**Leave them off** for non-code orchestrations, knowledge-only kernels, and this Community SKU until you add those scripts. Missing scripts are not a configuration mystery — the job was never meant for that project shape.
 
 If you need a one-off check without a timer:
 

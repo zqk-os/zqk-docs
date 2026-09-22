@@ -38,13 +38,9 @@ Specialization (when meaningful on the node):
 export ZQK_SPECIALIZATION_TIER=neuron   # or muscle|heart|lung — see pkg/specialization
 ```
 
-## Node Specialization & Agent Seating
+## Market probes (open until evidence)
 
-Headless nodes can report their runtime capabilities and active agent seats using:
-
-```bash
-./bin/zqk system agent-onboard --detect-only --format json
-```
+Returned under `market_probe_open` in `agent-onboard` JSON. Canonical list also in the strategy doc. **Do not** ship organ-named community binaries until human ACK on these signals (`BLI-AGENT-ONBOARD-VEC-B-001`).
 
 ## Wake / interrupt
 
