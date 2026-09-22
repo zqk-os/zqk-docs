@@ -10,6 +10,7 @@
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({
       startOnLoad: true,
+      securityLevel: 'loose',
       theme: 'dark',
       themeVariables: {
         darkMode: true,
@@ -124,34 +125,34 @@
 <li><strong>Cross-Instance Invariants</strong>: Structured so that independent clones, developer laptops, CI/CD runners, and edge instances agree on policy semantics without centralized authority.</li>
 </ul>
 <pre class="mermaid">flowchart TD
-    subgraph Governance[&quot;Governance &amp;amp; Rule Sources&quot;]
-        P_Spec[&quot;Authoritative Specs (POL-DOC-*, POL-CODE-*)&quot;]
-        P_Seed[&quot;Default Policy Pack (POL-DEFAULT-*)&quot;]
-        P_Adhoc[&quot;Local Instance Policies (POL-&lt;nanos&gt;-*)&quot;]
+    subgraph Governance["Governance and Rule Sources"]
+        P_Spec["Authoritative Specs (POL-DOC-*, POL-CODE-*)"]
+        P_Seed["Default Policy Pack (POL-DEFAULT-*)"]
+        P_Adhoc["Local Instance Policies (POL-[nanos]-*)"]
     end
 
-    subgraph Kernel[&quot;Knowledge Kernel &amp;amp; Validation&quot;]
-        SIR[&quot;Semantic Intake Reasoner&lt;br/&gt;(Fail-Closed Boundary)&quot;]
-        AST[&quot;AST Linters &amp;amp; Code Checks&lt;br/&gt;(pkg/validation/qa)&quot;]
-        VDS[&quot;Verifiable Decomposition Spine&lt;br/&gt;(pkg/vds)&quot;]
+    subgraph Kernel["Knowledge Kernel and Validation"]
+        SIR["Semantic Intake Reasoner<br/>(Fail-Closed Boundary)"]
+        AST["AST Linters and Code Checks<br/>(pkg/validation/qa)"]
+        VDS["Verifiable Decomposition Spine<br/>(pkg/vds)"]
     end
 
-    subgraph Enforcement[&quot;System Enforcement Points&quot;]
-        PC[&quot;Pre-Commit Hooks&quot;]
-        SCH[&quot;Scheduler Survival Daemons&quot;]
-        AGT[&quot;Autonomous Swarm Seats&quot;]
+    subgraph Enforcement["System Enforcement Points"]
+        PC["Pre-Commit Hooks"]
+        SCH["Scheduler Survival Daemons"]
+        AGT["Autonomous Swarm Seats"]
     end
 
-    P_Spec --&gt; SIR
-    P_Seed --&gt; SIR
-    P_Adhoc --&gt; SIR
+    P_Spec --> SIR
+    P_Seed --> SIR
+    P_Adhoc --> SIR
 
-    SIR --&gt; AST
-    SIR --&gt; VDS
+    SIR --> AST
+    SIR --> VDS
 
-    AST --&gt; PC
-    VDS --&gt; AGT
-    SIR --&gt; SCH
+    AST --> PC
+    VDS --> AGT
+    SIR --> SCH
 </pre>
 <hr />
 <h2 id="2-the-three-durability-tiers">2. The Three Durability Tiers</h2>
@@ -287,16 +288,16 @@
     participant AST as AST Linters (pkg/validation/qa)
     participant Kernel as Knowledge Kernel
 
-    Dev-&gt;&gt;Git: git commit -m &quot;feat: new logging helper&quot;
-    Git-&gt;&gt;AST: Run AST Audit (POL-CODE-007, etc.)
+    Dev->>Git: git commit -m "feat: new logging helper"
+    Git->>AST: Run AST Audit (POL-CODE-007, etc.)
     alt Code uses direct fmt.Println
-        AST--&gt;&gt;Git: Reject (Violation of POL-CODE-007)
-        Git--&gt;&gt;Dev: Commit Aborted: Use logging.Fluent instead
+        AST-->>Git: Reject (Violation of POL-CODE-007)
+        Git-->>Dev: Commit Aborted: Use logging.Fluent instead
     else Code adheres to policy
-        AST--&gt;&gt;Git: Validation PASSED
-        Git-&gt;&gt;Kernel: Verify VDS and Criteria Traceability
-        Kernel--&gt;&gt;Git: Kernel Integrity OK
-        Git--&gt;&gt;Dev: Commit Accepted
+        AST-->>Git: Validation PASSED
+        Git->>Kernel: Verify VDS and Criteria Traceability
+        Kernel-->>Git: Kernel Integrity OK
+        Git-->>Dev: Commit Accepted
     end
 </pre>
 <h3 id="example-ast-rule-implementation-pol-code-007">Example AST Rule Implementation: <code>POL-CODE-007</code></h3>

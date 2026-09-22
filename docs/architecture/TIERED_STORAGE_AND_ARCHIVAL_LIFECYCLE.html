@@ -10,6 +10,7 @@
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({
       startOnLoad: true,
+      securityLevel: 'loose',
       theme: 'dark',
       themeVariables: {
         darkMode: true,
@@ -130,32 +131,32 @@
 <hr />
 <h2 id="2-the-4-tier-storage-topology">2. The 4-Tier Storage Topology</h2>
 <pre class="mermaid">flowchart TD
-    subgraph Tier0 [&quot;Tier 0: HOT STORAGE (Active CAS Plane)&quot;]
-        H1[&quot;.zqk/process/&lt;kind&gt;/&lt;hash&gt;.yaml&quot;]
-        H2[&quot;Loose CAS Blobs | Mutable Edges | 0ms Read/Write&quot;]
+    subgraph Tier0 ["Tier 0: HOT STORAGE (Active CAS Plane)"]
+        H1[".zqk/process/[kind]/[hash].yaml"]
+        H2["Loose CAS Blobs | Mutable Edges | 0ms Read/Write"]
     end
 
-    subgraph Tier1 [&quot;Tier 1: WARM STORAGE (Local Capsule Archive)&quot;]
-        W1[&quot;.zqk/archive/bundles/&lt;ROOT-ID&gt;.capsule.zst&quot;]
-        W2[&quot;Apoptotic Plane | Strictly Immutable | Transparent Read-Through&quot;]
-        W3[&quot;85-92% Storage &amp; File Reduction&quot;]
+    subgraph Tier1 ["Tier 1: WARM STORAGE (Local Capsule Archive)"]
+        W1[".zqk/archive/bundles/[ROOT-ID].capsule.zst"]
+        W2["Apoptotic Plane | Strictly Immutable | Transparent Read-Through"]
+        W3["85-92% Storage & File Reduction"]
     end
 
-    subgraph Tier2 [&quot;Tier 2: COLD STORAGE (Detached Remote Vault)&quot;]
-        C1[&quot;Remote Object Store (S3 / GCS / Git LFS / ~/.zqk/cold-vault)&quot;]
-        C2[&quot;0 Bytes Local Payload | Tombstone Locator in Index&quot;]
-        C3[&quot;On-Demand Fetch: zqk archive fetch &lt;ROOT-ID&gt;&quot;]
+    subgraph Tier2 ["Tier 2: COLD STORAGE (Detached Remote Vault)"]
+        C1["Remote Object Store (S3 / GCS / Git LFS / ~/.zqk/cold-vault)"]
+        C2["0 Bytes Local Payload | Tombstone Locator in Index"]
+        C3["On-Demand Fetch: zqk archive fetch [ROOT-ID]"]
     end
 
-    subgraph Tier3 [&quot;Tier 3: THE ABYSS (A-Bits / Cryptographic Purge)&quot;]
-        A1[&quot;Erased Data Payload (0 Bytes Local &amp; Remote)&quot;]
-        A2[&quot;Immutable Merkle Receipt in .zqk/streams/ WAL&quot;]
-        A3[&quot;Non-Repudiation &amp; Cryptographic Audit Proof&quot;]
+    subgraph Tier3 ["Tier 3: THE ABYSS (A-Bits / Cryptographic Purge)"]
+        A1["Erased Data Payload (0 Bytes Local & Remote)"]
+        A2["Immutable Merkle Receipt in .zqk/streams/ WAL"]
+        A3["Non-Repudiation & Cryptographic Audit Proof"]
     end
 
-    Tier0 --&gt;|&quot;Inactivity / Storage Watermark Trigger&quot;| Tier1
-    Tier1 --&gt;|&quot;Warm Retention Expiry / Local Quota Breach&quot;| Tier2
-    Tier2 --&gt;|&quot;Policy Expiration / Retention Purge&quot;| Tier3
+    Tier0 -->|"Inactivity / Storage Watermark Trigger"| Tier1
+    Tier1 -->|"Warm Retention Expiry / Local Quota Breach"| Tier2
+    Tier2 -->|"Policy Expiration / Retention Purge"| Tier3
 </pre>
 <h3 id="storage-tier-specification">Storage Tier Specification</h3>
 <table>
@@ -208,31 +209,31 @@
 <h2 id="3-subtree-flattening-semantic-compression">3. Subtree Flattening &amp; Semantic Compression</h2>
 <p>Archival operates at <strong>subgraph granularity</strong>, not object isolation. A <code>Goal</code> roots a directed acyclic graph (DAG):</p>
 <pre class="mermaid">flowchart LR
-    Goal[&quot;Goal&quot;] --&gt; Milestones[&quot;Milestones&quot;] --&gt; Requirements[&quot;Requirements&quot;] --&gt; Criteria[&quot;Criteria / BLIs&quot;] --&gt; Tasks[&quot;Tasks&quot;] --&gt; QARecords[&quot;QA Records&quot;]
+    Goal["Goal"] --> Milestones["Milestones"] --> Requirements["Requirements"] --> Criteria["Criteria / BLIs"] --> Tasks["Tasks"] --> QARecords["QA Records"]
 </pre>
 <h3 id="archival-pipeline">Archival Pipeline</h3>
 <pre class="mermaid">flowchart LR
-    subgraph Loose[&quot;Loose CAS Objects (100+ files)&quot;]
+    subgraph Loose["Loose CAS Objects (100+ files)"]
         direction TB
-        L_GOAL[&quot;GOAL-001 (Root)&quot;]
-        L_MIL[&quot;• MIL-001, MIL-002&quot;]
-        L_REQ[&quot;• REQ-010..030&quot;]
-        L_BLI[&quot;• BLI-100..150&quot;]
-        L_QA[&quot;• QA-001..090&quot;]
+        L_GOAL["GOAL-001 (Root)"]
+        L_MIL["• MIL-001, MIL-002"]
+        L_REQ["• REQ-010..030"]
+        L_BLI["• BLI-100..150"]
+        L_QA["• QA-001..090"]
     end
 
-    subgraph Capsule[&quot;Immutable Semantic Capsule&quot;]
+    subgraph Capsule["Immutable Semantic Capsule"]
         direction TB
-        C_CAP[&quot;GOAL-001.capsule.zst&quot;]
-        C_MAN[&quot;• manifest.json&quot;]
-        C_TOP[&quot;• topology.json&quot;]
-        C_NAR[&quot;• narrative_summary.md&quot;]
-        C_BLOB[&quot;• blobs.bin.zst&quot;]
+        C_CAP["GOAL-001.capsule.zst"]
+        C_MAN["• manifest.json"]
+        C_TOP["• topology.json"]
+        C_NAR["• narrative_summary.md"]
+        C_BLOB["• blobs.bin.zst"]
     end
 
-    Loose --&gt;|&quot;Archival Compactor&lt;br/&gt;(Flatten &amp; Compress)&quot;| Capsule
-    Loose -.-&gt;|&quot;Pruned from .zqk/process/&lt;br/&gt;(Zero inodes, zero scan lag)&quot;| Pruned[&quot;Clean Working Tree&quot;]
-    Capsule -.-&gt;|&quot;Lightweight Tombstone Pointer&quot;| Index[&quot;Index Entry in&lt;br/&gt;.zqk/process/goals/.goal.index&quot;]
+    Loose -->|"Archival Compactor<br/>(Flatten & Compress)"| Capsule
+    Loose -.->|"Pruned from .zqk/process/<br/>(Zero inodes, zero scan lag)"| Pruned["Clean Working Tree"]
+    Capsule -.->|"Lightweight Tombstone Pointer"| Index["Index Entry in<br/>.zqk/process/goals/.goal.index"]
 </pre>
 <h3 id="31-pipeline-execution-stages">3.1 Pipeline Execution Stages</h3>
 <ol>

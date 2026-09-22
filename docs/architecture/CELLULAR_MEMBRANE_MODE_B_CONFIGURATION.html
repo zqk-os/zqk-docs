@@ -10,6 +10,7 @@
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     mermaid.initialize({
       startOnLoad: true,
+      securityLevel: 'loose',
       theme: 'dark',
       themeVariables: {
         darkMode: true,
@@ -123,20 +124,20 @@
 <p>The ZQK Knowledge Kernel implements a cellular membrane pattern to enforce strict data-plane integrity, prevent untrusted agent tampering, and maintain immutable Content-Addressable Storage (CAS) and append-only streaming WALs.</p>
 <p>The system operates in one of two distinct modes:</p>
 <pre class="mermaid">flowchart TD
-  subgraph ModeA[&quot;Mode A: Developer Standalone (Open-Core)&quot;]
+  subgraph ModeA["Mode A: Developer Standalone (Open-Core)"]
     direction TD
-    ClientA[&quot;Client Process / Agent Session&lt;br/&gt;(CLI / MCP Tools)&quot;]
-    DiskA[&quot;.zqk/process/ (CAS Blobs)&lt;br/&gt;&amp; .zqk/streams/ (WAL Logs)&quot;]
-    ClientA --&gt;|&quot;Direct File I/O (Local Disk)&quot;| DiskA
+    ClientA["Client Process / Agent Session<br/>(CLI / MCP Tools)"]
+    DiskA[".zqk/process/ (CAS Blobs)<br/>& .zqk/streams/ (WAL Logs)"]
+    ClientA -->|"Direct File I/O (Local Disk)"| DiskA
   end
 
-  subgraph ModeB[&quot;Mode B: Cellular Membrane Lockdown (Swarm / Multi-Tenant Sandbox)&quot;]
+  subgraph ModeB["Mode B: Cellular Membrane Lockdown (Swarm / Multi-Tenant Sandbox)"]
     direction TD
-    ClientB[&quot;Untrusted Agent / Client Process&lt;br/&gt;(Read-Only / Sandboxed)&quot;]
-    DaemonB[&quot;PrivilegedWriterDaemon (zqk object daemon)&lt;br/&gt;• Dedicated Service User&lt;br/&gt;• ValidateAllIntakeObjects + Mandatory Description&lt;br/&gt;• SHA-256 CAS Calculation &amp; Atomic Serialization&quot;]
-    DiskB[&quot;.zqk/process/ (0750 / 0640)&lt;br/&gt;&amp; .zqk/streams/ (0700)&quot;]
-    ClientB --&gt;|&quot;JSON-RPC over UNIX Socket&lt;br/&gt;(/tmp/zqk-privileged-writer.sock)&quot;| DaemonB
-    DaemonB --&gt;|&quot;Privileged Write I/O Only&quot;| DiskB
+    ClientB["Untrusted Agent / Client Process<br/>(Read-Only / Sandboxed)"]
+    DaemonB["PrivilegedWriterDaemon (zqk object daemon)<br/>• Dedicated Service User<br/>• ValidateAllIntakeObjects + Mandatory Description<br/>• SHA-256 CAS Calculation & Atomic Serialization"]
+    DiskB[".zqk/process/ (0750 / 0640)<br/>& .zqk/streams/ (0700)"]
+    ClientB -->|"JSON-RPC over UNIX Socket<br/>(/tmp/zqk-privileged-writer.sock)"| DaemonB
+    DaemonB -->|"Privileged Write I/O Only"| DiskB
   end
 </pre>
 <h3 id="modality-comparison">Modality Comparison</h3>
@@ -301,20 +302,20 @@ nohup ./bin/zqk object daemon --socket /tmp/zqk-privileged-writer.sock &gt; /tmp
   participant Gate as Membrane Gate (ValidateAllIntakeObjects)
   participant Socket as UNIX Domain Socket
   participant Daemon as PrivilegedWriterDaemon
-  participant CAS as CAS Storage (.zqk/process &amp; .zqk/streams)
+  participant CAS as CAS Storage (.zqk/process & .zqk/streams)
 
-  Agent-&gt;&gt;Intake: Submit raw text or requirement
-  Intake-&gt;&gt;Reasoner: Pass text &amp; flags
-  Reasoner-&gt;&gt;Reasoner: Coerce schema, synthesize description, assign ID &amp; graph linkages
-  Reasoner-&gt;&gt;Gate: Validate candidate objects
+  Agent->>Intake: Submit raw text or requirement
+  Intake->>Reasoner: Pass text & flags
+  Reasoner->>Reasoner: Coerce schema, synthesize description, assign ID & graph linkages
+  Reasoner->>Gate: Validate candidate objects
   alt Validation Fails
-    Gate--&gt;&gt;Agent: Demote to Draft Plane (.zqk/object_drafts/)
+    Gate-->>Agent: Demote to Draft Plane (.zqk/object_drafts/)
   else Validation Passes
-    Gate-&gt;&gt;Socket: Transmit payload via IPC (/tmp/zqk-privileged-writer.sock)
-    Socket-&gt;&gt;Daemon: Deliver payload
-    Daemon-&gt;&gt;Daemon: Calculate SHA-256 CAS digest
-    Daemon-&gt;&gt;CAS: Atomic disk write (.zqk/process) &amp; append WAL (.zqk/streams)
-    Daemon--&gt;&gt;Agent: Confirmation (Zero draft residue)
+    Gate->>Socket: Transmit payload via IPC (/tmp/zqk-privileged-writer.sock)
+    Socket->>Daemon: Deliver payload
+    Daemon->>Daemon: Calculate SHA-256 CAS digest
+    Daemon->>CAS: Atomic disk write (.zqk/process) & append WAL (.zqk/streams)
+    Daemon-->>Agent: Confirmation (Zero draft residue)
   end
 </pre>
 <ol>
