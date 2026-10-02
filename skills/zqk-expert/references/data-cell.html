@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Data cell model (logical unit + storage profiles) - ZQK Core Documentation</title>
+  <link rel="stylesheet" href="../../../assets/style.css?v=886e58a9">
+  <link rel="icon" type="image/svg+xml" href="../../../assets/zqk-logo.svg?v=4bdd3a39">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0d1117',
+        primaryColor: '#1f6feb',
+        primaryTextColor: '#c9d1d9',
+        primaryBorderColor: '#30363d',
+        lineColor: '#58a6ff',
+        secondaryColor: '#161b22',
+        tertiaryColor: '#0d1117'
+      }
+    });
+
+    async function initMermaid() {
+      const els = document.querySelectorAll('.mermaid, pre code.language-mermaid');
+      if (!els.length) return;
+      document.querySelectorAll('pre code.language-mermaid').forEach(el => {
+        const pre = el.parentElement;
+        pre.className = 'mermaid';
+        pre.textContent = el.textContent;
+      });
+      try {
+        await mermaid.run({ querySelector: '.mermaid' });
+      } catch (err) {
+        console.warn('Mermaid rendering:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMermaid);
+    } else {
+      initMermaid();
+    }
+  </script>
+
+</head>
+<body data-root-rel="../../../">
+  <header class="header">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="../../../index.html" class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" class="logo-mark">
+  <defs>
+    <filter id="cursor-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#00e676" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+  <!-- Background icon frame -->
+  <rect width="100" height="100" rx="22" fill="#05070a" stroke="#1f2937" stroke-width="1.5"/>
+  <!-- ZQK glyphs in pure vector geometry fill-rule evenodd for Q hole -->
+  <path d="M54.70,35.38 L59.41,35.38 L59.41,44.46 L59.74,44.46 L59.74,44.12 L60.08,44.12 L60.08,43.78 L60.75,43.45 L60.75,42.78 L61.09,42.78 L61.09,42.44 L61.76,42.10 L61.76,41.43 L62.10,41.43 L62.10,41.10 L62.43,41.10 L62.43,40.76 L63.10,40.42 L63.10,39.75 L63.44,39.75 L63.44,39.42 L63.78,39.42 L63.78,39.08 L64.45,38.74 L64.45,38.07 L64.78,38.07 L64.78,37.74 L65.46,37.40 L65.46,36.73 L65.79,36.73 L65.79,36.39 L66.13,36.39 L66.13,36.06 L66.46,36.06 L66.80,35.38 L71.84,35.38 L71.84,35.72 L71.50,35.72 L71.50,36.39 L71.17,36.39 L71.17,36.73 L70.83,36.73 L70.83,37.06 L70.16,37.40 L70.16,38.07 L69.82,38.07 L69.82,38.41 L69.49,38.41 L69.49,38.74 L68.82,39.08 L68.82,39.75 L68.48,39.75 L68.48,40.09 L68.14,40.09 L68.14,40.42 L67.47,40.76 L67.47,41.43 L67.14,41.43 L67.14,41.77 L66.80,41.77 L66.80,42.10 L66.13,42.44 L66.13,43.11 L65.79,43.11 L65.79,43.45 L65.46,43.45 L65.46,43.78 L64.78,44.12 L64.78,45.13 L65.12,45.13 L65.12,45.80 L65.46,45.80 L65.46,46.47 L65.79,46.47 L65.79,47.14 L66.13,47.14 L66.46,48.49 L67.14,48.82 L67.14,49.50 L67.47,49.50 L67.47,50.17 L67.81,50.17 L67.81,50.84 L68.14,50.84 L68.14,51.51 L68.48,51.51 L68.82,52.86 L69.49,53.19 L69.49,53.86 L69.82,53.86 L69.82,54.54 L70.16,54.54 L70.16,55.21 L70.50,55.21 L70.50,55.88 L70.83,55.88 L71.17,57.22 L71.84,57.56 L72.18,58.90 L67.14,58.90 L67.14,58.57 L66.80,58.57 L66.80,57.90 L66.46,57.90 L66.46,57.22 L66.13,57.22 L66.13,56.55 L65.79,56.55 L65.79,55.88 L65.46,55.88 L65.46,55.21 L64.78,54.87 L64.78,54.20 L64.45,54.20 L64.45,53.53 L64.11,53.53 L64.11,52.86 L63.78,52.86 L63.78,52.18 L63.44,52.18 L63.44,51.51 L63.10,51.51 L63.10,50.84 L62.77,50.84 L62.77,50.17 L62.43,50.17 L62.43,49.50 L62.10,49.50 L62.10,48.82 L61.76,48.82 L61.76,48.49 L61.42,48.49 L61.42,48.82 L61.09,48.82 L61.09,49.16 L60.42,49.50 L60.42,50.17 L60.08,50.17 L60.08,50.50 L59.41,50.84 L59.41,58.90 L54.70,58.90Z M8.00,54.87 L8.34,54.87 L8.34,54.20 L9.01,53.86 L9.01,53.19 L9.68,52.86 L9.68,52.18 L10.35,51.85 L10.35,51.18 L11.02,50.84 L11.02,50.17 L11.70,49.83 L11.70,49.16 L12.37,48.82 L12.37,48.15 L13.04,47.82 L13.04,47.14 L13.38,47.14 L13.38,46.81 L13.71,46.81 L13.71,46.14 L14.05,46.14 L14.05,45.80 L14.72,45.46 L14.72,44.79 L15.39,44.46 L15.39,43.78 L16.06,43.45 L16.06,42.78 L16.74,42.44 L16.74,41.77 L17.41,41.43 L17.41,40.76 L17.74,40.76 L17.74,40.42 L18.08,40.42 L18.08,39.75 L18.42,39.75 L18.42,39.42 L8.34,39.42 L8.34,35.38 L24.13,35.38 L24.13,39.42 L23.79,39.42 L23.79,40.09 L23.12,40.42 L23.12,41.10 L22.45,41.43 L22.45,42.10 L22.11,42.10 L22.11,42.44 L21.44,42.78 L21.44,43.45 L20.77,43.78 L20.77,44.46 L20.10,44.79 L20.10,45.46 L19.76,45.46 L19.76,45.80 L19.09,46.14 L19.09,46.81 L18.42,47.14 L18.42,47.82 L17.74,48.15 L17.74,48.82 L17.41,48.82 L17.41,49.16 L16.74,49.50 L16.74,50.17 L16.06,50.50 L16.06,51.18 L15.73,51.18 L15.73,51.51 L15.39,51.51 L15.39,52.18 L15.06,52.18 L15.06,52.52 L14.38,52.86 L14.38,53.53 L13.71,53.86 L13.71,54.54 L13.38,54.54 L13.38,54.87 L24.46,54.87 L24.46,58.90 L8.00,58.90Z M31.18,42.78 L31.52,42.78 L31.86,40.09 L32.19,40.09 L32.19,39.42 L32.53,39.42 L32.86,38.07 L33.20,38.07 L33.20,37.74 L33.54,37.74 L33.54,37.40 L33.87,37.40 L33.87,37.06 L34.21,37.06 L34.21,36.73 L34.54,36.73 L34.88,36.06 L35.55,36.06 L35.55,35.72 L36.22,35.72 L36.22,35.38 L37.23,35.38 L37.23,35.05 L41.26,35.05 L41.26,35.38 L43.28,35.72 L43.28,36.06 L43.62,36.06 L43.95,36.73 L44.62,36.73 L44.62,37.06 L44.96,37.06 L44.96,37.74 L45.63,38.07 L45.63,38.74 L45.97,38.74 L45.97,39.42 L46.30,39.42 L46.30,40.09 L46.64,40.09 L46.64,41.10 L46.98,41.10 L46.98,42.44 L47.31,42.44 L47.31,45.46 L47.65,45.46 L47.65,49.16 L47.31,49.16 L47.31,51.85 L46.98,51.85 L46.98,53.19 L46.64,53.19 L46.30,55.21 L45.97,55.21 L45.97,55.88 L45.30,56.22 L45.30,56.89 L44.96,56.89 L44.96,57.22 L44.62,57.22 L44.29,57.90 L43.62,57.90 L43.62,58.23 L43.95,58.23 L43.95,58.57 L44.29,58.57 L44.29,58.90 L44.62,58.90 L44.62,59.24 L44.96,59.24 L44.96,59.58 L45.30,59.58 L45.30,59.91 L45.63,59.91 L45.63,60.25 L46.30,60.58 L46.30,61.26 L45.97,61.26 L45.63,61.93 L44.96,61.93 L44.96,62.26 L44.62,62.26 L44.29,62.94 L43.62,62.94 L43.62,63.27 L43.28,63.27 L43.28,62.94 L42.94,62.94 L42.94,62.60 L42.61,62.60 L42.61,62.26 L41.94,61.93 L41.94,61.26 L41.60,61.26 L41.60,60.92 L41.26,60.92 L41.26,60.58 L40.93,60.58 L40.93,60.25 L40.59,60.25 L40.59,59.91 L40.26,59.91 L39.92,59.24 L36.90,59.24 L36.90,58.90 L35.89,58.90 L35.55,58.23 L34.88,58.23 L34.88,57.90 L34.54,57.90 L34.54,57.56 L34.21,57.56 L34.21,57.22 L33.87,57.22 L33.87,56.89 L33.54,56.89 L33.54,56.55 L32.86,56.22 L32.86,55.54 L32.53,55.54 L32.53,54.87 L32.19,54.87 L32.19,54.20 L31.86,54.20 L31.52,51.51 L31.18,51.51Z M35.89,43.45 L35.89,50.84 L36.22,50.84 L36.22,52.52 L36.56,52.52 L36.56,53.53 L36.90,53.53 L36.90,53.86 L37.23,53.86 L37.23,54.54 L37.90,54.54 L38.24,55.21 L40.26,55.21 L40.26,54.87 L40.93,54.87 L40.93,54.54 L41.60,54.20 L41.60,53.53 L41.94,53.53 L41.94,52.52 L42.27,52.52 L42.27,51.18 L42.61,51.18 L42.61,43.11 L42.27,43.11 L42.27,41.77 L41.94,41.77 L41.94,40.76 L41.60,40.76 L41.60,40.09 L41.26,40.09 L40.93,39.42 L39.92,39.42 L39.92,39.08 L38.58,39.08 L38.58,39.42 L37.23,39.75 L37.23,40.42 L36.56,40.76 L36.56,41.77 L36.22,41.77 L36.22,43.45Z" fill="#ffffff" fill-rule="evenodd"/>
+  <!-- Terminal cursor prompt _ with emerald green glow -->
+  <path d="M72.51,61.93 L92.00,61.93 L92.00,64.95 L72.51,64.95Z" fill="#00e676" filter="url(#cursor-glow)"/>
+</svg>
+          <span class="logo-text">ZQK <span class="logo-accent">Core</span></span>
+        </a>
+        <span class="badge-tag">Agent Skills &amp; Protocols</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search core documentation..." onkeyup="runSearch()">
+        <div id="search-results"></div>
+      </div>
+    </div>
+  </header>
+  <main class="content-container">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+<div class="sidebar-home"><a href="../../../index.html">🏠 Portal Overview</a></div>
+<details class="sidebar-group">
+<summary><span class="group-title">Getting Started</span><span class="group-count">10</span></summary>
+<ul>
+<li><a href="../../../scripts/onboarding_roadmap/README.html" title="Curriculum as Data: Onboarding Roadmap">Curriculum as Data: Onboarding Roadmap</a></li>
+<li><a href="../../../docs/onboarding/README.html" title="Onboarding (ZQK Community)">Onboarding (ZQK Community)</a></li>
+<li><a href="../../../docs/INDEX.html" title="ZQK Core Documentation Index">ZQK Core Documentation Index</a></li>
+<li><a href="../../../docs/onboarding/COMMUNITY_FIRST_RUN.html" title="Community First-Run Guide (Agent + Human)">Community First-Run Guide (Agent + Human)</a></li>
+<li><a href="../../../ZQK_GETTING_STARTED.html" title="Welcome to ZQK">Welcome to ZQK</a></li>
+<li><a href="../../../docs/onboarding/QUICKSTART.html" title="ZQK Quickstart &amp; MCP Configuration Guide">ZQK Quickstart &amp; MCP Configuration Guide</a></li>
+<li><a href="../../../docs/onboarding/AI_AGENT_ONBOARDING.html" title="AI Agent Onboarding &amp; Operating Protocol">AI Agent Onboarding &amp; Operating Protocol</a></li>
+<li><a href="../../../docs/onboarding/EDGE_HEADLESS_FIRST_RUN.html" title="Edge &amp; Headless First-Run Guide">Edge &amp; Headless First-Run Guide</a></li>
+<li><a href="../../../docs/onboarding/FIRST_RUN_OBJECT_TUTORIAL.html" title="First-Run Object Tutorial (Mint ➔ Promote ➔ Reference Linking ➔ Lifecycle Transitions)">First-Run Object Tutorial (Mint ➔ Promote ➔ Reference Linking ➔ Lifecycle Transitions)</a></li>
+<li><a href="../../../docs/getting-started.html" title="Getting Started">Getting Started</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Architecture &amp; Foundation</span><span class="group-count">37</span></summary>
+<ul>
+<li><a href="../../../docs/architecture/README.html" title="ZQK Core Architecture">ZQK Core Architecture</a></li>
+<li><a href="../../../docs/architecture/INDEX.html" title="ZQK Knowledge Kernel Architecture Index">ZQK Knowledge Kernel Architecture Index</a></li>
+<li><a href="../../../docs/architecture/ACRONYM_VOCABULARY_SCHEME_AND_PROGRESSIVE_DISCLOSURE.html" title="Acronym Vocabulary Scheme &amp; Progressive Disclosure">Acronym Vocabulary Scheme &amp; Progressive Disclosure</a></li>
+<li><a href="../../../docs/architecture/ADAPTIVE_AGENT_DISAMBIGUATION.html" title="Adaptive Agent Feedback and Progressive Disambiguation Engine">Adaptive Agent Feedback and Progressive Disambiguation Engine</a></li>
+<li><a href="../../../docs/architecture/ADAPTIVE_TASK_SUPERVISION_SPECIFICATION.html" title="Adaptive Task Supervision &amp; Failure Delta Illumination Specification">Adaptive Task Supervision &amp; Failure Delta Illumination Specification</a></li>
+<li><a href="../../../docs/architecture/AMBIENT_SIGNAL_ACTION_RUBRIC.html" title="Ambient Signal Interpretation &amp; Action Rubric (Anti-Thrashing Protocol)">Ambient Signal Interpretation &amp; Action Rubric (Anti-Thrashing Protocol)</a></li>
+<li><a href="../../../docs/architecture/ASYNC_CHECK_DISCOVERY_DECOUPLING.html" title="Asynchronous Object Discovery &amp; Domain Decoupling Specification">Asynchronous Object Discovery &amp; Domain Decoupling Specification</a></li>
+<li><a href="../../../docs/architecture/ergonomics/ZQK_DO_AUTONOMOUS_EXECUTION.html" title="Autonomous Single-Command Execution Pipeline (`zqk do`)">Autonomous Single-Command Execution Pipeline (`zqk do`)</a></li>
+<li><a href="../../../docs/architecture/CLI_COMMAND_TAXONOMY_STANDARDS.html" title="Canonical CLI Command Taxonomy &amp; Architectural Standards">Canonical CLI Command Taxonomy &amp; Architectural Standards</a></li>
+<li><a href="../../../docs/architecture/ORPHAN_VERBS_RETIREMENT_AND_CANONICAL_DOMAIN_MAPPING.html" title="Canonical Domain Command Mapping &amp; Ergonomic Shortcuts">Canonical Domain Command Mapping &amp; Ergonomic Shortcuts</a></li>
+<li><a href="../../../docs/architecture/CELLULAR_MEMBRANE_MODE_B_CONFIGURATION.html" title="Cellular Membrane Lockdown &amp; Privileged Writer Mode B Configuration Runbook">Cellular Membrane Lockdown &amp; Privileged Writer Mode B Configuration Runbook</a></li>
+<li><a href="../../../docs/architecture/CELLULAR_SPECIALIZATION_TIERS.html" title="Cellular Specialization Tiers &amp; The Rubber Room Architecture">Cellular Specialization Tiers &amp; The Rubber Room Architecture</a></li>
+<li><a href="../../../docs/architecture/COMPOSITE_EXECUTION_ORGANIZER_VERIFICATION.html" title="Composite Execution Organizer Verification Topologies">Composite Execution Organizer Verification Topologies</a></li>
+<li><a href="../../../docs/architecture/KEYSTORE_SECURITY_AND_FALLBACK_SPECIFICATION.html" title="Cryptographic Keystore Security &amp; Fallback Guard Specification">Cryptographic Keystore Security &amp; Fallback Guard Specification</a></li>
+<li><a href="../../../docs/architecture/DAEMON_SINGLETON_MUTUAL_EXCLUSION.html" title="Daemon Singleton Mutual Exclusion &amp; Non-Nested Project Roots">Daemon Singleton Mutual Exclusion &amp; Non-Nested Project Roots</a></li>
+<li><a href="../../../docs/architecture/ergonomics/DIAGNOSTICS_AUTO_REMEDY.html" title="Diagnostics Auto-Remedy &amp; Precondition Self-Healing Engine">Diagnostics Auto-Remedy &amp; Precondition Self-Healing Engine</a></li>
+<li><a href="../../../docs/architecture/FAIL_CLOSED_ERROR_PROPAGATION_AND_TRANSACTION_RESILIENCE.html" title="Fail-Closed Error Propagation &amp; Transaction Resilience">Fail-Closed Error Propagation &amp; Transaction Resilience</a></li>
+<li><a href="../../../docs/architecture/FAIL_CLOSED_ERROR_PROPAGATION.html" title="Fail-Closed Error Propagation and Elimination of Swallowed Errors">Fail-Closed Error Propagation and Elimination of Swallowed Errors</a></li>
+<li><a href="../../../docs/architecture/FAIL_CLOSED_PANIC_RESILIENCE.html" title="Fail-Closed Panic Elimination and Resilient Fallback Architecture">Fail-Closed Panic Elimination and Resilient Fallback Architecture</a></li>
+<li><a href="../../../docs/architecture/KERNEL_VENDOR_INSTRUCTION_PROJECTION.html" title="Kernel → vendor instruction projection">Kernel → vendor instruction projection</a></li>
+<li><a href="../../../docs/architecture/MUTATION_GOVERNANCE.html" title="Membrane Mutation Governance &amp; Integrity Specification">Membrane Mutation Governance &amp; Integrity Specification</a></li>
+<li><a href="../../../docs/architecture/PACK_COMPOSITION_AND_EXTENSIBILITY.html" title="Modular Pack Composition and Extensibility Architecture Guide">Modular Pack Composition and Extensibility Architecture Guide</a></li>
+<li><a href="../../../docs/architecture/ergonomics/WORKTREE_KERNEL_RESOLUTION.html" title="Native Git Worktree Kernel Data Plane Resolution">Native Git Worktree Kernel Data Plane Resolution</a></li>
+<li><a href="../../../docs/architecture/ORCHESTRATION_RUNTIME_TAXONOMY.html" title="Orchestration, Swarm, and Agent Execution Runtime Taxonomy">Orchestration, Swarm, and Agent Execution Runtime Taxonomy</a></li>
+<li><a href="../../../PACK-COMPOSITION.html" title="Pack Composition Architecture">Pack Composition Architecture</a></li>
+<li><a href="../../../docs/architecture/PACKAGE_CONSOLIDATION_GOVERNANCE.html" title="Package Consolidation Governance and Codebase Complexity Budget">Package Consolidation Governance and Codebase Complexity Budget</a></li>
+<li><a href="../../../docs/architecture/PROJECT_SCOPED_REVERSE_REFERENCE_INDEX_AND_THREAD_SAFE_CACHES.html" title="Project-Scoped Reverse Reference Index and Thread-Safe Caches">Project-Scoped Reverse Reference Index and Thread-Safe Caches</a></li>
+<li><a href="../../../docs/architecture/SEAT_WORKER_SUPERVISOR_ARCHITECTURE.html" title="Seat Worker Supervisor Architecture">Seat Worker Supervisor Architecture</a></li>
+<li><a href="../../../docs/architecture/SOVEREIGN_AIRGAPPED_AI_ENGINEERING.html" title="Sovereign Air-Gapped AI Engineering Specification">Sovereign Air-Gapped AI Engineering Specification</a></li>
+<li><a href="../../../docs/architecture/SPECBUILDER_CODEGEN_CONSOLIDATION.html" title="SpecBuilder Code Generation &amp; AST Optimization Architecture">SpecBuilder Code Generation &amp; AST Optimization Architecture</a></li>
+<li><a href="../../../docs/architecture/STORAGE_WRITE_QUEUE_OBSERVER_GOVERNANCE.html" title="Storage Write Queue Observer Architecture &amp; Inverted Dependency Governance">Storage Write Queue Observer Architecture &amp; Inverted Dependency Governance</a></li>
+<li><a href="../../../docs/architecture/SYNTHETIC_CONSTANT_ERADICATION_GOVERNANCE.html" title="Synthetic Constant Eradication &amp; Code Readability Governance">Synthetic Constant Eradication &amp; Code Readability Governance</a></li>
+<li><a href="../../../docs/architecture/TIERED_STORAGE_AND_ARCHIVAL_LIFECYCLE.html" title="Tiered Storage, Subtree Flattening, and Archival Lifecycle">Tiered Storage, Subtree Flattening, and Archival Lifecycle</a></li>
+<li><a href="../../../docs/architecture/TRAY_COMMAND_CRYPTOGRAPHIC_SECURITY.html" title="Tray Command Cryptographic Security &amp; Indirect Execution Envelope">Tray Command Cryptographic Security &amp; Indirect Execution Envelope</a></li>
+<li><a href="../../../docs/architecture/VERIFIABLE_DECOMPOSITION_SPINE.html" title="Verifiable Decomposition Spine (VDS)">Verifiable Decomposition Spine (VDS)</a></li>
+<li><a href="../../../docs/architecture/LIFECYCLE_STATE_MACHINE.html" title="Visual Lifecycle State Machines and Transition Check-Valves Guide">Visual Lifecycle State Machines and Transition Check-Valves Guide</a></li>
+<li><a href="../../../docs/architecture/SERVICE_ADAPTER_SPECIFICATION.html" title="Zero-Coupling ServiceAdapter Specification &amp; Architecture">Zero-Coupling ServiceAdapter Specification &amp; Architecture</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Specifications &amp; Grammars</span><span class="group-count">10</span></summary>
+<ul>
+<li><a href="../../../docs/specs/README.html" title="Architecture Specifications">Architecture Specifications</a></li>
+<li><a href="../../../docs/specs/SPEC-ZPARQL-INDEXED-QUERY-PLANNER.html" title="Technical Specification: ZPARQL Indexed Secondary Query Planner &amp; Traversal Contract">ZPARQL Indexed Secondary Query Planner &amp; Traversal Contract</a></li>
+<li><a href="../../../docs/specs/SPEC-ZPARQL-RESULT-STREAMING.html" title="Technical Specification: ZPARQL Portable Result Envelopes, Reactive Streaming, and Backpressure Protocol">ZPARQL Portable Result Envelopes, Reactive Streaming, and Backpressure Protocol</a></li>
+<li><a href="../../../docs/specs/SPEC-ZPARQL-QUERY-PLANNER.html" title="Technical Specification: ZPARQL Query Planner Architecture &amp; Complexity Proof">ZPARQL Query Planner Architecture &amp; Complexity Proof</a></li>
+<li><a href="../../../docs/specs/SPEC-ZPARQL-GRAPH-TRAVERSAL-GRAMMAR.html" title="Technical Specification: ZQK Declarative Graph Query &amp; Traversal Engine (ZPARQL)">ZQK Declarative Graph Query &amp; Traversal Engine (ZPARQL)</a></li>
+<li><a href="../../../docs/specs/SPEC-ZQL-DECLARATIVE-MUTATION-GRAMMAR.html" title="Technical Specification: ZQK Declarative Mutation Language (ZQL) Grammar, AST, and Variable Resolution">ZQK Declarative Mutation Language (ZQL) Grammar, AST, and Variable Resolution</a></li>
+<li><a href="../../../docs/specs/SPEC-VALIDATION-RULE-DSL-GRAMMAR.html" title="Technical Specification: ZQK Declarative Validation &amp; Policy Rule DSL Grammar">ZQK Declarative Validation &amp; Policy Rule DSL Grammar</a></li>
+<li><a href="../../../docs/specs/SPEC-OBJECT-INSPECTOR-CONSOLE-001.html" title="Technical Specification: ZQK Interactive Object Inspector Console &amp; Policy Studio">ZQK Interactive Object Inspector Console &amp; Policy Studio</a></li>
+<li><a href="../../../docs/specs/SPEC-ZQL-TRANSACTION-EXECUTION.html" title="Technical Specification: ZQL ACID Transaction Execution, Staged Isolation, and Atomic Rollback">ZQL ACID Transaction Execution, Staged Isolation, and Atomic Rollback</a></li>
+<li><a href="../../../docs/specs/SPEC-ZQL-PREFLIGHT-VALIDATION.html" title="Technical Specification: ZQL In-Memory Preflight Validation and Diagnostic Receipt Protocol">ZQL In-Memory Preflight Validation and Diagnostic Receipt Protocol</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Core Engines</span><span class="group-count">35</span></summary>
+<ul>
+<li><a href="../../../pkg/README.html" title="Packages Directory">Packages Directory (pkg/)</a></li>
+<li><a href="../../../pkg/storage/README.html" title="Storage Package">Storage Subsystem &amp; Providers</a></li>
+<li><a href="../../../pkg/graph/README.html" title="Graph Backend Package">Graph Backend &amp; In-Memory Graph</a></li>
+<li><a href="../../../pkg/coordination/README.html" title="Coordination Package - Event Coordination System (Spinal Cord)">Event Coordination (Spinal Cord)</a></li>
+<li><a href="../../../pkg/concurrency/README.html" title="Concurrency Package">Concurrency &amp; Synchronization</a></li>
+<li><a href="../../../pkg/pipeline/README.html" title="Pipeline Package">Autonomous Pipelines &amp; Steps</a></li>
+<li><a href="../../../pkg/mcp/README.html" title="MCP Server Package">Model Context Protocol (MCP) Server</a></li>
+<li><a href="../../../pkg/functional/README.html" title="Functional Error Handling with Metrics (`pkg/functional`)">Functional Error Monad (Result[T])</a></li>
+<li><a href="../../../pkg/logging/README.html" title="Logging Package">Structured Zero-Allocation Logger</a></li>
+<li><a href="../../../pkg/telemetry/README.html" title="Telemetry Package">Kernel Telemetry &amp; Metrics</a></li>
+<li><a href="../../../pkg/validation/README.html" title="Validation Package">Schema &amp; Rule Validation Engine</a></li>
+<li><a href="../../../pkg/translation/README.html" title="Translation engine">Query &amp; AST Translation Engine</a></li>
+<li><a href="../../../pkg/loader/README.html" title="pkg/loader">Object &amp; Specification Loader</a></li>
+<li><a href="../../../pkg/migration/README.html" title="Migration Tools Package">Database &amp; Schema Migration</a></li>
+<li><a href="../../../pkg/migration/detector/README.html" title="Migration Binary Detector">Migration Binary Detector</a></li>
+<li><a href="../../../pkg/goroutinelabels/README.html" title="Goroutine Builder and Pool Factory">Goroutine Thread Tracking</a></li>
+<li><a href="../../../pkg/domain/organizational/README.html" title="Organizational Domain">Organizational Domain Models</a></li>
+<li><a href="../../../pkg/testing/README.html" title="Test Configuration Package">Kernel Testing Harness</a></li>
+<li><a href="../../../pkg/mcp/testing/README.html" title="MCP Testing Package">MCP Test Verification Harness</a></li>
+<li><a href="../../../pkg/storage/change_journal_compaction.html" title="Change Journal Compaction and Compression">Storage — Journal Compaction</a></li>
+<li><a href="../../../pkg/systemcheck/autofix/README.html" title="Auto-Fix Engine &amp; Remediation DAG (`pkg/systemcheck/autofix`)">Auto-Fix Engine &amp; Remediation DAG (`pkg/systemcheck/autofix`)</a></li>
+<li><a href="../../../pkg/bootstrap/README.html" title="Bootstrap package">Kernel Bootstrap Seeding</a></li>
+<li><a href="../../../pkg/cliapp/README.html" title="CLI Package">CLI Host</a></li>
+<li><a href="../../../pkg/specialization/README.html" title="Cellular Specialization Tiers (`pkg/specialization`)">Cellular Specialization Tiers (`pkg/specialization`)</a></li>
+<li><a href="../../../pkg/cliapp/context/README.html" title="Context Package">Execution Context &amp; Signals</a></li>
+<li><a href="../../../pkg/shellcmd/README.html" title="Cross-Platform Shell Execution Engine (`pkg/shellcmd`)">Cross-Platform Shell Execution Engine (`pkg/shellcmd`)</a></li>
+<li><a href="../../../pkg/search/README.html" title="In-Process Code Search Engine (`pkg/search`)">In-Process Code Search Engine (`pkg/search`)</a></li>
+<li><a href="../../../pkg/seatworker/README.html" title="Mesh Seat Worker &amp; Supervisor Daemon (`pkg/seatworker`)">Mesh Seat Worker &amp; Supervisor Daemon (`pkg/seatworker`)</a></li>
+<li><a href="../../../pkg/storage/binary/README.html" title="Positional Binary Storage (`pkg/storage/binary`)">Positional Binary Storage (`pkg/storage/binary`)</a></li>
+<li><a href="../../../pkg/skills/README.html" title="ZQK Agent Skills Architecture: Evolutionary Breeding &amp; Generative Mutation">ZQK Agent Skills Architecture: Evolutionary Breeding &amp; Generative Mutation</a></li>
+<li><a href="../../../pkg/screencap/README.html" title="ZQK Screen Capture &amp; Terminal Automation Engine (`pkg/screencap`)">ZQK Screen Capture &amp; Terminal Automation Engine (`pkg/screencap`)</a></li>
+<li><a href="../../../pkg/systemcheck/asynccheck/README.html" title="pkg/systemcheck/asynccheck">pkg/systemcheck/asynccheck</a></li>
+<li><a href="../../../pkg/systemcheck/congruence/README.html" title="pkg/systemcheck/congruence">pkg/systemcheck/congruence</a></li>
+<li><a href="../../../pkg/systemcheck/integrity/README.html" title="pkg/systemcheck/integrity">pkg/systemcheck/integrity</a></li>
+<li><a href="../../../pkg/systemcheck/snapshot/README.html" title="pkg/systemcheck/snapshot">pkg/systemcheck/snapshot</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Spec &amp; Command Builders</span><span class="group-count">7</span></summary>
+<ul>
+<li><a href="../../../pkg/specbuilder/README.html" title="Spec-Driven Builder Pattern - Core Package">Spec-Driven Builder Pattern</a></li>
+<li><a href="../../../pkg/cli/README.html" title="CLI Architecture &amp; Spec Command Builders">CLI Architecture &amp; Spec Framework</a></li>
+<li><a href="../../../pkg/cli/bldr_cli_cmd_v1/README.html" title="CLI Command Builders (`bldr_cli_cmd_v1`)">CLI Command Builders (bldr_cli_cmd_v1)</a></li>
+<li><a href="../../../pkg/specbuilder/bldr_v2/README.html" title="Spec Builders (bldr_v2)">Object Spec Builders (bldr_v2)</a></li>
+<li><a href="../../../pkg/specbuilder/builders/README.html" title="Versioned Spec Builders">Versioned Spec Builders Engine</a></li>
+<li><a href="../../../pkg/specbuilder/instance_builders/README.html" title="Instance Builders">Runtime Instance Builders</a></li>
+<li><a href="../../../pkg/specbuilder/bootstrap/README.html" title="Bootstrap System">Specbuilder Bootstrap Package</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — CLI Commands &amp; Tooling</span><span class="group-count">4</span></summary>
+<ul>
+<li><a href="../../../cmd/zqk/README.html" title="zqk CLI Commands">zqk Primary CLI Commands</a></li>
+<li><a href="../../../cmd/zqk-shim/README.html" title="ZQK CLI Shim (`zqk-shim`)">zqk-shim Compatibility Shim</a></li>
+<li><a href="../../../cmd/zqk/system/METRICS_ANALYSIS_README.html" title="Lock Metrics Analysis and Automatic Improvements">System Lock Metrics Analysis</a></li>
+<li><a href="../../../cmd/zqk/system/TESTING.html" title="System package tests">System Test Suite &amp; Diagnostics</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Internal Runtime</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../../../internal/README.html" title="Internal Packages Directory">Internal Packages Directory (internal/)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel DNA &amp; Object Schemas</span><span class="group-count">4</span></summary>
+<ul>
+<li><a href="../../../kernel-specs/objects/README.html" title="Object Specs Directory">Object Specs Directory</a></li>
+<li><a href="../../../kernel-specs/lifecycles/README.html" title="Readme">Readme</a></li>
+<li><a href="../../../kernel-specs/traits/README.html" title="Trait Definitions">Trait Definitions</a></li>
+<li><a href="../../../kernel-specs/configs/change_journal_entry_config.html" title="Change Journal Entry: Lifecycle, Collection, Aggregation, Bucketing">Change Journal Entry: Lifecycle, Collection, Aggregation, Bucketing</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Reference Manuals</span><span class="group-count">6</span></summary>
+<ul>
+<li><a href="../../../docs/manual/README.html" title="Reference Manual">Reference Manual</a></li>
+<li><a href="../../../docs/manual/MISSION_CONTROL_UI_VISUAL_GUIDE.html" title="Manual: Mission Control TUI, Web Studio &amp; Diagnostics Visual Guide">Mission Control TUI, Web Studio &amp; Diagnostics Visual Guide</a></li>
+<li><a href="../../../docs/manual/OBJECT_INSPECTOR_AND_POLICY_STUDIO.html" title="Manual: Object Inspector &amp; Policy Studio Reference">Object Inspector &amp; Policy Studio Reference</a></li>
+<li><a href="../../../docs/manual/ZPARQL_QUERY_LANGUAGE.html" title="ZPARQL Query Language Developer Manual">ZPARQL Query Language Developer Manual</a></li>
+<li><a href="../../../docs/manual/CLI_REFERENCE.html" title="ZQK CLI Command Reference &amp; Operator Manual">ZQK CLI Command Reference &amp; Operator Manual</a></li>
+<li><a href="../../../docs/manual/ZQL_MUTATIONS.html" title="ZQL Declarative Mutations Developer Manual">ZQL Declarative Mutations Developer Manual</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">How-To &amp; Incident Runbooks</span><span class="group-count">9</span></summary>
+<ul>
+<li><a href="../../../docs/howto/README.html" title="How-To Guides">How-To Guides</a></li>
+<li><a href="../../../docs/runbooks/README.html" title="Operational Incident Runbooks">Operational Incident Runbooks</a></li>
+<li><a href="../../../scripts/scheduler_jobs/README.html" title="Scheduler Job Templates">Scheduler Job Templates</a></li>
+<li><a href="../../../docs/howto/INSPECT_AND_VALIDATE_OBJECTS.html" title="How-To: Inspect, Link, and Validate Knowledge Kernel Objects">How-To: Inspect, Link, and Validate Knowledge Kernel Objects</a></li>
+<li><a href="../../../docs/runbooks/RB-CAS-001-CAS-CORRUPTION-RECOVERY.html" title="RB-CAS-001: Content-Addressed Storage (CAS) Hash Mismatch and Quarantine Exhaustion">RB-CAS-001: Content-Addressed Storage (CAS) Hash Mismatch and Quarantine Exhaustion</a></li>
+<li><a href="../../../docs/runbooks/RB-LCK-001-LOCK-CONTENTION-DEADLOCKS.html" title="RB-LCK-001: Concurrency Lock Contention and Deadlock Resolution">RB-LCK-001: Concurrency Lock Contention and Deadlock Resolution</a></li>
+<li><a href="../../../docs/runbooks/RB-SCH-001-SCHEDULER-DAEMON-TRIAGE.html" title="RB-SCH-001: Scheduler Daemon Exit Cascades and Job Triage">RB-SCH-001: Scheduler Daemon Exit Cascades and Job Triage</a></li>
+<li><a href="../../../docs/runbooks/RB-WAL-001-WAL-COMPACTION-FAILURES.html" title="RB-WAL-001: Write-Ahead Log (WAL) Compaction Failures">RB-WAL-001: Write-Ahead Log (WAL) Compaction Failures</a></li>
+<li><a href="../../../docs/howto/SCHEDULER_AND_MAINTENANCE.html" title="Use the scheduler and maintenance jobs">Use the scheduler and maintenance jobs</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Tutorials, Demos &amp; Guides</span><span class="group-count">14</span></summary>
+<ul>
+<li><a href="../../../docs/guides/README.html" title="Developer &amp; Agent Guides">Developer &amp; Agent Guides Index</a></li>
+<li><a href="../../../docs/tutorials/README.html" title="Tutorials">Tutorials</a></li>
+<li><a href="../../../docs/demos/README.html" title="ZQK Core Interactive Demonstrations &amp; Visual Showcase">ZQK Core Interactive Demonstrations &amp; Visual Showcase</a></li>
+<li><a href="../../../docs/guides/ZQL_ZPARQL_AGENT_GUIDE.html" title="Agent &amp; Developer Guide: Declarative Graph Queries (ZPARQL) and Atomic Mutations (ZQL)">ZQL &amp; ZPARQL Graph Operations</a></li>
+<li><a href="../../../docs/guides/SINGLE_COMMAND_EXECUTION_LOOP_GUIDE.html" title="Developer &amp; Agent Guide: Autonomous Single-Command Execution Loop (`zqk do`)">Single-Command Loop (zqk do)</a></li>
+<li><a href="../../../docs/guides/POLICY_CREATION_AND_VALIDATION_DSL_GUIDE.html" title="Developer &amp; Agent Guide: Custom Validation Policy Creation &amp; Rule DSL">Custom Policy &amp; Rule DSL</a></li>
+<li><a href="../../../docs/guides/DIAGNOSTICS_SELF_HEALING_AND_REMEDY_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Kernel Diagnostics, Auto-Remedies &amp; Self-Healing">Diagnostics &amp; Self-Healing</a></li>
+<li><a href="../../../docs/guides/KERNEL_OBJECT_USAGE_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Kernel Object Model &amp; Usage Guide">Kernel Object Model &amp; Usage Guide</a></li>
+<li><a href="../../../docs/guides/KNOWLEDGE_MANAGEMENT_AND_SEMANTIC_RECALL_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Management, Vocabularies, Libraries, and On-Demand Semantic Recall">Knowledge Management &amp; Semantic Recall</a></li>
+<li><a href="../../../docs/guides/AGENT_ORCHESTRATION_AND_SWARM_COLLABORATION_GUIDE.html" title="Developer &amp; Agent Guide: Multi-Agent Swarm Orchestration &amp; Mesh Collaboration">Swarm Orchestration &amp; Mesh</a></li>
+<li><a href="../../../docs/guides/OBJECT_LIFECYCLE_AND_CAS_STORAGE_GUIDE.html" title="Developer &amp; Agent Guide: Object Lifecycle, State Machines, and Content-Addressed Storage (CAS)">Object Lifecycle, States &amp; CAS</a></li>
+<li><a href="../../../docs/guides/VISION_TO_EXECUTION_ORCHESTRATION_GUIDE.html" title="From Vision to Code: Complete Multi-Agent Orchestration Walkthrough">From Vision to Code: Complete Multi-Agent Orchestration Walkthrough</a></li>
+<li><a href="../../../docs/guides/SCREEN_CAPTURE_AND_TERMINAL_AUTOMATION.html" title="Screen Capture &amp; Terminal Automation Guide">Screen Capture &amp; Terminal Automation Guide</a></li>
+<li><a href="../../../docs/tutorials/INTERACTIVE_OBJECT_INSPECTION_TUTORIAL.html" title="Tutorial: Interactive Object Inspection, Mission Control &amp; Visual Studio">Interactive Object Inspection, Mission Control &amp; Visual Studio</a></li>
+</ul>
+</details>
+<details class="sidebar-group" open>
+<summary><span class="group-title">Agent Skills &amp; Protocols</span><span class="group-count">16</span></summary>
+<ul>
+<li><a href="../../../skills/zqk-expert/SKILL.html" title="ZQK Expert">ZQK Expert</a></li>
+<li><a href="../../../skills/community-feed-correspondence/SKILL.html" title="Agent Feed Correspondence">Agent Feed Correspondence</a></li>
+<li><a href="../../../skills/zqk-expert/references/data-cell.html" class="active" title="Data cell model (logical unit + storage profiles)">Data cell model (logical unit + storage profiles)</a></li>
+<li><a href="../../../skills/community-distributed-systems/SKILL.html" title="Elite Distributed Systems Engineering: Event-Driven, Resilient &amp; Self-Healing">Elite Distributed Systems Engineering: Event-Driven, Resilient &amp; Self-Healing</a></li>
+<li><a href="../../../skills/community-functional-craftsman/SKILL.html" title="Elite Functional &amp; Readable Code Craftsmanship">Elite Functional &amp; Readable Code Craftsmanship</a></li>
+<li><a href="../../../skills/community-object-steward/SKILL.html" title="Kernel Object Stewardship (CLI-only CAS)">Kernel Object Stewardship (CLI-only CAS)</a></li>
+<li><a href="../../../skills/zqk-expert/references/code-search.html" title="Native Code Search &amp; AST Inspection (`zqk grep` / `zgrep`)">Native Code Search &amp; AST Inspection (`zqk grep` / `zgrep`)</a></li>
+<li><a href="../../../skills/community-ontological-architecture/SKILL.html" title="Ontological Architecture &amp; Verifiable Decomposition">Ontological Architecture &amp; Verifiable Decomposition</a></li>
+<li><a href="../../../skills/community-qa-verification/SKILL.html" title="QA Audit and Done-Gate Verification">QA Audit and Done-Gate Verification</a></li>
+<li><a href="../../../skills/community-code-craftsman/SKILL.html" title="Software Engineering and Code Craftsmanship">Software Engineering and Code Craftsmanship</a></li>
+<li><a href="../../../skills/zqk-expert/references/stream-storage.html" title="Stream Storage: Append-Only Segments for High-Volume Kinds">Stream Storage: Append-Only Segments for High-Volume Kinds</a></li>
+<li><a href="../../../skills/community-arch-design/SKILL.html" title="System Architecture and Package Boundary Design">System Architecture and Package Boundary Design</a></li>
+<li><a href="../../../skills/zqk-expert/references/tpm-orchestration.html" title="TPM orchestration plane (Gantt matrix + branch collaboration)">TPM orchestration plane (Gantt matrix + branch collaboration)</a></li>
+<li><a href="../../../skills/community-tpm-orchestration/SKILL.html" title="Technical Program Management and Swarm Orchestration">Technical Program Management and Swarm Orchestration</a></li>
+<li><a href="../../../skills/zqk-expert/references/testing.html" title="Testing standards (ZQK agents)">Testing standards (ZQK agents)</a></li>
+<li><a href="../../../skills/zqk-expert/references/vds.html" title="Verifiable Decomposition Spine (VDS) — skill reference">Verifiable Decomposition Spine (VDS) — skill reference</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Maintenance &amp; Development</span><span class="group-count">3</span></summary>
+<ul>
+<li><a href="../../../docs/explanation/README.html" title="Conceptual Architecture &amp; Design Philosophy: The Knowledge Kernel">Conceptual Architecture &amp; Design Philosophy: The Knowledge Kernel</a></li>
+<li><a href="../../../docs/development/README.html" title="Maintenance and Development Guide">Maintenance and Development Guide</a></li>
+<li><a href="../../../docs/development/POLICY_GOVERNANCE_AND_DURABILITY.html" title="Policy Governance, Durability, and Maintenance Conventions">Policy Governance, Durability, and Maintenance Conventions</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Quality &amp; Evaluation</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../../../docs/quality/README.html" title="First-Run Quality &amp; Verification Gates">First-Run Quality &amp; Verification Gates</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Framework &amp; Governance</span><span class="group-count">11</span></summary>
+<ul>
+<li><a href="../../../docs/quality/codebase_evaluation/README.html" title="Codebase Evaluation Framework (CEF) Overview">Overview &amp; Quickstart</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/CONSTITUTION.html" title="CEF Constitution (Binding Rules &amp; Evidence Grades)">Constitution (Binding Rules)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/DIAMOND_SCALE.html" title="Diamond Scale Multi-Axis Quality Grading">Diamond Scale Grading</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/WAVE_PLAN.html" title="Multi-Wave Analysis Execution Plan">Multi-Wave Plan</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/LENSES.html" title="Evaluation Lens Catalog &amp; Density Rules">Evaluation Lens Catalog</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/DIAGRAM_CONTRACT.html" title="Diagram Contract &amp; Architecture Anchoring">Diagram Contract</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/OPERATOR.html" title="Operator Quickstart Runbook">Operator Runbook</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/KICKOFF_PROMPT.html" title="Solo Operator Kickoff Prompt">Solo Kickoff Prompt</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/HANDOFF_SCHEMA.html" title="Handoff Schema &amp; Downstream Integration">Handoff Schema</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/EXTENSIONS.html" title="Framework Extensions &amp; Adapter Architecture">Extensions &amp; Adapters</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/adapters/go.html" title="Go Language Adapter Specification">Go Language Adapter</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Evaluation Rubrics</span><span class="group-count">12</span></summary>
+<ul>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-ARCHITECTURE.html" title="Architecture &amp; Abstractions Rubric (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-CODE-QUALITY.html" title="Code Quality &amp; Maintainability Rubric (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-CONCURRENCY.html" title="Concurrency &amp; Synchronization Rubric (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-USABILITY.html" title="Developer Usability &amp; Ergonomics Rubric (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-DOCS-MODEL.html" title="Documentation &amp; Domain Model Rubric (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-OBSERVABILITY.html" title="Observability &amp; Diagnostics Rubric (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-PERFORMANCE.html" title="Performance &amp; Complexity Rubric (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-PREFLIGHT.html" title="Preflight &amp; Inventory Rubric (L-PREFLIGHT)">L-PREFLIGHT — Preflight &amp; Inventory</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-RELIABILITY.html" title="Reliability &amp; Error Recovery Rubric (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-SECURITY.html" title="Security &amp; Threat Modeling Rubric (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-SUPPLY-RELEASE.html" title="Supply Chain &amp; Packaging Rubric (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/rubrics/L-TESTING.html" title="Test Strategy &amp; Invariant Proofs Rubric (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Specialist Prompts</span><span class="group-count">13</span></summary>
+<ul>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-ARCHITECTURE/specialist.html" title="Architecture &amp; Abstractions Specialist Evaluator Prompt (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/_SHARED_PREAMBLE.html" title="CEF Shared Agent Preamble">Shared Agent Preamble</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-CODE-QUALITY/specialist.html" title="Code Quality &amp; Maintainability Specialist Evaluator Prompt (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-CONCURRENCY/specialist.html" title="Concurrency &amp; Synchronization Specialist Evaluator Prompt (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-USABILITY/specialist.html" title="Developer Usability &amp; Ergonomics Specialist Evaluator Prompt (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-DOCS-MODEL/specialist.html" title="Documentation &amp; Domain Model Specialist Evaluator Prompt (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-INTEGRATOR/specialist.html" title="Lead Integrator &amp; Synthesis Specialist Prompt">L-INTEGRATOR — Lead Integrator</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-OBSERVABILITY/specialist.html" title="Observability &amp; Diagnostics Specialist Evaluator Prompt (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-PERFORMANCE/specialist.html" title="Performance &amp; Complexity Specialist Evaluator Prompt (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-RELIABILITY/specialist.html" title="Reliability &amp; Error Recovery Specialist Evaluator Prompt (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-SECURITY/specialist.html" title="Security &amp; Threat Modeling Specialist Evaluator Prompt (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-SUPPLY-RELEASE/specialist.html" title="Supply Chain &amp; Packaging Specialist Evaluator Prompt (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging (Specialist)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-TESTING/specialist.html" title="Test Strategy &amp; Invariant Proofs Specialist Evaluator Prompt (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs (Specialist)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Adversarial Prompts</span><span class="group-count">11</span></summary>
+<ul>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-ARCHITECTURE/adversarial.html" title="Architecture &amp; Abstractions Adversarial Auditor Prompt (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-CODE-QUALITY/adversarial.html" title="Code Quality &amp; Maintainability Adversarial Auditor Prompt (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-CONCURRENCY/adversarial.html" title="Concurrency &amp; Synchronization Adversarial Auditor Prompt (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-USABILITY/adversarial.html" title="Developer Usability &amp; Ergonomics Adversarial Auditor Prompt (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-DOCS-MODEL/adversarial.html" title="Documentation &amp; Domain Model Adversarial Auditor Prompt (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-OBSERVABILITY/adversarial.html" title="Observability &amp; Diagnostics Adversarial Auditor Prompt (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-PERFORMANCE/adversarial.html" title="Performance &amp; Complexity Adversarial Auditor Prompt (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-RELIABILITY/adversarial.html" title="Reliability &amp; Error Recovery Adversarial Auditor Prompt (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-SECURITY/adversarial.html" title="Security &amp; Threat Modeling Adversarial Auditor Prompt (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-SUPPLY-RELEASE/adversarial.html" title="Supply Chain &amp; Packaging Adversarial Auditor Prompt (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging (Adversarial)</a></li>
+<li><a href="../../../docs/quality/codebase_evaluation/prompts/L-TESTING/adversarial.html" title="Test Strategy &amp; Invariant Proofs Adversarial Auditor Prompt (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs (Adversarial)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Open Core Governance</span><span class="group-count">5</span></summary>
+<ul>
+<li><a href="../../../README.html" title="ZQK OS">ZQK OS</a></li>
+<li><a href="../../../CONTRIBUTING.html" title="Contributing to ZQK Community Edition">Contributing to ZQK Community Edition</a></li>
+<li><a href="../../../CODE_OF_CONDUCT.html" title="Contributor Covenant Code of Conduct">Contributor Covenant Code of Conduct</a></li>
+<li><a href="../../../GOVERNANCE.html" title="Project Governance">Project Governance</a></li>
+<li><a href="../../../SECURITY.html" title="Security policy">Security policy</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Agent Directives &amp; Protocols</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../../../agents/AGENTS.html" title="ZQK Agent Boot Protocol">ZQK Agent Boot Protocol</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Reference</span><span class="group-count">3</span></summary>
+<ul>
+<li><a href="../../../docs/reference/README.html" title="Reference Documentation">Reference Documentation</a></li>
+<li><a href="../../../docs/reference/CLI_REFERENCE.html" title="ZQK CLI Command Reference &amp; Operator Manual">ZQK CLI Command Reference &amp; Operator Manual</a></li>
+<li><a href="../../../docs/reference/KERNEL_CONFIGURATIONS_GUIDE.html" title="ZQK Knowledge Kernel Configurations Reference">ZQK Knowledge Kernel Configurations Reference</a></li>
+</ul>
+</details>
+</nav>
+    </aside>
+    <article class="doc-body">
+      <div class="breadcrumb">
+        <div class="breadcrumb-trail">
+          <a href="../../../index.html">Docs</a> &raquo; <span>Agent Skills &amp; Protocols</span> &raquo; <span class="current">Data cell model (logical unit + storage profiles)</span>
+        </div>
+        <a href="../../../skills/zqk-expert/references/data-cell.md" class="raw-md-link" title="View canonical Markdown source">Raw .md</a>
+      </div>
+      <div class="markdown-body">
+        <h1 id="data-cell-model-logical-unit-storage-profiles">Data cell model (logical unit + storage profiles)</h1>
+<p><strong>Status:</strong> Architecture — <strong>intent and vocabulary</strong> (product direction). <strong>Spec requirement + construction pipeline</strong> are <strong>decided</strong> in <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/process/decisions/ADR-DATA-CELL-SPEC-PIPELINE-v1.0.md">ADR-DATA-CELL-SPEC-PIPELINE-v1.0.md</a>. <strong>Reality check:</strong> partial <strong>membrane</strong> read paths and <strong>operational envelope</strong> wiring exist in code (see table below); remaining gaps are <strong>full</strong> stewardship/coordinator execution, a <strong>unified cell CRUD</strong> product API, <strong>migration</strong> tooling, and <strong>admin</strong> surfaces — not “nothing implemented yet.”<br />
+<strong>Audience:</strong> Implementers and operators aligning storage, retention, and tooling around <strong>cells</strong> rather than ad hoc per-kind scripts.</p>
+<h2 id="formalization-status-honest">Formalization status (honest)</h2>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Intent</strong> — cell = logical unit + operational envelope; profiles = light file / CAS / stream; multi-kind cells for low volume</td>
+<td><strong>Captured</strong> (this doc + cross-links).</td>
+</tr>
+<tr>
+<td><strong>Spec + pipeline</strong> — every cell has a spec; spec declares storage profile; CLI pipeline (new base spec, add field, hints, field vetting, per-field deploy gate, glossary)</td>
+<td><strong>Accepted</strong> — <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/process/decisions/ADR-DATA-CELL-SPEC-PIPELINE-v1.0.md">ADR-DATA-CELL-SPEC-PIPELINE-v1.0.md</a>.</td>
+</tr>
+<tr>
+<td><strong>Identity</strong> — stable cell id, naming, relationship to <code>kind</code> / <code>ontology</code> / spec plane</td>
+<td><strong>Partial</strong> — v1: <code>CellKindDescriptor</code> + <code>datacellregistry.LoadDataCellDescriptors</code> / CLI <code>zqk system data-cells</code> (spec_index + <code>storage_profile</code>); multi-kind / alternate ids still roadmap.</td>
+</tr>
+<tr>
+<td><strong>Profile contracts</strong> — required behaviors per profile (write path, read path, integrity, migration)</td>
+<td><strong>Implemented baseline</strong> — <code>storage_profile</code> wire + validation (<code>pkg/datacell/profile.go</code>), explicit contract map in <code>pkg/datacell/profile_contracts.go</code>, and CLI discovery via <code>zqk system data-cells</code> JSON fields (<code>write_mode</code>, <code>read_mode</code>, <code>integrity_mode</code>, <code>migration_mode</code>). <strong>Deploy:</strong> materialized <code>spec_index.json</code> is built with <code>objects.BuildSpecIndexFromSpecsDirStrict</code> (<code>zqk system generate-spec-index</code>, <code>RefreshMaterializedSpecIndex</code>) so invalid specs (including bad <code>storage_profile</code>) fail instead of being skipped from the snapshot; stream/CAS alignment is still checked via <code>ValidateHighVolumeStreamKindsMatchSpecIndex</code> against <code>high_volume_kinds.yaml</code>. Backend-specific deep behavior still lives in per-area docs (<a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/STREAM_STORAGE.md">STREAM_STORAGE.md</a>, CAS, etc.).</td>
+</tr>
+<tr>
+<td><strong>Operational envelope</strong> — which subsystems implement cleanup / retention / scan / cache / archive for a “cell”; scheduler hooks; observability</td>
+<td><strong>Implemented v1</strong> (child BLI <strong><code>[REDACTED-ID]</code></strong> complete) — static map per storage profile in <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>pkg/datacell/operational_envelope.go</code></a> and operator discovery via <code>zqk system data-cells</code> (<code>operational_envelope</code> in JSON + table footer, including reserved <code>scheduler_category</code> <code>data_cell_envelope</code>). Each <code>operational_envelope</code> object also carries <strong><code>envelope_tick_scheduler_job_id</code></strong> (<code>SCH-dce-tick</code>) and <strong><code>envelope_tick_job_type</code></strong> (<code>data_cell_envelope_tick</code>) so JSON is self-describing without reading this table. JSON rows use <strong><code>OperationalEnvelopeForKind</code></strong> (v1 per-kind <strong>augments</strong> on top of profile defaults for any envelope category — <code>cleanup</code>, <code>retention</code>, <code>scan</code>, <code>cache</code>, <code>archive</code>, <code>health</code> — e.g. <code>audit_event</code>+<code>stream</code> adds <code>high_volume_event_cache</code> under <code>health</code>; <code>audit_aggregation_metric</code>+<code>stream</code> adds cleanup/retention/cache tokens; <code>base_metric</code> / <code>scheduler_health_metric</code>+<code>stream</code> add metric/scheduler-health tokens; other <strong>stream</strong> kinds from the spec index such as metric siblings, <code>mcp_session</code> / <code>zqk_session</code>, and <code>verification_matrix</code> have v1 tokens in <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>operational_envelope.go</code></a>); the table footer stays <strong>deduped by profile</strong> for readability. <strong><code>zqk system data-cells --json</code></strong> rows also include <strong><code>operational_envelope_kind_augmented</code></strong> (true when a non-empty per-kind augment exists for that kind+<code>storage_profile</code>) and <strong><code>operational_envelope_kind_override</code></strong> (true when <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>kindOperationalEnvelopeOverrides</code></a> non-empty for that pair — remove/replace profile defaults before augments). Policy-engine dry-run: <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/datacell_envelope.go"><code>pkg/scheduler/datacell_envelope.go</code></a> (<code>DryRunDataCellEnvelopePolicy</code>). <strong>Persisted</strong> v1 timer job: <code>job_type</code> <code>data_cell_envelope_tick</code>, id <code>SCH-dce-tick</code>, template <a href="https://github.com/zqk-os/zqk/blob/main/skills/scripts/scheduler_jobs/data_cell_envelope_tick_six_hourly.yaml"><code>scripts/scheduler_jobs/data_cell_envelope_tick_six_hourly.yaml</code></a>, listed in <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/process/_internal/configs/scheduler_maintenance_config.yaml"><code>scheduler_maintenance_config.yaml</code></a> (ensured by <code>zqk system ensure-retention-jobs</code> / daemon startup); handler logs stream-profile envelope summary (<a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_datacell_envelope_tick.go"><code>pkg/scheduler/handlers_datacell_envelope_tick.go</code></a>). Metrics JSONL (<code>.zqk/metrics/data_cell_envelope_tick.jsonl</code> when metrics recording is on) includes the same canonical job id and job type keys. <strong>Roadmap:</strong> richer per-token RPC bindings; expanded per-kind override rows beyond the v1 pilot (<code>kindOperationalEnvelopeOverrides</code>), and coordinator execution beyond the v1 tick — <strong>in scope for alpha completion</strong> under the umbrella (<a href="#program-completion-definition-of-done-finite-scope">§ Program completion</a>), not deferred as “post–v1 BLI”; the closed v1 BLI row is the baseline only. Runtime organism slice still <strong>paths + aliases only</strong> for <code>.zqk/</code> config.</td>
+</tr>
+<tr>
+<td><strong>Multi-kind cells</strong> — rules for when twins/triplets are allowed; isolation vs shared retention; failure domains</td>
+<td><strong>Named</strong>, not <strong>specified</strong>.</td>
+</tr>
+<tr>
+<td><strong>API surface</strong> — membrane, coordinator, discovery</td>
+<td><strong>Partial</strong> — <strong>Membrane read-path v1 shipped</strong> (child BLI <strong><code>[REDACTED-ID]</code></strong> complete): <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane_read_path.go"><code>MembraneReadPaths</code></a> (<code>RuntimeOrganismMembraneReadPaths</code>, <code>StreamMembraneReadPaths</code>, <code>CASEntityMembraneReadPaths</code>) + pilot routing at <code>zqk system data-cells</code>, <code>cli-hooks</code> / <code>path-cache</code>, stream overlay layout, organism chat paths — see <a href="#membrane-and-coordinator--what-exists-today-v1">Membrane and coordinator — what exists today</a>. <strong>Strict nucleus path boundary (CRIT-DATACELL-001):</strong> external packages must use <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/cell_boundary_paths.go"><code>CellCASPrimaryDir</code></a> / <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/cell_boundary_paths.go"><code>CellStreamOverlayKindDir</code></a> (or <code>MembraneReadPaths</code> methods), not raw <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/paths.go"><code>CASEntityPrimaryDir</code></a> / <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/paths.go"><code>StreamCurrentKindDir</code></a>; enforced by <a href="https://github.com/zqk-os/zqk/blob/main/skills/scripts/check-crit-datacell-001-boundary.sh"><code>scripts/check-crit-datacell-001-boundary.sh</code></a> — <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CRIT_DATACELL_001_STRICT_BOUNDARY.md">CRIT_DATACELL_001_STRICT_BOUNDARY.md</a>. <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane.go"><code>CellMembrane</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane.go"><code>CellCoordinator</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane.go"><code>CellReadModel</code></a> remain the boundary types. <strong>Steward enqueue (v1):</strong> <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/enqueue_maintenance.go"><code>EnqueueStewardMaintenance</code></a> / <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/enqueue_maintenance.go"><code>StewardMaintenanceCoordinator</code></a> and pkg/scheduler <code>StewardEnqueueCoordinator</code> persist maintenance ops to <code>steward_enqueue.jsonl</code>; hooks include cache invalidation (stream), post-retention stream stewardship (<code>compact_segments</code>), and CAS-entity retention tolerance (<code>retention_sweep</code> when non-stream kinds archive/delete). <strong>Not</strong> wired on every routine object write; <strong>not</strong> a single exported cross-profile object CRUD facade yet.</td>
+</tr>
+<tr>
+<td><strong>Query / list contract</strong> (traits → filter, sort, group, paginate, count)</td>
+<td><strong>Implemented</strong> today via spec loader + list pipeline; <strong>named</strong> as part of the cell model below.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="membrane-and-coordinator-what-exists-today-v1">Membrane and coordinator — what exists today (v1)</h3>
+<p>This is the <strong>honest</strong> slice for backlog item <strong><code>[REDACTED-ID]</code></strong> (<strong>complete</strong> at v1 read-path + pilots): contracts and <strong>read</strong> routing landed first; steward <strong>enqueue</strong> JSONL + selected production hooks exist; deeper per-write coverage and envelope-token execution remain <strong>roadmap</strong>.</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Implemented?</th>
+<th>Where / notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Interfaces</strong></td>
+<td><strong>Yes</strong></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane.go"><code>pkg/datacell/membrane.go</code></a> — <code>CellMembrane</code>, <code>CellCoordinator</code>, <code>CellReadModel</code>, <code>ReadModelIsStale</code>, <code>MaintenanceOp</code> names, <code>MinimalMembrane</code>, <code>NoopCellCoordinator</code>.</td>
+</tr>
+<tr>
+<td><strong>Read-path adapter</strong></td>
+<td><strong>Yes</strong></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane_read_path.go"><code>pkg/datacell/membrane_read_path.go</code></a> — <code>MembraneReadPaths</code> resolves <strong>light_file</strong> runtime paths (flags, tray, hook profile, manifest, agent chat paths), <strong><code>StreamCurrentKindDir</code></strong>, <strong><code>CASEntityPrimaryDir</code></strong>, behind profile-specific constructors.</td>
+</tr>
+<tr>
+<td><strong>Pilot call sites</strong></td>
+<td><strong>Partial</strong></td>
+<td><code>zqk system data-cells</code> resolves <code>primary_path</code> via membrane helpers; <code>cli-hooks</code> / <code>path-cache --show-paths</code> use membrane for <strong>display</strong> paths; <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/storage/stream_current_state.go"><code>pkg/storage/stream_current_state.go</code></a> builds stream overlay paths with <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane_read_path.go"><code>datacell.StreamCurrentKindDir</code></a> so layout matches <strong>data-cells</strong>.</td>
+</tr>
+<tr>
+<td><strong>Coordinator / stewardship</strong></td>
+<td><strong>Partial — steward JSONL wired</strong></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/enqueue_maintenance.go"><code>EnqueueStewardMaintenance</code></a> + envelope tick drain (<a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_datacell_envelope_tick.go"><code>handlers_datacell_envelope_tick.go</code></a>); stream/CAS/light-file hooks (incl. materialize agent chat channel → <code>refresh_summary</code>). <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/cell_handle.go"><code>CellHandle</code></a> groups profile + coordinator + <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/cell_handle.go"><code>MembraneReadPathsForProfile</code></a>. Envelope tokens → scheduler <code>job_type</code> bindings: <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/envelope_token_jobs.go"><code>envelope_token_jobs.go</code></a> + tick log/metrics field <code>operational_envelope_resolved_scheduler_job_types</code>. <strong>Envelope tick follow-up dispatch:</strong> <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_dispatch.go"><code>envelope_tick_dispatch.go</code></a> — <code>ENVELOPE_TICK_DISPATCH_MODE</code> on SCH-dce-tick (<code>off</code> | <code>shadow</code> | <code>on</code>); <strong>core</strong> allowlist (<code>lifecycle_check</code>, <code>integrity_check</code>, <code>cache_prewarm</code>, <code>context_refresh</code>); <strong><code>ENVELOPE_TICK_DISPATCH_EXPAND</code></strong> adds <code>object_validation</code> and <code>metrics_collection</code>; <strong><code>ENVELOPE_TICK_DISPATCH_ALLOWLIST_EXTRA</code></strong> adds comma-separated <code>job_type</code>s (still subject to hard deny); <strong><code>ENVELOPE_TICK_DISPATCH_DENY_EXTRA</code></strong> blocks types on this job (operator tightening; wins over extra/core allowlists). Metrics: <code>envelope_tick_dispatch_allowlist_extra_n</code>, <code>envelope_tick_dispatch_deny_extra_n</code>, <code>envelope_tick_dispatch_skip_denied_env</code>; token policy: <code>envelope_tick_dispatch_token_*</code>. <strong>Discovery-token JSON</strong> (<code>ENVELOPE_TICK_DISPATCH_DENY_TOKENS_JSON</code>, <code>ENVELOPE_TICK_DISPATCH_ALLOW_TOKENS_JSON</code>): JSON string arrays on <code>SCH-dce-tick</code> trim which envelope tokens contribute to resolved <code>job_type</code>s <strong>before</strong> type-level allow/deny (invalid JSON → warning, <strong>no token filter</strong>). <strong>Execution cap:</strong> <code>ENVELOPE_TICK_DISPATCH_MAX_TRIGGERS</code> caps shadow + real follow-ups per tick after target resolution. The dispatch pass also <strong>dedupes</strong> duplicate <code>job_type</code> entries in the resolved list (defensive; normal resolution is already unique), and caps <strong>one follow-up per concrete <code>scheduler_job</code> id</strong> per tick when multiple resolved types would map to the same target. <strong><code>ENVELOPE_TICK_DISPATCH_SKIP_IF_TARGET_BUSY</code></strong> (default <strong>on</strong>) skips when the target job is already <strong>running</strong> in-process; <strong><code>ENVELOPE_TICK_DISPATCH_CHECK_TRIGGER_QUEUE</code></strong> (default off) optionally consults the on-disk on-disk trigger queue for a pending request whose <code>trigger_origin</code> is <code>data_cell_envelope_tick</code>. <strong>Roadmap:</strong> per-kind replace override table, unified cross-profile maintenance registration.</td>
+</tr>
+<tr>
+<td><strong>Tests</strong></td>
+<td><strong>Yes</strong></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane_test.go"><code>pkg/datacell/membrane_test.go</code></a>; stream organism E2E touches paths; saved bundle <strong><code>data-cell-stream-organism</code></strong> includes <code>TestMembraneReadPaths_*</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sch-dce-tick-follow-up-dispatch-rollout-suggested">SCH-dce-tick — follow-up dispatch rollout (suggested)</h3>
+<p>Use this sequence when turning on <strong><code>TriggerJob</code></strong> follow-ups from the envelope tick. Token JSON and <code>…_EXTRA</code> env vars apply to the <strong><code>SCH-dce-tick</code></strong> scheduler_job (<code>environment_variables</code>).</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th><code>ENVELOPE_TICK_DISPATCH_MODE</code></th>
+<th><code>ENVELOPE_TICK_DISPATCH_EXPAND</code></th>
+<th>Token / job-type tuning</th>
+<th>Goal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1 — observe</strong></td>
+<td><code>shadow</code> (or <code>off</code>)</td>
+<td><code>false</code></td>
+<td>none</td>
+<td>Logs + metrics only; verify <code>operational_envelope_resolved_scheduler_job_types</code>.</td>
+</tr>
+<tr>
+<td><strong>2 — shadow heavy</strong></td>
+<td><code>shadow</code></td>
+<td><code>true</code></td>
+<td>optional deny token JSON or <code>DENY_EXTRA</code></td>
+<td>See shadow lines for expanded types (<code>object_validation</code>, <code>metrics_collection</code>).</td>
+</tr>
+<tr>
+<td><strong>3 — narrow</strong></td>
+<td><code>shadow</code></td>
+<td>as needed</td>
+<td><code>DENY_TOKENS_JSON</code> / <code>ALLOW_TOKENS_JSON</code> (restrictive whitelist)</td>
+<td>Drop unwanted discovery paths before enabling triggers.</td>
+</tr>
+<tr>
+<td><strong>4 — live cheap</strong></td>
+<td><code>on</code></td>
+<td><code>false</code></td>
+<td>keep deny lists</td>
+<td>Allowlisted <strong>core</strong> job_types fire for real.</td>
+</tr>
+<tr>
+<td><strong>5 — live expanded</strong></td>
+<td><code>on</code></td>
+<td><code>true</code></td>
+<td>revisit <strong>hard deny</strong> in code if new types needed</td>
+<td>Heavy allowlist tier on only after ops sign-off.</td>
+</tr>
+</tbody>
+</table></div>
+<p>References: <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_dispatch.go"><code>envelope_tick_dispatch.go</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_token_policy.go"><code>envelope_tick_token_policy.go</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_datacell_envelope_tick.go"><code>handlers_datacell_envelope_tick.go</code></a>.</p>
+<h4 id="alpha-lane-three-active-data-cell-blis-redacted-id">Alpha lane — three active data-cell BLIs (<code>[REDACTED-ID]</code>)</h4>
+<p>These <strong><code>in_progress</code></strong> items sharpen the umbrella program (<strong><code>[REDACTED-ID]</code></strong>) without duplicating the tables above:</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>BLI</th>
+<th>Focus</th>
+<th>Where it lives today</th>
+<th>Remaining scope (see each BLI <code>description</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td>Dispatch <strong>policy</strong> beyond bare <code>MODE</code> / <code>EXPAND</code></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_dispatch.go"><code>pkg/scheduler/envelope_tick_dispatch.go</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_token_policy.go"><code>envelope_tick_token_policy.go</code></a> — token allow/deny JSON, comma <strong><code>ENVELOPE_TICK_DISPATCH_DENY_EXTRA</code></strong> / <strong><code>ALLOWLIST_EXTRA</code></strong>, core vs expanded tiers, <strong><code>MAX_TRIGGERS</code></strong>, busy + optional trigger-queue skips</td>
+<td>More <strong>regression tests</strong> and any extra <strong>job_type–scoped</strong> knobs still missing as env (normative edge behavior stays in code comments).</td>
+</tr>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td><strong>Per-kind</strong> envelope replace/remove (not only additive augments)</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>pkg/datacell/operational_envelope.go</code></a> — <code>kindOperationalEnvelopeOverrides</code> + <code>OperationalEnvelopeForKind</code>; pilot override for <strong><code>audit_event</code>+stream</strong></td>
+<td>Broaden <strong>override rows</strong> and contract tests beyond the pilot; JSON shape for <strong><code>zqk system data-cells</code></strong> already exposes <code>operational_envelope_kind_override</code>.</td>
+</tr>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td>Execution <strong>depth</strong> from resolved types → real triggers</td>
+<td>Same dispatch stack + <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/datacell_envelope_tick_metrics.go"><code>datacell_envelope_tick_metrics.go</code></a>; acceptance <strong><code>CRIT-*</code></strong> on that BLI</td>
+<td>Track <strong><code>[REDACTED-ID]</code></strong> (doc parity with this doc + normative comments); tighten metrics / idempotency as BLI <strong><code>acceptance_criteria</code></strong> still open.</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="v1-operational-envelope-job-contracts-implemented">v1 operational envelope — job contracts (implemented)</h3>
+<p>These rows satisfy the “documented job contracts (or hooks)” bar for v1: each names <strong>where</strong> the wiring lives (code or disk). Values under <code>cleanup</code> / <code>retention</code> / <code>scan</code> / <code>cache</code> / <code>archive</code> / <code>health</code> in <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>operational_envelope.go</code></a> are <strong>discovery tokens</strong> — they group responsibilities for operators and cross-links; they are not guaranteed stable RPC names.</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Contract</th>
+<th>Primary location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scheduler job</strong></td>
+<td>Maintenance tick; category <code>data_cell_envelope</code>; <code>job_type</code> <code>data_cell_envelope_tick</code>; id <code>SCH-dce-tick</code></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/process/_internal/configs/scheduler_maintenance_config.yaml"><code>scheduler_maintenance_config.yaml</code></a>, template <a href="https://github.com/zqk-os/zqk/blob/main/skills/scripts/scheduler_jobs/data_cell_envelope_tick_six_hourly.yaml"><code>data_cell_envelope_tick_six_hourly.yaml</code></a></td>
+</tr>
+<tr>
+<td><strong>Handler</strong></td>
+<td>Executes tick; logs compact envelopes, kind augments, and kind override summaries; optional metrics line</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_datacell_envelope_tick.go"><code>pkg/scheduler/handlers_datacell_envelope_tick.go</code></a>, registered in <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/jobtype_registry.go"><code>pkg/scheduler/jobtype_registry.go</code></a> (<code>JobTypeDataCellEnvelopeTick</code>)</td>
+</tr>
+<tr>
+<td><strong>Policy engine</strong></td>
+<td>Synthetic envelope-category job evaluates to <strong>execute</strong> under default policy (invariant check)</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/datacell_envelope.go"><code>pkg/scheduler/datacell_envelope.go</code></a>; tests <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/datacell_envelope_test.go"><code>datacell_envelope_test.go</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handler_factory_test.go"><code>handler_factory_test.go</code></a></td>
+</tr>
+<tr>
+<td><strong>Operator JSON</strong></td>
+<td>Per kind+profile envelope (+ <code>operational_envelope_kind_augmented</code>, <code>operational_envelope_kind_override</code>)</td>
+<td><code>zqk system data-cells --json</code> — <a href="https://github.com/zqk-os/zqk/blob/main/skills/cmd/zqk/system/data_cells.go"><code>cmd/zqk/system/data_cells.go</code></a></td>
+</tr>
+<tr>
+<td><strong>Metrics JSONL</strong></td>
+<td>One line per tick when metrics recording is enabled (<code>kind_operational_envelope_overrides</code>)</td>
+<td><code>.zqk/metrics/data_cell_envelope_tick.jsonl</code> — <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/datacell_envelope_tick_metrics.go"><code>datacell_envelope_tick_metrics.go</code></a></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Per-kind (v1):</strong> <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>OperationalEnvelopeForKind</code></a> applies optional removes/replaces from <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>kindOperationalEnvelopeOverrides</code></a>, then <strong>additive</strong> augments from <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/operational_envelope.go"><code>kindOperationalEnvelopeAugments</code></a> on top of profile defaults.</p>
+<p>Remaining <strong>implementation</strong> work: <strong>deeper per-token</strong> RPC-style bindings, broader <strong>per-kind override</strong> coverage than the pilot table, <strong>scheduler</strong> / storage <strong>registration</strong> beyond the v1 tick, and <strong>migration</strong> between profiles — with acceptance tests and backlog ownership. (Baseline deploy-time profile enforcement for <strong>declared</strong> <code>storage_profile</code> and materialized <strong>spec_index</strong> is in place; richer cross-field combination rules are still future work.)</p>
+<p><strong>Isolated regression tests</strong> (synthetic <code>spec_index.json</code> under a temp tree + <code>ZQK_TEST_ROOT</code>, no migration of real <code>.zqk/process</code> data): <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_RUNTIME_ORGANISM.md">DATA_CELL_RUNTIME_ORGANISM.md</a> lists <code>go test</code> targets for <code>pkg/datacell</code> (<code>TestStreamOrganism*</code>) and <code>cmd/zqk/system</code> (<code>TestDataCells_StreamOrganism*</code>, in-process <code>zqk system data-cells</code>).</p>
+<h2 id="definition">Definition</h2>
+<p>A <strong>data cell</strong> is:</p>
+<ol>
+<li>A <strong>logical grouping of data</strong> — one coherent “lump” the system reasons about as a unit (often aligned with a <strong>kind</strong>, but not always — see <em>multi-kind cells</em> below).</li>
+<li>Plus the <strong>operational envelope</strong> required to <strong>maintain that grouping</strong> in production: cleanup, scanning, caching, retention, archiving, bucketing, layout bounds, health signals, and any other <strong>cell-environment</strong> concerns.</li>
+</ol>
+<p>Together, that is a <strong>fully contained data-management package</strong> for that logical unit: not only <em>where</em> bits live, but <em>how</em> the system keeps that region healthy over time.</p>
+<p>The <strong>stream</strong> concept fits <strong>inside</strong> this picture as one <strong>physical profile</strong> (see below), not as a separate competing religion — streams are how some cells <strong>move</strong> high-volume data; CAS or light files are how others <strong>store</strong> it.</p>
+<h2 id="storage-profiles-three-or-more">Storage profiles (three or more)</h2>
+<p>The same <strong>cell abstraction</strong> can be realized with different <strong>physical profiles</strong> (and more may appear later):</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Typical use</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Lightweight file / JSONL-style</strong></td>
+<td>Very low ceremony, operator-local or small JSON/YAML/JSONL surfaces</td>
+<td>Example in-repo: feature-flag style artifacts under the <strong>runtime organism</strong> slice — see <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_RUNTIME_ORGANISM.md">DATA_CELL_RUNTIME_ORGANISM.md</a>.</td>
+</tr>
+<tr>
+<td><strong>CAS-based entities</strong></td>
+<td>Normal <strong>spec-defined</strong> instances: hash-addressed shards, lifecycle, validation</td>
+<td>The usual <code>.zqk/process/</code> object story for entity kinds.</td>
+</tr>
+<tr>
+<td><strong>Stream-backed</strong></td>
+<td>Append-heavy, high-volume kinds</td>
+<td>Segments, retention, stream stewardship — see <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/STREAM_STORAGE.md">STREAM_STORAGE.md</a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_STREAM_SUMMARY_PILOT.md">DATA_STREAM_SUMMARY_PILOT.md</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Wire values in <code>object_specs</code>:</strong> optional top-level <strong><code>storage_profile</code></strong> — <code>cas_entity</code>, <code>light_file</code>, or <code>stream</code> (<a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/profile.go"><code>pkg/datacell</code></a>). Values <strong>inherit</strong> along <code>extends</code> when omitted; the default chain sets <strong><code>cas_entity</code></strong> on <code>auditable.yaml</code>, so typical process kinds are CAS-backed unless overridden. The materialized <strong><code>spec_index.json</code></strong> records <strong><code>storage_profile</code></strong> per kind for discoverability.</p>
+<p>Choosing a profile is a <strong>cell design</strong> decision: volume, edit pattern, integrity, and operational cost — not “everything must be one shape.”</p>
+<h2 id="spec-driven-plane-persistence-counting-and-query-surfaces-auto-wired">Spec-driven plane: persistence, counting, and query surfaces (auto-wired)</h2>
+<p>A spec-backed cell <strong>does not</strong> bolt on persistence and reporting by hand. The <strong>same spec loader and trait model</strong> that exist today <strong>auto-wire</strong> instance behavior from field and kind metadata:</p>
+<ul>
+<li><strong>Persistence</strong> — create, read, update, and delete paths for instances (storage implementation varies by profile: CAS shards, files, stream appenders, etc.).</li>
+<li><strong>Standard query surface</strong> — listing with <strong>filtering</strong>, <strong>sorting</strong>, <strong>grouping</strong>, <strong>pagination</strong> (offset/limit), and <strong>counts</strong> (e.g. total / returned in result metadata), driven by <strong>traits</strong> on the spec such as <code>listable</code>, <code>filterable</code>, <code>sortable</code>, <code>groupable</code> where applicable. The CLI <code>list</code> command and storage layer honor those traits rather than reimplementing per kind (see <code>.zqk/cli/specs/object/list_command.yaml</code> and the <code>ListFilter</code> / <code>QueryResult</code> path).</li>
+<li><strong>Projection</strong> — table and structured output use spec metadata (e.g. column defaults, display length) so operators get consistent <strong>listing</strong> and <strong>slicing</strong> of result sets without ad hoc scripts.</li>
+</ul>
+<p><strong>Today:</strong> this <strong>already works</strong> for spec-defined kinds through the loader + object commands. <strong>Direction:</strong> the <strong>data cell / stream pipeline</strong> <strong>folds</strong> that contract in explicitly — same behaviors, <strong>unified</strong> under the cell envelope and storage profiles, instead of inventing a parallel “cell API” that ignores traits.</p>
+<h2 id="multi-kind-cells-twins-triplets-quadruplets">Multi-kind cells (twins, triplets, quadruplets, …)</h2>
+<p>For <strong>extremely low-volume</strong> kinds, the product may <strong>group several kinds into one cell</strong>: shared operational envelope, shared bucketing/retention policy, or shared scanning — <strong>twins, triplets, quadruplets</strong>, etc. The <strong>logical</strong> boundary is still “one cell”; the <strong>physical</strong> layout may multiplex multiple kinds when that reduces overhead without blurring integrity rules.</p>
+<h2 id="relationship-to-other-docs">Relationship to other docs</h2>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ADR:</strong> spec required; storage profile in spec; CLI pipeline + glossary</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/process/decisions/ADR-DATA-CELL-SPEC-PIPELINE-v1.0.md">ADR-DATA-CELL-SPEC-PIPELINE-v1.0.md</a></td>
+</tr>
+<tr>
+<td>Spec rules vs live data</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/SPEC_ORIGIN_PLANE.md">SPEC_ORIGIN_PLANE.md</a></td>
+</tr>
+<tr>
+<td>Pedagogy (spec / stream / cell language)</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/SPEC_STREAM_CELL_PEDAGOGY.md">SPEC_STREAM_CELL_PEDAGOGY.md</a></td>
+</tr>
+<tr>
+<td><strong>Implemented slice:</strong> runtime organism paths + <code>pkg/datacell</code></td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_RUNTIME_ORGANISM.md">DATA_CELL_RUNTIME_ORGANISM.md</a></td>
+</tr>
+<tr>
+<td>Path aliases &amp; relocation</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/PATH_ALIAS_RESOLUTION.md">PATH_ALIAS_RESOLUTION.md</a></td>
+</tr>
+<tr>
+<td>Vision (path cache, hardening)</td>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/SPEC_RUNTIME_AND_PATH_CACHE_VISION.md">SPEC_RUNTIME_AND_PATH_CACHE_VISION.md</a></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="implemented-today-vs-roadmap">Implemented today vs roadmap</h2>
+<ul>
+<li><strong>Today:</strong> The repo ships a concrete <strong>runtime organism</strong> slice (operator-edited JSON/YAML under <code>.zqk/</code>, path helpers in <strong><code>pkg/datacell</code></strong>, aliases). <strong><code>CellMembrane</code> / <code>CellCoordinator</code> interfaces</strong> and <strong><code>MembraneReadPaths</code></strong> (stream, CAS, light_file constructors) exist — <strong>read</strong> routing at selected CLI/storage boundaries, not a full nucleus rewrite. <strong>Operational envelope</strong> v1 (static map + scheduler tick + policy dry-run) is implemented as <a href="#formalization-status-honest">above</a>. That is <strong>not</strong> the exhaustive implementation of every envelope token as a live subsystem, nor a finished coordinator.</li>
+<li><strong>Roadmap:</strong> Extend the same <strong>cell</strong> idea so that CAS entities, stream-backed kinds, and light files each declare their <strong>profile</strong> and share <strong>cell-environment</strong> tooling (cleanup, retention, scanning, …) <strong>and</strong> the <strong>same spec-driven persistence + list/query semantics</strong> (see <em>Spec-driven plane</em> above) under one model — without requiring a single physical format for all data. <strong>Coordinator enqueue</strong> wired to real jobs and <strong>cross-profile migration</strong> (<strong><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_CROSS_PROFILE_MIGRATION_RUNBOOK.md">runbook</a></strong> + <strong><code>OperatorProfileMigrationChain</code></strong>) are <strong>in scope for alpha completion</strong> per the umbrella object—not “ship read paths now, finish operations later.” Automated physical relocators beyond the documented chain remain separate BLIs when product adds them.</li>
+</ul>
+<p><strong>Tracking:</strong> <code>[REDACTED-ID]</code> (complete) and the <strong><code>BLI-177608*</code></strong> program on <strong><code>[REDACTED-ID]</code></strong> (<em>CLI alpha launch readiness</em>). <strong>Alpha does not ship on a partial data-cell slice:</strong> the <strong>full</strong> umbrella program (cells as an <strong>operational</strong> surface—coordinator depth, migration path, bundles, envelope execution—per process objects below) must be <strong>fully operational and evidenced</strong> before alpha; refresh links as implementation lands.</p>
+<h2 id="program-completion-definition-of-done-finite-scope">Program completion: definition of done (finite scope)</h2>
+<p>This program <strong>can</strong> finish because <strong>done is defined in process objects</strong>, not as “every theoretical cell feature.” Canonical umbrella: <strong><code>[REDACTED-ID]</code></strong> (<code>zqk object get [REDACTED-ID]</code>). <strong>Acceptance criteria</strong> (same object): satisfy <strong>CRIT-DATACELL-001</strong> and <strong>CRIT-DATACELL-002</strong>; bring each child workstream and linked follow-on BLI (envelope execution depth, coordinator pipeline, migration, bundles) to <strong>complete</strong> per recorded <strong><code>acceptance_criteria</code></strong>—<strong>routine deferral of core operational scope is not an alpha exit</strong>; only <strong>explicit product-approved exceptions</strong> belong on the umbrella or child BLIs. Keep this doc’s <a href="#formalization-status-honest">formalization status</a> table honest (<strong>implemented</strong> vs <strong>partial + follow-up</strong>).</p>
+<p><strong>Program gate before alpha:</strong> discoverable <strong>cell identity</strong> (<code>zqk system data-cells</code>), <strong>profile contracts</strong> in CLI/JSON, <strong>operational envelope</strong> (map + tick + policy dry-run <strong>and</strong> verifiable <strong>token→job execution depth</strong> per <strong><code>[REDACTED-ID]</code></strong>), <strong>membrane</strong> read paths <strong>plus production coordinator / steward → job coverage</strong> where the umbrella defines it, <strong>migration</strong> path (<strong><code>[REDACTED-ID]</code></strong> + <strong>CRIT-DATACELL-002</strong>), <strong>admin/discovery</strong> acceptance on <strong><code>zqk system data-cells</code></strong>, and <strong>automated proof</strong> including <strong><code>data-cell-stream-organism</code></strong> <strong>and</strong> <strong><code>data-cell-stream-organism-pkg-storage</code></strong> bundles green under zqk test run. The <strong>CMDv2 admin split binary</strong> remains its own track (<a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CMDV2_AND_CLI_SPLIT_RATIONALE.md">CMDV2_AND_CLI_SPLIT_RATIONALE.md</a>); <strong>data-cell program completion</strong> still requires everything the umbrella object lists—not a “read-path + tick only” subset.</p>
+<p><strong>Child workstreams</strong> (components on the umbrella object; status lives in each <strong><code>BLI-177608025*</code></strong> — refresh with <code>zqk object list backlog_item --filter priority_plan_ref=[REDACTED-ID]</code>):</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Child BLI</th>
+<th>Focus</th>
+<th>Exit signal (what “done” means for that row)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Registry / identity</td>
+<td><strong>Complete:</strong> descriptors from <code>spec_index</code> + tests.</td>
+</tr>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Profile contracts</td>
+<td><strong>Complete:</strong> contract map + <code>data-cells</code> fields + deploy gates (strict materialized spec index + high_volume alignment validation). Deeper cross-field “invalid combination” rules remain follow-up if product requires them.</td>
+</tr>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Operational envelope</td>
+<td><strong>Complete for program exit:</strong> v1 map + per-kind augments + <code>SCH-dce-tick</code> + policy dry-run + tests + operator JSON/logs/metrics <strong>and</strong> umbrella-mandated <strong>envelope execution depth</strong> (dispatch tiers, <strong><code>[REDACTED-ID]</code></strong>, related override BLIs)—not tick-only observability.</td>
+</tr>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Membrane adapters</td>
+<td><strong>Complete for program exit:</strong> read-path adapters + per-profile tests + pilot call sites <strong>and</strong> production <strong>coordinator / steward → scheduler job</strong> wiring per umbrella <strong><code>acceptance_criteria</code></strong> (not read-path-only).</td>
+</tr>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Admin / discovery</td>
+<td><code>zqk system data-cells</code> meets its acceptance criteria (structured output, tests).</td>
+</tr>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Migration</td>
+<td><strong>Complete:</strong> cross-profile migration path (<strong><a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_CROSS_PROFILE_MIGRATION_RUNBOOK.md">runbook</a></strong>, <strong><code>OperatorProfileMigrationChain</code></strong>, tests) <strong>and</strong> <strong>CRIT-DATACELL-002</strong> evidence on the umbrella—required for program exit, not an optional defer.</td>
+</tr>
+<tr>
+<td><code>[REDACTED-ID]</code></td>
+<td>Test matrix / bundles</td>
+<td>Linked <strong><code>test_case</code></strong> objects for the data-cell organism slice green under <strong><code>zqk test run TST-*</code></strong> (discover missing cases first).</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Follow-on backlog (<code>in_progress</code> on CLI alpha readiness — same priority plan):</strong> envelope dispatch policy, per-kind overrides, coordinator execution depth, bundle stability (<strong><code>[REDACTED-ID]</code></strong>), and related BLIs <strong>close with the umbrella</strong> for alpha—they are <strong>not</strong> post-v1 polish after “child rows” ship.</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>BLI</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td>Envelope tick <strong>dispatch policy overrides</strong> (per-token / per–job_type; tier rules beyond global <code>ENVELOPE_TICK_DISPATCH_*</code>).</td>
+</tr>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td><strong>Per-kind operational envelope override table</strong> — v1 table + merge order in code; <strong>exit</strong> = pilot + tests + JSON flags (<code>kindOperationalEnvelopeOverrides</code>); breadth / execution-depth polish = follow-on with <strong><code>[REDACTED-ID]</code></strong>.</td>
+</tr>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td><strong>Envelope token → job execution depth</strong> — verifiable <strong><code>acceptance_criteria</code></strong> live on the BLI (<code>zqk object get [REDACTED-ID]</code>); summarized in the subsection below.</td>
+</tr>
+<tr>
+<td><strong><code>[REDACTED-ID]</code></strong></td>
+<td><strong>Alpha gate:</strong> targeted <strong>test_case</strong> stability (<code>zqk test run</code> evidence for data-cell organism and related gates).</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>SCH-dce-tick envelope dispatch knobs (<code>[REDACTED-ID]</code>):</strong> Normative semantics: <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_dispatch.go"><code>pkg/scheduler/envelope_tick_dispatch.go</code></a>. Common environment variables on <strong><code>SCH-dce-tick</code></strong>:</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_MODE</code></td>
+<td><code>off</code> / <code>shadow</code> / <code>on</code></td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_EXPAND</code></td>
+<td>Enables expanded allowlist (<code>object_validation</code>, <code>metrics_collection</code>)</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_ALLOWLIST_EXTRA</code></td>
+<td>Comma-separated extra <code>job_type</code> values</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_DENY_EXTRA</code></td>
+<td>Comma-separated deny overrides</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_MAX_TRIGGERS</code></td>
+<td>Caps shadow + on follow-ups per tick</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_SKIP_IF_TARGET_BUSY</code></td>
+<td>Skip when target job id is already running (default <strong>on</strong>)</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_CHECK_TRIGGER_QUEUE</code></td>
+<td>Skip when a pending envelope-tick trigger exists for the target (default <strong>off</strong>)</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_DENY_TOKENS_JSON</code></td>
+<td>JSON array of operational-envelope <strong>discovery token</strong> strings excluded before <code>job_type</code> resolution (<a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_token_policy.go"><code>envelope_tick_token_policy.go</code></a>)</td>
+</tr>
+<tr>
+<td><code>ENVELOPE_TICK_DISPATCH_ALLOW_TOKENS_JSON</code></td>
+<td>When present, only listed tokens contribute to resolved types (restrictive whitelist); invalid JSON falls back to no token filter</td>
+</tr>
+</tbody>
+</table></div>
+<p>Discovery-token policy JSON is wired from <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_datacell_envelope_tick.go"><code>handlers_datacell_envelope_tick.go</code></a>.</p>
+<p><strong>Exit checklist (machine-checkable traceability):</strong> On <strong><code>[REDACTED-ID]</code></strong>, <strong><code>acceptance_criteria</code></strong> references <strong><code>CRIT-*</code></strong> rows with <strong><code>validation_method: automated_test</code></strong> or <strong><code>manual_check</code></strong>. Each automated criterion is satisfied by executing the linked <strong><code>test_case</code></strong> <strong><code>path_or_id</code></strong> (see <strong><code>criteria_refs</code></strong> / <strong><code>zqk object related</code></strong> / <strong><code>zqk object get</code></strong> on <strong><code>[REDACTED-ID]</code></strong> and <strong><code>[REDACTED-ID]</code></strong>). <strong><code>TestDispatchEnvelopeTickResolvedJobs_onModeTriggersRegisteredJob</code></strong> (<a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/envelope_tick_dispatch_integration_test.go"><code>pkg/scheduler/envelope_tick_dispatch_integration_test.go</code></a>) additionally proves <strong><code>ENVELOPE_TICK_DISPATCH_MODE=on</code></strong> reaches <strong><code>TriggerJob</code></strong> against a registered target job. Those TEST rows are also listed under <strong><code>[REDACTED-ID]</code></strong>. Green tests are necessary evidence; <strong><code>backlog_item</code></strong> completion still uses explicit lifecycle <strong><code>status</code></strong> updates (criteria → validated/complete, then <strong><code>zqk object update</code></strong> on the BLI) unless a CI policy is added that performs those writes automatically. Bundle JSON may carry <strong><code>criteria_refs</code></strong> / <strong><code>test_case_refs</code></strong>; scheduler jobs emit <strong><code>criteria_verification_evidence</code></strong> lines into <strong><code>.zqk/logs/scheduler/cvs/test-bundles/events.jsonl</code></strong> for downstream gate automation — see <strong><code>docs/monitoring/SCHEDULER_EVENTS_AND_METRICS.md</code></strong>.</p>
+<p><strong>Convergence session:</strong> <strong><code>[REDACTED-ID]</code></strong> tracks the umbrella; <strong><code>desired_end_state</code></strong> on that object is the live contract. When the rows above are satisfied and criteria pass, the program <strong>is allowed to feel done</strong>—remaining work becomes <strong>new</strong> BLIs, not an endless same-numbered program.</p>
+<h3 id="redacted-id-formal-mapping-and-sequencing-spec-closure">[REDACTED-ID] — Formal mapping and sequencing (spec closure)</h3>
+<p>This subsection closes the <strong>in_progress</strong> backlog item <em>Data cell / stream organisms: unify feature-flag JSON, tray config, and storage selection</em> at the <strong>architecture / sequencing</strong> level. The BLI explicitly <strong>defers</strong> implementing the full assembly pipeline, adapters, and admin CLI (see object <code>description</code> / non-goals via <code>zqk object get [REDACTED-ID]</code>); that follow-on scope is owned by the <strong><code>BLI-177608*</code></strong> program on the same priority plan (<a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CMDV2_AND_CLI_SPLIT_RATIONALE.md">CMDV2_AND_CLI_SPLIT_RATIONALE.md</a>).</p>
+<p><strong>Terminology alignment</strong></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Phrase (BLI / product)</th>
+<th>Meaning in this repo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Data cell</strong></td>
+<td>Logical unit + operational envelope — <a href="#definition">Definition</a> above.</td>
+</tr>
+<tr>
+<td><strong>“Stream organism”</strong> (informal)</td>
+<td>High-volume or <strong>stream-profile</strong> persistence — still a <strong>cell</strong> with a <strong>stream</strong> physical profile, not a separate model — see <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/SPEC_STREAM_CELL_PEDAGOGY.md">SPEC_STREAM_CELL_PEDAGOGY.md</a> and <em>Streams &amp; summaries</em> there.</td>
+</tr>
+<tr>
+<td><strong>Runtime organism</strong></td>
+<td>The <strong>implemented v1</strong> slice: feature flags + CLI hook profile + tray — <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_RUNTIME_ORGANISM.md">DATA_CELL_RUNTIME_ORGANISM.md</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Three storage patterns (BLI) → today’s mapping</strong></p>
+<p>The BLI called out (1) feature-flag / single-file JSON, (2) stream + WAL, (3) CAS + WAL. Mapped to <strong>concrete surfaces</strong>:</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Role</th>
+<th>Where it shows up today</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>(1) Single-file / light file</strong></td>
+<td>Operator-local toggles and shortcuts</td>
+<td><strong>Feature flags</strong> (<code>.zqk/config/feature_flags.json</code>), <strong>CLI hook profile</strong> (<code>.zqk/config/cli_hook_profile.json</code>), <strong>Tray</strong> (embedded default + <code>.zqk/tray.yaml</code>) — path table and <code>protocol_version</code> in <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/DATA_CELL_RUNTIME_ORGANISM.md">DATA_CELL_RUNTIME_ORGANISM.md</a>. Wire API: <code>pkg/datacell</code> path helpers.</td>
+</tr>
+<tr>
+<td><strong>(2) Stream + WAL</strong></td>
+<td>Append-heavy volume</td>
+<td>Stream-backed kinds, segments, stewardship — <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/STREAM_STORAGE.md">STREAM_STORAGE.md</a>; profile <strong><code>stream</code></strong> in specs / <code>pkg/datacell</code>.</td>
+</tr>
+<tr>
+<td><strong>(3) CAS + WAL</strong></td>
+<td>Spec-defined instances</td>
+<td>Process objects under <code>.zqk/process/</code>; profile <strong><code>cas_entity</code></strong> by default via inheritance from <code>auditable</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Unified model (without migrating files yet)</strong><br />
+Feature flags, tray, and CLI hook profile are <strong>not</strong> separate “kinds” in CAS; they are <strong>the same logical membrane</strong> described in DATA_CELL_RUNTIME_ORGANISM — <strong>light-file / operator-local</strong> cells with centralized paths and optional <code>protocol_version</code>. Treating them as “super-simple data cells” in documentation matches the BLI goal; <strong>wrapping</strong> them as first-class persisted objects or <strong>routing</strong> all writes through a steward/coordinator is <strong>explicitly deferred</strong> (see <em>Cell manager / nucleus</em> in the table below and BLI non-goals).</p>
+<p><strong>Sequencing (what is not this BLI)</strong></p>
+<ol>
+<li><strong>Adapters</strong> — optional wrappers so the same logical API can sit above CAS or stream when profile dictates — backlog / future spike.  </li>
+<li><strong>Admin / zqk-admin</strong> structured <code>new</code> / <code>edit</code> without exposing storage — <strong>CMDv2</strong> track (<a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CMDV2_AND_CLI_SPLIT_RATIONALE.md">CMDV2_AND_CLI_SPLIT_RATIONALE.md</a>).  </li>
+<li><strong>Assembly pipeline</strong> (storage + metrics + logging + events + notifications + transceiver ports) — separate epics; see DATA_ORIGINATION_PIPELINE_VISION, convergence backlog.  </li>
+<li><strong>External hooks</strong> — remain governed by <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CLI_EXTERNAL_HOOK_PROTOCOL.md">CLI_EXTERNAL_HOOK_PROTOCOL.md</a>; no version bump required for this doc-only closure.</li>
+</ol>
+<h2 id="data-cell-test-matrix-operational-envelope-organism">Data cell test matrix (operational envelope + organism)</h2>
+<p>Isolated <strong>unit and integration</strong> tests for the data-cell program (registry, profile contracts, <strong>operational envelope</strong> map, scheduler policy/handler, <code>zqk system data-cells</code>) live in:</p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Tests (representative)</th>
+<th>Foreground probe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>pkg/datacell</code></strong></td>
+<td><code>operational_envelope_test.go</code> (profile + per-kind augments, compact summaries); <code>stream_organism_e2e_test.go</code> (<code>TestStreamOrganism_*</code>); <code>membrane</code> path tests</td>
+<td><code>go test ./pkg/datacell -timeout 60s -run 'OperationalEnvelope|StreamOrganism|Membrane'</code></td>
+</tr>
+<tr>
+<td><strong><code>pkg/objects</code></strong></td>
+<td><code>spec_index_storage_profile_consistency_test.go</code>, <code>spec_index_high_volume_validate_test.go</code> — <code>high_volume_kinds.yaml</code> stream list vs materialized <code>spec_index</code> <code>storage_profile</code> (same checks as <code>ValidateHighVolumeStreamKindsMatchSpecIndex</code> on <code>generate-spec-index</code> / <code>RefreshMaterializedSpecIndex</code>)</td>
+<td><code>go test ./pkg/objects -timeout 60s -run 'SpecIndexStorageProfile|ValidateHighVolumeStreamKinds'</code></td>
+</tr>
+<tr>
+<td><strong><code>pkg/scheduler</code></strong></td>
+<td><code>datacell_envelope_test.go</code> — policy dry-run, envelope tick handler, metrics JSONL (+ dispatch outcome keys), <code>envelope_tick_dispatch_*</code> tests, <code>jobTypeHandlerRegistry</code> registration; <strong><code>maintenance_runner_test.go</code></strong> — isolated <code>runCycle</code> → steward enqueue JSONL + <strong><code>data_cell_envelope_tick</code></strong> drain (<code>TestMaintenanceRunner_runCycle_*</code>)</td>
+<td>Foreground probe: <code>go test ./pkg/scheduler -timeout 60s -run 'DataCellEnvelope|DryRunDataCell|EnvelopeTickDispatch|JobTypeHandlerRegistry_DataCell'</code> — <strong>full package via </strong><code>zqk test run TST-*</code><strong> for the scheduler/data-cell test_case objects. Logs: scheduler job logs under <code>.zqk/logs/</code>; <code>envelope_tick_dispatch_*</code> and related lines land in </strong><code>.zqk/metrics/data_cell_envelope_tick.jsonl</code>** when the test or tick path enables metrics recording. Narrow stewardship pipeline probe: <code>go test ./pkg/scheduler -timeout 60s -run 'TestMaintenanceRunner_runCycle_'</code>.</td>
+</tr>
+<tr>
+<td><strong><code>pkg/storage</code></strong></td>
+<td><strong><code>stream_stewardship_test.go</code></strong> — <code>PostRetentionStreamStewardship</code>: steward-queue JSONL <strong><code>stream_steward_kind</code></strong> per stream-backed kind / phase (<code>TestPostRetentionStreamStewardship_enqueuesStewardMaintenanceJSONL</code>; contract in <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/STREAM_KIND_STEWARDSHIP.md">STREAM_KIND_STEWARDSHIP.md</a>), orphan segment GC + <strong>soft-delete registry compact→GC</strong> fixtures (<code>TestPostRetentionStreamStewardship_*Fixture</code>), <strong>runtime_delta overlay GC</strong> (<code>TestPostRetentionStreamStewardship_runtimeDeltaOverlayGC_fixture</code>), <strong>runtime_delta backfill</strong> (<code>TestPostRetentionStreamStewardship_runtimeDeltaBackfill_fixture</code> — stream <code>scheduler_job</code> + missing overlay); <strong>runtime_delta_migration.go</strong> backfill aligns with <strong><code>runtime_delta_fields.yaml</code></strong> when specs omit runtime_delta roles. Lower-level GC/registry: <code>stream_segment_gc_test.go</code>, <code>stream_registry_persistent_test.go</code></td>
+<td><code>go test ./pkg/storage -timeout 90s -run 'TestPostRetentionStreamStewardship_'</code></td>
+</tr>
+<tr>
+<td><strong><code>cmd/zqk/system</code></strong></td>
+<td><code>data_cells_test.go</code> — JSON envelope shape, operational envelope rows, policy dry-run JSON; <code>data_cells_stream_organism_test.go</code> — table/JSON/<code>--json-envelope</code> (run <code>TestDataCells_StreamOrganism</code> separately); <strong><code>migrate_legacy_to_stream_*_test.go</code></strong> — in-process <strong><code>migrate-legacy-to-stream</code></strong> dry-run + apply with <strong><code>--remove-legacy</code></strong> on an isolated tree (<code>TestMigrateLegacyToStream_dryRun_inProcess</code>, <code>TestMigrateLegacyToStream_applyRemoveLegacy_inProcess</code>; subprocess suite remains <code>migrate_legacy_to_stream_integration_test.go</code> + env gate)</td>
+<td><code>go test ./cmd/zqk/system -timeout 60s -run 'Test(DataCellsEnvelopePolicy|OperationalEnvelopeTableFooter|BuildDataCellJSONRows|DataCellsJSONEnvelopeShape|FilterDataCellsByKind)'</code> — migration probes: <code>go test ./cmd/zqk/system -timeout 90s -run 'TestMigrateLegacyToStream_(dryRun|applyRemoveLegacy)_inProcess'</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="data-cell-automated-verification">Data cell automated verification</h3>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Command / artifact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Discover / bind missing cases</td>
+<td><code>zqk test discover</code> then <code>zqk test bind</code></td>
+</tr>
+<tr>
+<td>Run implicated test_case objects</td>
+<td><code>zqk test run TST-*</code></td>
+</tr>
+<tr>
+<td>Envelope tick metrics (local workspace)</td>
+<td>When tests run enable metrics recording (<code>metricsrecording</code>), <strong><code>.zqk/metrics/data_cell_envelope_tick.jsonl</code></strong> gains lines with <code>operational_envelope_*</code>, <code>operational_envelope_resolved_scheduler_job_types</code>, <code>envelope_tick_dispatch_*</code> counters</td>
+</tr>
+</tbody>
+</table></div>
+<p>Use the <a href="#data-cell-test-matrix-operational-envelope--organism">table above</a> for <strong>foreground</strong> probes without the daemon.</p>
+<p><strong>CMDv2 overlap:</strong> Until cmdv2 admin binaries subsume discovery, <strong><code>zqk system data-cells</code></strong> stays the canonical operator surface — see <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CMDV2_AND_CLI_SPLIT_RATIONALE.md#7-data-cell-operator-discovery-zqk-system-data-cells-vs-cmdv2">CMDV2_AND_CLI_SPLIT_RATIONALE.md §7</a>.</p>
+<h2 id="spec-cell-integration-suite-local-and-test-gaps">Spec cell integration suite (local) and test gaps</h2>
+<p><strong>What runs today:</strong> <code>TestSpecCell_Suite</code> in <code>cmd/zqk/system/spec_cell_integration_test.go</code> is the <strong>alpha gate</strong> for subprocess CLI on a <strong>greenfield temp project</strong> (<code>ZQK_TEST_ROOT</code> / <code>SYSTEM_TEST_ENABLE_SPEC_CELL_INTEGRATION_TESTS=1</code>). It covers init → bootstrap DNA → <code>generate-spec-index</code> → <strong>net-new kind</strong> YAML + config patches → <code>generate-spec-index</code> / <code>validate</code> / <code>generate-instance-builders</code> → <code>update-specs</code> dry-runs → <strong><code>system update-specs</code> field define/modify/deprecate/archive/delete</strong> on the bootstrapped <code>test_case</code> spec (sidecar YAML), <code>sync-glossary-from-specs</code> <strong>dry-run JSON + apply</strong>, <code>system validate</code>, feature-flags / cli-hooks list, path-cache, retention/health, and <code>system check --fast --clean-cache</code>. See the file header comment for the full list.</p>
+<p><strong>Related (data cell program):</strong> the subprocess suite does <strong>not</strong> replace the <strong>isolated</strong> data-cell tests above; use the <a href="#data-cell-test-matrix-operational-envelope--organism">Data cell test matrix</a> and saved <strong><code>data-cell-stream-organism</code></strong> + <strong><code>data-cell-stream-organism-pkg-storage</code></strong> bundles when changing <code>pkg/datacell</code>, envelope scheduler code, <strong><code>pkg/storage</code></strong> post-retention stream stewardship (<code>PostRetentionStreamStewardship</code>, steward <strong><code>stream_steward_kind</code></strong> JSONL), or <code>data-cells</code> output. After changing matrix tests or bundle membership, refresh shards and replay <strong>both</strong> bundles — see <a href="#data-cell-automated-verification-bundles">Data cell automated verification (bundles)</a>.</p>
+<p><strong>Gaps vs end-to-end “origination pipeline” (roadmap tests / backlog):</strong></p>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Gap</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>New kind from zero</strong></td>
+<td><strong><code>net_new_kind_spec_pipeline</code></strong> adds <code>spec_cell_netnew.yaml</code> + patches <code>kind_mappings</code> / <code>id_prefixes</code> / <code>namespaces</code> → <code>generate-spec-index</code> → <code>validate --kind</code> → <strong><code>generate-instance-builders</code></strong> (output under <code>.zqk/spec_cell_codegen/</code>). <strong><code>zqk new internal object_spec</code></strong> (draft) is also covered.</td>
+</tr>
+<tr>
+<td><strong>Field types matrix</strong></td>
+<td>One probe field (<code>spec_cell_alpha_probe</code>) exercises <strong>string</strong>-shaped sidecar body; <strong>table-driven</strong> tests for each field semantic type / validation shape are not yet required by the suite.</td>
+</tr>
+<tr>
+<td><strong>Full spec validation gate</strong></td>
+<td>Field define with <code>--validate</code> (REQ-019 / <code>LoadSpecAndValidate</code>) remains <strong>opt-in</strong> via <code>ENABLE_SPEC_CELL_REQ019_VALIDATE</code> because the bundled <code>test_case</code> spec can still hit <strong>full-spec</strong> validation debt (e.g. inherited traits vs field declarations) unrelated to the probe field.</td>
+</tr>
+<tr>
+<td><strong>Glossary apply</strong></td>
+<td><strong><code>sync_glossary_from_specs_apply</code></strong> runs <strong><code>sync-glossary-from-specs --apply --dry-run=false</code></strong> and lists <code>glossary_term</code> objects. <strong><code>createGlossaryCandidate</code></strong> allocates IDs and ensures <code>.zqk/process/glossary_terms/</code> exists before sequential ID gen — <strong>tactical</strong> until a <strong>cell steward/coordinator</strong> owns directory prep, ID allocation, WAL, and invalidation for glossary (and other) kinds.</td>
+</tr>
+<tr>
+<td><strong>Storage profiles in action</strong></td>
+<td><code>storage_profile</code> appears in specs/index; <strong>instance CRUD</strong> that proves <strong>CAS vs stream vs light_file</strong> behavior for a <strong>new</strong> kind is not fully covered here (see <code>STREAM_STORAGE.md</code>, process object CAS, <code>pkg/datacell</code> paths for the runtime slice).</td>
+</tr>
+<tr>
+<td><strong>Cell manager / nucleus</strong></td>
+<td><strong>Partial (v1 contracts):</strong> <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane.go"><code>pkg/datacell/membrane.go</code></a> defines <code>CellMembrane</code>, <code>CellCoordinator</code>, <code>CellReadModel</code>, spec-revision staleness helpers aligned with <code>SpecLoader.SpecCacheRevision</code> / materialized <code>spec_index</code>, and <code>MinimalMembrane</code> + <code>NoopCellCoordinator</code> for tests and incremental wiring. <strong>Narrow steward slice:</strong> <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/steward_enqueue.go"><code>pkg/datacell/steward_enqueue.go</code></a> defines the JSONL contract (<a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/steward_enqueue.go"><code>AppendStewardEnqueueRecord</code></a>, <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/steward_enqueue_drain.go"><code>DrainStewardEnqueueLog</code></a>); <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/paths.go"><code>datacell.StewardEnqueueJSONLPath</code></a> resolves via <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/paths/resolver.go"><code>paths.PathAliasDatacellStewardEnqueue</code></a> with segment fallback <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/paths/constants.go"><code>paths.DataCellLogsSubdir</code></a> / <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/paths/constants.go"><code>paths.StewardEnqueueJSONLFile</code></a>. Optional metrics append to <code>.zqk/metrics/data_cell_steward.jsonl</code> when metrics recording is enabled (<code>pkg/datacell/steward_metrics.go</code>). <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/steward_enqueue_coordinator.go"><code>pkg/scheduler/steward_enqueue_coordinator.go</code></a> (<code>StewardEnqueueCoordinator</code>, <code>NewStewardEnqueueCoordinator</code> / profile helpers) implements [CellCoordinator]; <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_datacell_envelope_tick.go"><code>handlers_datacell_envelope_tick.go</code></a> invokes drain on each <code>data_cell_envelope_tick</code> (<code>SCH-dce-tick</code>). <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/scheduler/handlers_cache_invalidation.go"><code>handlers_cache_invalidation.go</code></a> best-effort enqueues <code>MaintenanceOpInvalidateCache</code> on the stream steward when project root is known (resolved from file storage). Attach via <a href="https://github.com/zqk-os/zqk/blob/main/skills/pkg/datacell/membrane_read_path.go"><code>datacell.StreamMembraneReadPathsWithCoordinator</code></a>. Full thread pools, WAL routing, policy knobs, and semantic operator surface remain <strong>roadmap</strong>. Stand-ins (e.g. <code>MkdirAll</code> + <code>idgen</code> in <code>sync-glossary-from-specs</code> apply) are <strong>not</strong> the full manager.</td>
+</tr>
+<tr>
+<td><strong>Admin CLI split</strong></td>
+<td>Second binary for spec admin + codegen, emitting YAML for core CLI/scheduler to load — <strong>future</strong>; <a href="https://github.com/zqk-os/zqk/blob/main/skills/zqk-expert/references/CMDV2_AND_CLI_SPLIT_RATIONALE.md">CMDV2_AND_CLI_SPLIT_RATIONALE.md</a>.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Commands (local):</strong> see <strong><code>scripts/README.md</code></strong> → <em>Local verification (no hosted CI yet)</em>.</p>
+      </div>
+    </article>
+  </main>
+  <script src="../../../search/search-index.js?v=72f6fac4"></script>
+</body>
+</html>

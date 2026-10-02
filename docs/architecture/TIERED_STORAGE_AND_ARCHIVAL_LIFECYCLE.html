@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Tiered Storage, Subtree Flattening, and Archival Lifecycle - ZQK Core Documentation</title>
+  <link rel="stylesheet" href="../../assets/style.css?v=886e58a9">
+  <link rel="icon" type="image/svg+xml" href="../../assets/zqk-logo.svg?v=4bdd3a39">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0d1117',
+        primaryColor: '#1f6feb',
+        primaryTextColor: '#c9d1d9',
+        primaryBorderColor: '#30363d',
+        lineColor: '#58a6ff',
+        secondaryColor: '#161b22',
+        tertiaryColor: '#0d1117'
+      }
+    });
+
+    async function initMermaid() {
+      const els = document.querySelectorAll('.mermaid, pre code.language-mermaid');
+      if (!els.length) return;
+      document.querySelectorAll('pre code.language-mermaid').forEach(el => {
+        const pre = el.parentElement;
+        pre.className = 'mermaid';
+        pre.textContent = el.textContent;
+      });
+      try {
+        await mermaid.run({ querySelector: '.mermaid' });
+      } catch (err) {
+        console.warn('Mermaid rendering:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMermaid);
+    } else {
+      initMermaid();
+    }
+  </script>
+
+</head>
+<body data-root-rel="../../">
+  <header class="header">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="../../index.html" class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" class="logo-mark">
+  <defs>
+    <filter id="cursor-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#00e676" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+  <!-- Background icon frame -->
+  <rect width="100" height="100" rx="22" fill="#05070a" stroke="#1f2937" stroke-width="1.5"/>
+  <!-- ZQK glyphs in pure vector geometry fill-rule evenodd for Q hole -->
+  <path d="M54.70,35.38 L59.41,35.38 L59.41,44.46 L59.74,44.46 L59.74,44.12 L60.08,44.12 L60.08,43.78 L60.75,43.45 L60.75,42.78 L61.09,42.78 L61.09,42.44 L61.76,42.10 L61.76,41.43 L62.10,41.43 L62.10,41.10 L62.43,41.10 L62.43,40.76 L63.10,40.42 L63.10,39.75 L63.44,39.75 L63.44,39.42 L63.78,39.42 L63.78,39.08 L64.45,38.74 L64.45,38.07 L64.78,38.07 L64.78,37.74 L65.46,37.40 L65.46,36.73 L65.79,36.73 L65.79,36.39 L66.13,36.39 L66.13,36.06 L66.46,36.06 L66.80,35.38 L71.84,35.38 L71.84,35.72 L71.50,35.72 L71.50,36.39 L71.17,36.39 L71.17,36.73 L70.83,36.73 L70.83,37.06 L70.16,37.40 L70.16,38.07 L69.82,38.07 L69.82,38.41 L69.49,38.41 L69.49,38.74 L68.82,39.08 L68.82,39.75 L68.48,39.75 L68.48,40.09 L68.14,40.09 L68.14,40.42 L67.47,40.76 L67.47,41.43 L67.14,41.43 L67.14,41.77 L66.80,41.77 L66.80,42.10 L66.13,42.44 L66.13,43.11 L65.79,43.11 L65.79,43.45 L65.46,43.45 L65.46,43.78 L64.78,44.12 L64.78,45.13 L65.12,45.13 L65.12,45.80 L65.46,45.80 L65.46,46.47 L65.79,46.47 L65.79,47.14 L66.13,47.14 L66.46,48.49 L67.14,48.82 L67.14,49.50 L67.47,49.50 L67.47,50.17 L67.81,50.17 L67.81,50.84 L68.14,50.84 L68.14,51.51 L68.48,51.51 L68.82,52.86 L69.49,53.19 L69.49,53.86 L69.82,53.86 L69.82,54.54 L70.16,54.54 L70.16,55.21 L70.50,55.21 L70.50,55.88 L70.83,55.88 L71.17,57.22 L71.84,57.56 L72.18,58.90 L67.14,58.90 L67.14,58.57 L66.80,58.57 L66.80,57.90 L66.46,57.90 L66.46,57.22 L66.13,57.22 L66.13,56.55 L65.79,56.55 L65.79,55.88 L65.46,55.88 L65.46,55.21 L64.78,54.87 L64.78,54.20 L64.45,54.20 L64.45,53.53 L64.11,53.53 L64.11,52.86 L63.78,52.86 L63.78,52.18 L63.44,52.18 L63.44,51.51 L63.10,51.51 L63.10,50.84 L62.77,50.84 L62.77,50.17 L62.43,50.17 L62.43,49.50 L62.10,49.50 L62.10,48.82 L61.76,48.82 L61.76,48.49 L61.42,48.49 L61.42,48.82 L61.09,48.82 L61.09,49.16 L60.42,49.50 L60.42,50.17 L60.08,50.17 L60.08,50.50 L59.41,50.84 L59.41,58.90 L54.70,58.90Z M8.00,54.87 L8.34,54.87 L8.34,54.20 L9.01,53.86 L9.01,53.19 L9.68,52.86 L9.68,52.18 L10.35,51.85 L10.35,51.18 L11.02,50.84 L11.02,50.17 L11.70,49.83 L11.70,49.16 L12.37,48.82 L12.37,48.15 L13.04,47.82 L13.04,47.14 L13.38,47.14 L13.38,46.81 L13.71,46.81 L13.71,46.14 L14.05,46.14 L14.05,45.80 L14.72,45.46 L14.72,44.79 L15.39,44.46 L15.39,43.78 L16.06,43.45 L16.06,42.78 L16.74,42.44 L16.74,41.77 L17.41,41.43 L17.41,40.76 L17.74,40.76 L17.74,40.42 L18.08,40.42 L18.08,39.75 L18.42,39.75 L18.42,39.42 L8.34,39.42 L8.34,35.38 L24.13,35.38 L24.13,39.42 L23.79,39.42 L23.79,40.09 L23.12,40.42 L23.12,41.10 L22.45,41.43 L22.45,42.10 L22.11,42.10 L22.11,42.44 L21.44,42.78 L21.44,43.45 L20.77,43.78 L20.77,44.46 L20.10,44.79 L20.10,45.46 L19.76,45.46 L19.76,45.80 L19.09,46.14 L19.09,46.81 L18.42,47.14 L18.42,47.82 L17.74,48.15 L17.74,48.82 L17.41,48.82 L17.41,49.16 L16.74,49.50 L16.74,50.17 L16.06,50.50 L16.06,51.18 L15.73,51.18 L15.73,51.51 L15.39,51.51 L15.39,52.18 L15.06,52.18 L15.06,52.52 L14.38,52.86 L14.38,53.53 L13.71,53.86 L13.71,54.54 L13.38,54.54 L13.38,54.87 L24.46,54.87 L24.46,58.90 L8.00,58.90Z M31.18,42.78 L31.52,42.78 L31.86,40.09 L32.19,40.09 L32.19,39.42 L32.53,39.42 L32.86,38.07 L33.20,38.07 L33.20,37.74 L33.54,37.74 L33.54,37.40 L33.87,37.40 L33.87,37.06 L34.21,37.06 L34.21,36.73 L34.54,36.73 L34.88,36.06 L35.55,36.06 L35.55,35.72 L36.22,35.72 L36.22,35.38 L37.23,35.38 L37.23,35.05 L41.26,35.05 L41.26,35.38 L43.28,35.72 L43.28,36.06 L43.62,36.06 L43.95,36.73 L44.62,36.73 L44.62,37.06 L44.96,37.06 L44.96,37.74 L45.63,38.07 L45.63,38.74 L45.97,38.74 L45.97,39.42 L46.30,39.42 L46.30,40.09 L46.64,40.09 L46.64,41.10 L46.98,41.10 L46.98,42.44 L47.31,42.44 L47.31,45.46 L47.65,45.46 L47.65,49.16 L47.31,49.16 L47.31,51.85 L46.98,51.85 L46.98,53.19 L46.64,53.19 L46.30,55.21 L45.97,55.21 L45.97,55.88 L45.30,56.22 L45.30,56.89 L44.96,56.89 L44.96,57.22 L44.62,57.22 L44.29,57.90 L43.62,57.90 L43.62,58.23 L43.95,58.23 L43.95,58.57 L44.29,58.57 L44.29,58.90 L44.62,58.90 L44.62,59.24 L44.96,59.24 L44.96,59.58 L45.30,59.58 L45.30,59.91 L45.63,59.91 L45.63,60.25 L46.30,60.58 L46.30,61.26 L45.97,61.26 L45.63,61.93 L44.96,61.93 L44.96,62.26 L44.62,62.26 L44.29,62.94 L43.62,62.94 L43.62,63.27 L43.28,63.27 L43.28,62.94 L42.94,62.94 L42.94,62.60 L42.61,62.60 L42.61,62.26 L41.94,61.93 L41.94,61.26 L41.60,61.26 L41.60,60.92 L41.26,60.92 L41.26,60.58 L40.93,60.58 L40.93,60.25 L40.59,60.25 L40.59,59.91 L40.26,59.91 L39.92,59.24 L36.90,59.24 L36.90,58.90 L35.89,58.90 L35.55,58.23 L34.88,58.23 L34.88,57.90 L34.54,57.90 L34.54,57.56 L34.21,57.56 L34.21,57.22 L33.87,57.22 L33.87,56.89 L33.54,56.89 L33.54,56.55 L32.86,56.22 L32.86,55.54 L32.53,55.54 L32.53,54.87 L32.19,54.87 L32.19,54.20 L31.86,54.20 L31.52,51.51 L31.18,51.51Z M35.89,43.45 L35.89,50.84 L36.22,50.84 L36.22,52.52 L36.56,52.52 L36.56,53.53 L36.90,53.53 L36.90,53.86 L37.23,53.86 L37.23,54.54 L37.90,54.54 L38.24,55.21 L40.26,55.21 L40.26,54.87 L40.93,54.87 L40.93,54.54 L41.60,54.20 L41.60,53.53 L41.94,53.53 L41.94,52.52 L42.27,52.52 L42.27,51.18 L42.61,51.18 L42.61,43.11 L42.27,43.11 L42.27,41.77 L41.94,41.77 L41.94,40.76 L41.60,40.76 L41.60,40.09 L41.26,40.09 L40.93,39.42 L39.92,39.42 L39.92,39.08 L38.58,39.08 L38.58,39.42 L37.23,39.75 L37.23,40.42 L36.56,40.76 L36.56,41.77 L36.22,41.77 L36.22,43.45Z" fill="#ffffff" fill-rule="evenodd"/>
+  <!-- Terminal cursor prompt _ with emerald green glow -->
+  <path d="M72.51,61.93 L92.00,61.93 L92.00,64.95 L72.51,64.95Z" fill="#00e676" filter="url(#cursor-glow)"/>
+</svg>
+          <span class="logo-text">ZQK <span class="logo-accent">Core</span></span>
+        </a>
+        <span class="badge-tag">Architecture &amp; Foundation</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search core documentation..." onkeyup="runSearch()">
+        <div id="search-results"></div>
+      </div>
+    </div>
+  </header>
+  <main class="content-container">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+<div class="sidebar-home"><a href="../../index.html">🏠 Portal Overview</a></div>
+<details class="sidebar-group">
+<summary><span class="group-title">Getting Started</span><span class="group-count">10</span></summary>
+<ul>
+<li><a href="../../scripts/onboarding_roadmap/README.html" title="Curriculum as Data: Onboarding Roadmap">Curriculum as Data: Onboarding Roadmap</a></li>
+<li><a href="../../docs/onboarding/README.html" title="Onboarding (ZQK Community)">Onboarding (ZQK Community)</a></li>
+<li><a href="../../docs/INDEX.html" title="ZQK Core Documentation Index">ZQK Core Documentation Index</a></li>
+<li><a href="../../docs/onboarding/COMMUNITY_FIRST_RUN.html" title="Community First-Run Guide (Agent + Human)">Community First-Run Guide (Agent + Human)</a></li>
+<li><a href="../../ZQK_GETTING_STARTED.html" title="Welcome to ZQK">Welcome to ZQK</a></li>
+<li><a href="../../docs/onboarding/QUICKSTART.html" title="ZQK Quickstart &amp; MCP Configuration Guide">ZQK Quickstart &amp; MCP Configuration Guide</a></li>
+<li><a href="../../docs/onboarding/AI_AGENT_ONBOARDING.html" title="AI Agent Onboarding &amp; Operating Protocol">AI Agent Onboarding &amp; Operating Protocol</a></li>
+<li><a href="../../docs/onboarding/EDGE_HEADLESS_FIRST_RUN.html" title="Edge &amp; Headless First-Run Guide">Edge &amp; Headless First-Run Guide</a></li>
+<li><a href="../../docs/onboarding/FIRST_RUN_OBJECT_TUTORIAL.html" title="First-Run Object Tutorial (Mint ➔ Promote ➔ Reference Linking ➔ Lifecycle Transitions)">First-Run Object Tutorial (Mint ➔ Promote ➔ Reference Linking ➔ Lifecycle Transitions)</a></li>
+<li><a href="../../docs/getting-started.html" title="Getting Started">Getting Started</a></li>
+</ul>
+</details>
+<details class="sidebar-group" open>
+<summary><span class="group-title">Architecture &amp; Foundation</span><span class="group-count">37</span></summary>
+<ul>
+<li><a href="../../docs/architecture/README.html" title="ZQK Core Architecture">ZQK Core Architecture</a></li>
+<li><a href="../../docs/architecture/INDEX.html" title="ZQK Knowledge Kernel Architecture Index">ZQK Knowledge Kernel Architecture Index</a></li>
+<li><a href="../../docs/architecture/ACRONYM_VOCABULARY_SCHEME_AND_PROGRESSIVE_DISCLOSURE.html" title="Acronym Vocabulary Scheme &amp; Progressive Disclosure">Acronym Vocabulary Scheme &amp; Progressive Disclosure</a></li>
+<li><a href="../../docs/architecture/ADAPTIVE_AGENT_DISAMBIGUATION.html" title="Adaptive Agent Feedback and Progressive Disambiguation Engine">Adaptive Agent Feedback and Progressive Disambiguation Engine</a></li>
+<li><a href="../../docs/architecture/ADAPTIVE_TASK_SUPERVISION_SPECIFICATION.html" title="Adaptive Task Supervision &amp; Failure Delta Illumination Specification">Adaptive Task Supervision &amp; Failure Delta Illumination Specification</a></li>
+<li><a href="../../docs/architecture/AMBIENT_SIGNAL_ACTION_RUBRIC.html" title="Ambient Signal Interpretation &amp; Action Rubric (Anti-Thrashing Protocol)">Ambient Signal Interpretation &amp; Action Rubric (Anti-Thrashing Protocol)</a></li>
+<li><a href="../../docs/architecture/ASYNC_CHECK_DISCOVERY_DECOUPLING.html" title="Asynchronous Object Discovery &amp; Domain Decoupling Specification">Asynchronous Object Discovery &amp; Domain Decoupling Specification</a></li>
+<li><a href="../../docs/architecture/ergonomics/ZQK_DO_AUTONOMOUS_EXECUTION.html" title="Autonomous Single-Command Execution Pipeline (`zqk do`)">Autonomous Single-Command Execution Pipeline (`zqk do`)</a></li>
+<li><a href="../../docs/architecture/CLI_COMMAND_TAXONOMY_STANDARDS.html" title="Canonical CLI Command Taxonomy &amp; Architectural Standards">Canonical CLI Command Taxonomy &amp; Architectural Standards</a></li>
+<li><a href="../../docs/architecture/ORPHAN_VERBS_RETIREMENT_AND_CANONICAL_DOMAIN_MAPPING.html" title="Canonical Domain Command Mapping &amp; Ergonomic Shortcuts">Canonical Domain Command Mapping &amp; Ergonomic Shortcuts</a></li>
+<li><a href="../../docs/architecture/CELLULAR_MEMBRANE_MODE_B_CONFIGURATION.html" title="Cellular Membrane Lockdown &amp; Privileged Writer Mode B Configuration Runbook">Cellular Membrane Lockdown &amp; Privileged Writer Mode B Configuration Runbook</a></li>
+<li><a href="../../docs/architecture/CELLULAR_SPECIALIZATION_TIERS.html" title="Cellular Specialization Tiers &amp; The Rubber Room Architecture">Cellular Specialization Tiers &amp; The Rubber Room Architecture</a></li>
+<li><a href="../../docs/architecture/COMPOSITE_EXECUTION_ORGANIZER_VERIFICATION.html" title="Composite Execution Organizer Verification Topologies">Composite Execution Organizer Verification Topologies</a></li>
+<li><a href="../../docs/architecture/KEYSTORE_SECURITY_AND_FALLBACK_SPECIFICATION.html" title="Cryptographic Keystore Security &amp; Fallback Guard Specification">Cryptographic Keystore Security &amp; Fallback Guard Specification</a></li>
+<li><a href="../../docs/architecture/DAEMON_SINGLETON_MUTUAL_EXCLUSION.html" title="Daemon Singleton Mutual Exclusion &amp; Non-Nested Project Roots">Daemon Singleton Mutual Exclusion &amp; Non-Nested Project Roots</a></li>
+<li><a href="../../docs/architecture/ergonomics/DIAGNOSTICS_AUTO_REMEDY.html" title="Diagnostics Auto-Remedy &amp; Precondition Self-Healing Engine">Diagnostics Auto-Remedy &amp; Precondition Self-Healing Engine</a></li>
+<li><a href="../../docs/architecture/FAIL_CLOSED_ERROR_PROPAGATION_AND_TRANSACTION_RESILIENCE.html" title="Fail-Closed Error Propagation &amp; Transaction Resilience">Fail-Closed Error Propagation &amp; Transaction Resilience</a></li>
+<li><a href="../../docs/architecture/FAIL_CLOSED_ERROR_PROPAGATION.html" title="Fail-Closed Error Propagation and Elimination of Swallowed Errors">Fail-Closed Error Propagation and Elimination of Swallowed Errors</a></li>
+<li><a href="../../docs/architecture/FAIL_CLOSED_PANIC_RESILIENCE.html" title="Fail-Closed Panic Elimination and Resilient Fallback Architecture">Fail-Closed Panic Elimination and Resilient Fallback Architecture</a></li>
+<li><a href="../../docs/architecture/KERNEL_VENDOR_INSTRUCTION_PROJECTION.html" title="Kernel → vendor instruction projection">Kernel → vendor instruction projection</a></li>
+<li><a href="../../docs/architecture/MUTATION_GOVERNANCE.html" title="Membrane Mutation Governance &amp; Integrity Specification">Membrane Mutation Governance &amp; Integrity Specification</a></li>
+<li><a href="../../docs/architecture/PACK_COMPOSITION_AND_EXTENSIBILITY.html" title="Modular Pack Composition and Extensibility Architecture Guide">Modular Pack Composition and Extensibility Architecture Guide</a></li>
+<li><a href="../../docs/architecture/ergonomics/WORKTREE_KERNEL_RESOLUTION.html" title="Native Git Worktree Kernel Data Plane Resolution">Native Git Worktree Kernel Data Plane Resolution</a></li>
+<li><a href="../../docs/architecture/ORCHESTRATION_RUNTIME_TAXONOMY.html" title="Orchestration, Swarm, and Agent Execution Runtime Taxonomy">Orchestration, Swarm, and Agent Execution Runtime Taxonomy</a></li>
+<li><a href="../../PACK-COMPOSITION.html" title="Pack Composition Architecture">Pack Composition Architecture</a></li>
+<li><a href="../../docs/architecture/PACKAGE_CONSOLIDATION_GOVERNANCE.html" title="Package Consolidation Governance and Codebase Complexity Budget">Package Consolidation Governance and Codebase Complexity Budget</a></li>
+<li><a href="../../docs/architecture/PROJECT_SCOPED_REVERSE_REFERENCE_INDEX_AND_THREAD_SAFE_CACHES.html" title="Project-Scoped Reverse Reference Index and Thread-Safe Caches">Project-Scoped Reverse Reference Index and Thread-Safe Caches</a></li>
+<li><a href="../../docs/architecture/SEAT_WORKER_SUPERVISOR_ARCHITECTURE.html" title="Seat Worker Supervisor Architecture">Seat Worker Supervisor Architecture</a></li>
+<li><a href="../../docs/architecture/SOVEREIGN_AIRGAPPED_AI_ENGINEERING.html" title="Sovereign Air-Gapped AI Engineering Specification">Sovereign Air-Gapped AI Engineering Specification</a></li>
+<li><a href="../../docs/architecture/SPECBUILDER_CODEGEN_CONSOLIDATION.html" title="SpecBuilder Code Generation &amp; AST Optimization Architecture">SpecBuilder Code Generation &amp; AST Optimization Architecture</a></li>
+<li><a href="../../docs/architecture/STORAGE_WRITE_QUEUE_OBSERVER_GOVERNANCE.html" title="Storage Write Queue Observer Architecture &amp; Inverted Dependency Governance">Storage Write Queue Observer Architecture &amp; Inverted Dependency Governance</a></li>
+<li><a href="../../docs/architecture/SYNTHETIC_CONSTANT_ERADICATION_GOVERNANCE.html" title="Synthetic Constant Eradication &amp; Code Readability Governance">Synthetic Constant Eradication &amp; Code Readability Governance</a></li>
+<li><a href="../../docs/architecture/TIERED_STORAGE_AND_ARCHIVAL_LIFECYCLE.html" class="active" title="Tiered Storage, Subtree Flattening, and Archival Lifecycle">Tiered Storage, Subtree Flattening, and Archival Lifecycle</a></li>
+<li><a href="../../docs/architecture/TRAY_COMMAND_CRYPTOGRAPHIC_SECURITY.html" title="Tray Command Cryptographic Security &amp; Indirect Execution Envelope">Tray Command Cryptographic Security &amp; Indirect Execution Envelope</a></li>
+<li><a href="../../docs/architecture/VERIFIABLE_DECOMPOSITION_SPINE.html" title="Verifiable Decomposition Spine (VDS)">Verifiable Decomposition Spine (VDS)</a></li>
+<li><a href="../../docs/architecture/LIFECYCLE_STATE_MACHINE.html" title="Visual Lifecycle State Machines and Transition Check-Valves Guide">Visual Lifecycle State Machines and Transition Check-Valves Guide</a></li>
+<li><a href="../../docs/architecture/SERVICE_ADAPTER_SPECIFICATION.html" title="Zero-Coupling ServiceAdapter Specification &amp; Architecture">Zero-Coupling ServiceAdapter Specification &amp; Architecture</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Specifications &amp; Grammars</span><span class="group-count">10</span></summary>
+<ul>
+<li><a href="../../docs/specs/README.html" title="Architecture Specifications">Architecture Specifications</a></li>
+<li><a href="../../docs/specs/SPEC-ZPARQL-INDEXED-QUERY-PLANNER.html" title="Technical Specification: ZPARQL Indexed Secondary Query Planner &amp; Traversal Contract">ZPARQL Indexed Secondary Query Planner &amp; Traversal Contract</a></li>
+<li><a href="../../docs/specs/SPEC-ZPARQL-RESULT-STREAMING.html" title="Technical Specification: ZPARQL Portable Result Envelopes, Reactive Streaming, and Backpressure Protocol">ZPARQL Portable Result Envelopes, Reactive Streaming, and Backpressure Protocol</a></li>
+<li><a href="../../docs/specs/SPEC-ZPARQL-QUERY-PLANNER.html" title="Technical Specification: ZPARQL Query Planner Architecture &amp; Complexity Proof">ZPARQL Query Planner Architecture &amp; Complexity Proof</a></li>
+<li><a href="../../docs/specs/SPEC-ZPARQL-GRAPH-TRAVERSAL-GRAMMAR.html" title="Technical Specification: ZQK Declarative Graph Query &amp; Traversal Engine (ZPARQL)">ZQK Declarative Graph Query &amp; Traversal Engine (ZPARQL)</a></li>
+<li><a href="../../docs/specs/SPEC-ZQL-DECLARATIVE-MUTATION-GRAMMAR.html" title="Technical Specification: ZQK Declarative Mutation Language (ZQL) Grammar, AST, and Variable Resolution">ZQK Declarative Mutation Language (ZQL) Grammar, AST, and Variable Resolution</a></li>
+<li><a href="../../docs/specs/SPEC-VALIDATION-RULE-DSL-GRAMMAR.html" title="Technical Specification: ZQK Declarative Validation &amp; Policy Rule DSL Grammar">ZQK Declarative Validation &amp; Policy Rule DSL Grammar</a></li>
+<li><a href="../../docs/specs/SPEC-OBJECT-INSPECTOR-CONSOLE-001.html" title="Technical Specification: ZQK Interactive Object Inspector Console &amp; Policy Studio">ZQK Interactive Object Inspector Console &amp; Policy Studio</a></li>
+<li><a href="../../docs/specs/SPEC-ZQL-TRANSACTION-EXECUTION.html" title="Technical Specification: ZQL ACID Transaction Execution, Staged Isolation, and Atomic Rollback">ZQL ACID Transaction Execution, Staged Isolation, and Atomic Rollback</a></li>
+<li><a href="../../docs/specs/SPEC-ZQL-PREFLIGHT-VALIDATION.html" title="Technical Specification: ZQL In-Memory Preflight Validation and Diagnostic Receipt Protocol">ZQL In-Memory Preflight Validation and Diagnostic Receipt Protocol</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Core Engines</span><span class="group-count">35</span></summary>
+<ul>
+<li><a href="../../pkg/README.html" title="Packages Directory">Packages Directory (pkg/)</a></li>
+<li><a href="../../pkg/storage/README.html" title="Storage Package">Storage Subsystem &amp; Providers</a></li>
+<li><a href="../../pkg/graph/README.html" title="Graph Backend Package">Graph Backend &amp; In-Memory Graph</a></li>
+<li><a href="../../pkg/coordination/README.html" title="Coordination Package - Event Coordination System (Spinal Cord)">Event Coordination (Spinal Cord)</a></li>
+<li><a href="../../pkg/concurrency/README.html" title="Concurrency Package">Concurrency &amp; Synchronization</a></li>
+<li><a href="../../pkg/pipeline/README.html" title="Pipeline Package">Autonomous Pipelines &amp; Steps</a></li>
+<li><a href="../../pkg/mcp/README.html" title="MCP Server Package">Model Context Protocol (MCP) Server</a></li>
+<li><a href="../../pkg/functional/README.html" title="Functional Error Handling with Metrics (`pkg/functional`)">Functional Error Monad (Result[T])</a></li>
+<li><a href="../../pkg/logging/README.html" title="Logging Package">Structured Zero-Allocation Logger</a></li>
+<li><a href="../../pkg/telemetry/README.html" title="Telemetry Package">Kernel Telemetry &amp; Metrics</a></li>
+<li><a href="../../pkg/validation/README.html" title="Validation Package">Schema &amp; Rule Validation Engine</a></li>
+<li><a href="../../pkg/translation/README.html" title="Translation engine">Query &amp; AST Translation Engine</a></li>
+<li><a href="../../pkg/loader/README.html" title="pkg/loader">Object &amp; Specification Loader</a></li>
+<li><a href="../../pkg/migration/README.html" title="Migration Tools Package">Database &amp; Schema Migration</a></li>
+<li><a href="../../pkg/migration/detector/README.html" title="Migration Binary Detector">Migration Binary Detector</a></li>
+<li><a href="../../pkg/goroutinelabels/README.html" title="Goroutine Builder and Pool Factory">Goroutine Thread Tracking</a></li>
+<li><a href="../../pkg/domain/organizational/README.html" title="Organizational Domain">Organizational Domain Models</a></li>
+<li><a href="../../pkg/testing/README.html" title="Test Configuration Package">Kernel Testing Harness</a></li>
+<li><a href="../../pkg/mcp/testing/README.html" title="MCP Testing Package">MCP Test Verification Harness</a></li>
+<li><a href="../../pkg/storage/change_journal_compaction.html" title="Change Journal Compaction and Compression">Storage — Journal Compaction</a></li>
+<li><a href="../../pkg/systemcheck/autofix/README.html" title="Auto-Fix Engine &amp; Remediation DAG (`pkg/systemcheck/autofix`)">Auto-Fix Engine &amp; Remediation DAG (`pkg/systemcheck/autofix`)</a></li>
+<li><a href="../../pkg/bootstrap/README.html" title="Bootstrap package">Kernel Bootstrap Seeding</a></li>
+<li><a href="../../pkg/cliapp/README.html" title="CLI Package">CLI Host</a></li>
+<li><a href="../../pkg/specialization/README.html" title="Cellular Specialization Tiers (`pkg/specialization`)">Cellular Specialization Tiers (`pkg/specialization`)</a></li>
+<li><a href="../../pkg/cliapp/context/README.html" title="Context Package">Execution Context &amp; Signals</a></li>
+<li><a href="../../pkg/shellcmd/README.html" title="Cross-Platform Shell Execution Engine (`pkg/shellcmd`)">Cross-Platform Shell Execution Engine (`pkg/shellcmd`)</a></li>
+<li><a href="../../pkg/search/README.html" title="In-Process Code Search Engine (`pkg/search`)">In-Process Code Search Engine (`pkg/search`)</a></li>
+<li><a href="../../pkg/seatworker/README.html" title="Mesh Seat Worker &amp; Supervisor Daemon (`pkg/seatworker`)">Mesh Seat Worker &amp; Supervisor Daemon (`pkg/seatworker`)</a></li>
+<li><a href="../../pkg/storage/binary/README.html" title="Positional Binary Storage (`pkg/storage/binary`)">Positional Binary Storage (`pkg/storage/binary`)</a></li>
+<li><a href="../../pkg/skills/README.html" title="ZQK Agent Skills Architecture: Evolutionary Breeding &amp; Generative Mutation">ZQK Agent Skills Architecture: Evolutionary Breeding &amp; Generative Mutation</a></li>
+<li><a href="../../pkg/screencap/README.html" title="ZQK Screen Capture &amp; Terminal Automation Engine (`pkg/screencap`)">ZQK Screen Capture &amp; Terminal Automation Engine (`pkg/screencap`)</a></li>
+<li><a href="../../pkg/systemcheck/asynccheck/README.html" title="pkg/systemcheck/asynccheck">pkg/systemcheck/asynccheck</a></li>
+<li><a href="../../pkg/systemcheck/congruence/README.html" title="pkg/systemcheck/congruence">pkg/systemcheck/congruence</a></li>
+<li><a href="../../pkg/systemcheck/integrity/README.html" title="pkg/systemcheck/integrity">pkg/systemcheck/integrity</a></li>
+<li><a href="../../pkg/systemcheck/snapshot/README.html" title="pkg/systemcheck/snapshot">pkg/systemcheck/snapshot</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Spec &amp; Command Builders</span><span class="group-count">7</span></summary>
+<ul>
+<li><a href="../../pkg/specbuilder/README.html" title="Spec-Driven Builder Pattern - Core Package">Spec-Driven Builder Pattern</a></li>
+<li><a href="../../pkg/cli/README.html" title="CLI Architecture &amp; Spec Command Builders">CLI Architecture &amp; Spec Framework</a></li>
+<li><a href="../../pkg/cli/bldr_cli_cmd_v1/README.html" title="CLI Command Builders (`bldr_cli_cmd_v1`)">CLI Command Builders (bldr_cli_cmd_v1)</a></li>
+<li><a href="../../pkg/specbuilder/bldr_v2/README.html" title="Spec Builders (bldr_v2)">Object Spec Builders (bldr_v2)</a></li>
+<li><a href="../../pkg/specbuilder/builders/README.html" title="Versioned Spec Builders">Versioned Spec Builders Engine</a></li>
+<li><a href="../../pkg/specbuilder/instance_builders/README.html" title="Instance Builders">Runtime Instance Builders</a></li>
+<li><a href="../../pkg/specbuilder/bootstrap/README.html" title="Bootstrap System">Specbuilder Bootstrap Package</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — CLI Commands &amp; Tooling</span><span class="group-count">4</span></summary>
+<ul>
+<li><a href="../../cmd/zqk/README.html" title="zqk CLI Commands">zqk Primary CLI Commands</a></li>
+<li><a href="../../cmd/zqk-shim/README.html" title="ZQK CLI Shim (`zqk-shim`)">zqk-shim Compatibility Shim</a></li>
+<li><a href="../../cmd/zqk/system/METRICS_ANALYSIS_README.html" title="Lock Metrics Analysis and Automatic Improvements">System Lock Metrics Analysis</a></li>
+<li><a href="../../cmd/zqk/system/TESTING.html" title="System package tests">System Test Suite &amp; Diagnostics</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Internal Runtime</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../../internal/README.html" title="Internal Packages Directory">Internal Packages Directory (internal/)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel DNA &amp; Object Schemas</span><span class="group-count">4</span></summary>
+<ul>
+<li><a href="../../kernel-specs/objects/README.html" title="Object Specs Directory">Object Specs Directory</a></li>
+<li><a href="../../kernel-specs/lifecycles/README.html" title="Readme">Readme</a></li>
+<li><a href="../../kernel-specs/traits/README.html" title="Trait Definitions">Trait Definitions</a></li>
+<li><a href="../../kernel-specs/configs/change_journal_entry_config.html" title="Change Journal Entry: Lifecycle, Collection, Aggregation, Bucketing">Change Journal Entry: Lifecycle, Collection, Aggregation, Bucketing</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Reference Manuals</span><span class="group-count">6</span></summary>
+<ul>
+<li><a href="../../docs/manual/README.html" title="Reference Manual">Reference Manual</a></li>
+<li><a href="../../docs/manual/MISSION_CONTROL_UI_VISUAL_GUIDE.html" title="Manual: Mission Control TUI, Web Studio &amp; Diagnostics Visual Guide">Mission Control TUI, Web Studio &amp; Diagnostics Visual Guide</a></li>
+<li><a href="../../docs/manual/OBJECT_INSPECTOR_AND_POLICY_STUDIO.html" title="Manual: Object Inspector &amp; Policy Studio Reference">Object Inspector &amp; Policy Studio Reference</a></li>
+<li><a href="../../docs/manual/ZPARQL_QUERY_LANGUAGE.html" title="ZPARQL Query Language Developer Manual">ZPARQL Query Language Developer Manual</a></li>
+<li><a href="../../docs/manual/CLI_REFERENCE.html" title="ZQK CLI Command Reference &amp; Operator Manual">ZQK CLI Command Reference &amp; Operator Manual</a></li>
+<li><a href="../../docs/manual/ZQL_MUTATIONS.html" title="ZQL Declarative Mutations Developer Manual">ZQL Declarative Mutations Developer Manual</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">How-To &amp; Incident Runbooks</span><span class="group-count">9</span></summary>
+<ul>
+<li><a href="../../docs/howto/README.html" title="How-To Guides">How-To Guides</a></li>
+<li><a href="../../docs/runbooks/README.html" title="Operational Incident Runbooks">Operational Incident Runbooks</a></li>
+<li><a href="../../scripts/scheduler_jobs/README.html" title="Scheduler Job Templates">Scheduler Job Templates</a></li>
+<li><a href="../../docs/howto/INSPECT_AND_VALIDATE_OBJECTS.html" title="How-To: Inspect, Link, and Validate Knowledge Kernel Objects">How-To: Inspect, Link, and Validate Knowledge Kernel Objects</a></li>
+<li><a href="../../docs/runbooks/RB-CAS-001-CAS-CORRUPTION-RECOVERY.html" title="RB-CAS-001: Content-Addressed Storage (CAS) Hash Mismatch and Quarantine Exhaustion">RB-CAS-001: Content-Addressed Storage (CAS) Hash Mismatch and Quarantine Exhaustion</a></li>
+<li><a href="../../docs/runbooks/RB-LCK-001-LOCK-CONTENTION-DEADLOCKS.html" title="RB-LCK-001: Concurrency Lock Contention and Deadlock Resolution">RB-LCK-001: Concurrency Lock Contention and Deadlock Resolution</a></li>
+<li><a href="../../docs/runbooks/RB-SCH-001-SCHEDULER-DAEMON-TRIAGE.html" title="RB-SCH-001: Scheduler Daemon Exit Cascades and Job Triage">RB-SCH-001: Scheduler Daemon Exit Cascades and Job Triage</a></li>
+<li><a href="../../docs/runbooks/RB-WAL-001-WAL-COMPACTION-FAILURES.html" title="RB-WAL-001: Write-Ahead Log (WAL) Compaction Failures">RB-WAL-001: Write-Ahead Log (WAL) Compaction Failures</a></li>
+<li><a href="../../docs/howto/SCHEDULER_AND_MAINTENANCE.html" title="Use the scheduler and maintenance jobs">Use the scheduler and maintenance jobs</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Tutorials, Demos &amp; Guides</span><span class="group-count">14</span></summary>
+<ul>
+<li><a href="../../docs/guides/README.html" title="Developer &amp; Agent Guides">Developer &amp; Agent Guides Index</a></li>
+<li><a href="../../docs/tutorials/README.html" title="Tutorials">Tutorials</a></li>
+<li><a href="../../docs/demos/README.html" title="ZQK Core Interactive Demonstrations &amp; Visual Showcase">ZQK Core Interactive Demonstrations &amp; Visual Showcase</a></li>
+<li><a href="../../docs/guides/ZQL_ZPARQL_AGENT_GUIDE.html" title="Agent &amp; Developer Guide: Declarative Graph Queries (ZPARQL) and Atomic Mutations (ZQL)">ZQL &amp; ZPARQL Graph Operations</a></li>
+<li><a href="../../docs/guides/SINGLE_COMMAND_EXECUTION_LOOP_GUIDE.html" title="Developer &amp; Agent Guide: Autonomous Single-Command Execution Loop (`zqk do`)">Single-Command Loop (zqk do)</a></li>
+<li><a href="../../docs/guides/POLICY_CREATION_AND_VALIDATION_DSL_GUIDE.html" title="Developer &amp; Agent Guide: Custom Validation Policy Creation &amp; Rule DSL">Custom Policy &amp; Rule DSL</a></li>
+<li><a href="../../docs/guides/DIAGNOSTICS_SELF_HEALING_AND_REMEDY_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Kernel Diagnostics, Auto-Remedies &amp; Self-Healing">Diagnostics &amp; Self-Healing</a></li>
+<li><a href="../../docs/guides/KERNEL_OBJECT_USAGE_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Kernel Object Model &amp; Usage Guide">Kernel Object Model &amp; Usage Guide</a></li>
+<li><a href="../../docs/guides/KNOWLEDGE_MANAGEMENT_AND_SEMANTIC_RECALL_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Management, Vocabularies, Libraries, and On-Demand Semantic Recall">Knowledge Management &amp; Semantic Recall</a></li>
+<li><a href="../../docs/guides/AGENT_ORCHESTRATION_AND_SWARM_COLLABORATION_GUIDE.html" title="Developer &amp; Agent Guide: Multi-Agent Swarm Orchestration &amp; Mesh Collaboration">Swarm Orchestration &amp; Mesh</a></li>
+<li><a href="../../docs/guides/OBJECT_LIFECYCLE_AND_CAS_STORAGE_GUIDE.html" title="Developer &amp; Agent Guide: Object Lifecycle, State Machines, and Content-Addressed Storage (CAS)">Object Lifecycle, States &amp; CAS</a></li>
+<li><a href="../../docs/guides/VISION_TO_EXECUTION_ORCHESTRATION_GUIDE.html" title="From Vision to Code: Complete Multi-Agent Orchestration Walkthrough">From Vision to Code: Complete Multi-Agent Orchestration Walkthrough</a></li>
+<li><a href="../../docs/guides/SCREEN_CAPTURE_AND_TERMINAL_AUTOMATION.html" title="Screen Capture &amp; Terminal Automation Guide">Screen Capture &amp; Terminal Automation Guide</a></li>
+<li><a href="../../docs/tutorials/INTERACTIVE_OBJECT_INSPECTION_TUTORIAL.html" title="Tutorial: Interactive Object Inspection, Mission Control &amp; Visual Studio">Interactive Object Inspection, Mission Control &amp; Visual Studio</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Agent Skills &amp; Protocols</span><span class="group-count">16</span></summary>
+<ul>
+<li><a href="../../skills/zqk-expert/SKILL.html" title="ZQK Expert">ZQK Expert</a></li>
+<li><a href="../../skills/community-feed-correspondence/SKILL.html" title="Agent Feed Correspondence">Agent Feed Correspondence</a></li>
+<li><a href="../../skills/zqk-expert/references/data-cell.html" title="Data cell model (logical unit + storage profiles)">Data cell model (logical unit + storage profiles)</a></li>
+<li><a href="../../skills/community-distributed-systems/SKILL.html" title="Elite Distributed Systems Engineering: Event-Driven, Resilient &amp; Self-Healing">Elite Distributed Systems Engineering: Event-Driven, Resilient &amp; Self-Healing</a></li>
+<li><a href="../../skills/community-functional-craftsman/SKILL.html" title="Elite Functional &amp; Readable Code Craftsmanship">Elite Functional &amp; Readable Code Craftsmanship</a></li>
+<li><a href="../../skills/community-object-steward/SKILL.html" title="Kernel Object Stewardship (CLI-only CAS)">Kernel Object Stewardship (CLI-only CAS)</a></li>
+<li><a href="../../skills/zqk-expert/references/code-search.html" title="Native Code Search &amp; AST Inspection (`zqk grep` / `zgrep`)">Native Code Search &amp; AST Inspection (`zqk grep` / `zgrep`)</a></li>
+<li><a href="../../skills/community-ontological-architecture/SKILL.html" title="Ontological Architecture &amp; Verifiable Decomposition">Ontological Architecture &amp; Verifiable Decomposition</a></li>
+<li><a href="../../skills/community-qa-verification/SKILL.html" title="QA Audit and Done-Gate Verification">QA Audit and Done-Gate Verification</a></li>
+<li><a href="../../skills/community-code-craftsman/SKILL.html" title="Software Engineering and Code Craftsmanship">Software Engineering and Code Craftsmanship</a></li>
+<li><a href="../../skills/zqk-expert/references/stream-storage.html" title="Stream Storage: Append-Only Segments for High-Volume Kinds">Stream Storage: Append-Only Segments for High-Volume Kinds</a></li>
+<li><a href="../../skills/community-arch-design/SKILL.html" title="System Architecture and Package Boundary Design">System Architecture and Package Boundary Design</a></li>
+<li><a href="../../skills/zqk-expert/references/tpm-orchestration.html" title="TPM orchestration plane (Gantt matrix + branch collaboration)">TPM orchestration plane (Gantt matrix + branch collaboration)</a></li>
+<li><a href="../../skills/community-tpm-orchestration/SKILL.html" title="Technical Program Management and Swarm Orchestration">Technical Program Management and Swarm Orchestration</a></li>
+<li><a href="../../skills/zqk-expert/references/testing.html" title="Testing standards (ZQK agents)">Testing standards (ZQK agents)</a></li>
+<li><a href="../../skills/zqk-expert/references/vds.html" title="Verifiable Decomposition Spine (VDS) — skill reference">Verifiable Decomposition Spine (VDS) — skill reference</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Maintenance &amp; Development</span><span class="group-count">3</span></summary>
+<ul>
+<li><a href="../../docs/explanation/README.html" title="Conceptual Architecture &amp; Design Philosophy: The Knowledge Kernel">Conceptual Architecture &amp; Design Philosophy: The Knowledge Kernel</a></li>
+<li><a href="../../docs/development/README.html" title="Maintenance and Development Guide">Maintenance and Development Guide</a></li>
+<li><a href="../../docs/development/POLICY_GOVERNANCE_AND_DURABILITY.html" title="Policy Governance, Durability, and Maintenance Conventions">Policy Governance, Durability, and Maintenance Conventions</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Quality &amp; Evaluation</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../../docs/quality/README.html" title="First-Run Quality &amp; Verification Gates">First-Run Quality &amp; Verification Gates</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Framework &amp; Governance</span><span class="group-count">11</span></summary>
+<ul>
+<li><a href="../../docs/quality/codebase_evaluation/README.html" title="Codebase Evaluation Framework (CEF) Overview">Overview &amp; Quickstart</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/CONSTITUTION.html" title="CEF Constitution (Binding Rules &amp; Evidence Grades)">Constitution (Binding Rules)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/DIAMOND_SCALE.html" title="Diamond Scale Multi-Axis Quality Grading">Diamond Scale Grading</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/WAVE_PLAN.html" title="Multi-Wave Analysis Execution Plan">Multi-Wave Plan</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/LENSES.html" title="Evaluation Lens Catalog &amp; Density Rules">Evaluation Lens Catalog</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/DIAGRAM_CONTRACT.html" title="Diagram Contract &amp; Architecture Anchoring">Diagram Contract</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/OPERATOR.html" title="Operator Quickstart Runbook">Operator Runbook</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/KICKOFF_PROMPT.html" title="Solo Operator Kickoff Prompt">Solo Kickoff Prompt</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/HANDOFF_SCHEMA.html" title="Handoff Schema &amp; Downstream Integration">Handoff Schema</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/EXTENSIONS.html" title="Framework Extensions &amp; Adapter Architecture">Extensions &amp; Adapters</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/adapters/go.html" title="Go Language Adapter Specification">Go Language Adapter</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Evaluation Rubrics</span><span class="group-count">12</span></summary>
+<ul>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-ARCHITECTURE.html" title="Architecture &amp; Abstractions Rubric (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-CODE-QUALITY.html" title="Code Quality &amp; Maintainability Rubric (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-CONCURRENCY.html" title="Concurrency &amp; Synchronization Rubric (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-USABILITY.html" title="Developer Usability &amp; Ergonomics Rubric (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-DOCS-MODEL.html" title="Documentation &amp; Domain Model Rubric (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-OBSERVABILITY.html" title="Observability &amp; Diagnostics Rubric (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-PERFORMANCE.html" title="Performance &amp; Complexity Rubric (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-PREFLIGHT.html" title="Preflight &amp; Inventory Rubric (L-PREFLIGHT)">L-PREFLIGHT — Preflight &amp; Inventory</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-RELIABILITY.html" title="Reliability &amp; Error Recovery Rubric (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-SECURITY.html" title="Security &amp; Threat Modeling Rubric (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-SUPPLY-RELEASE.html" title="Supply Chain &amp; Packaging Rubric (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/rubrics/L-TESTING.html" title="Test Strategy &amp; Invariant Proofs Rubric (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Specialist Prompts</span><span class="group-count">13</span></summary>
+<ul>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-ARCHITECTURE/specialist.html" title="Architecture &amp; Abstractions Specialist Evaluator Prompt (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/_SHARED_PREAMBLE.html" title="CEF Shared Agent Preamble">Shared Agent Preamble</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-CODE-QUALITY/specialist.html" title="Code Quality &amp; Maintainability Specialist Evaluator Prompt (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-CONCURRENCY/specialist.html" title="Concurrency &amp; Synchronization Specialist Evaluator Prompt (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-USABILITY/specialist.html" title="Developer Usability &amp; Ergonomics Specialist Evaluator Prompt (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-DOCS-MODEL/specialist.html" title="Documentation &amp; Domain Model Specialist Evaluator Prompt (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-INTEGRATOR/specialist.html" title="Lead Integrator &amp; Synthesis Specialist Prompt">L-INTEGRATOR — Lead Integrator</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-OBSERVABILITY/specialist.html" title="Observability &amp; Diagnostics Specialist Evaluator Prompt (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-PERFORMANCE/specialist.html" title="Performance &amp; Complexity Specialist Evaluator Prompt (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-RELIABILITY/specialist.html" title="Reliability &amp; Error Recovery Specialist Evaluator Prompt (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-SECURITY/specialist.html" title="Security &amp; Threat Modeling Specialist Evaluator Prompt (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-SUPPLY-RELEASE/specialist.html" title="Supply Chain &amp; Packaging Specialist Evaluator Prompt (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging (Specialist)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-TESTING/specialist.html" title="Test Strategy &amp; Invariant Proofs Specialist Evaluator Prompt (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs (Specialist)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Adversarial Prompts</span><span class="group-count">11</span></summary>
+<ul>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-ARCHITECTURE/adversarial.html" title="Architecture &amp; Abstractions Adversarial Auditor Prompt (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-CODE-QUALITY/adversarial.html" title="Code Quality &amp; Maintainability Adversarial Auditor Prompt (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-CONCURRENCY/adversarial.html" title="Concurrency &amp; Synchronization Adversarial Auditor Prompt (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-USABILITY/adversarial.html" title="Developer Usability &amp; Ergonomics Adversarial Auditor Prompt (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-DOCS-MODEL/adversarial.html" title="Documentation &amp; Domain Model Adversarial Auditor Prompt (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-OBSERVABILITY/adversarial.html" title="Observability &amp; Diagnostics Adversarial Auditor Prompt (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-PERFORMANCE/adversarial.html" title="Performance &amp; Complexity Adversarial Auditor Prompt (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-RELIABILITY/adversarial.html" title="Reliability &amp; Error Recovery Adversarial Auditor Prompt (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-SECURITY/adversarial.html" title="Security &amp; Threat Modeling Adversarial Auditor Prompt (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-SUPPLY-RELEASE/adversarial.html" title="Supply Chain &amp; Packaging Adversarial Auditor Prompt (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging (Adversarial)</a></li>
+<li><a href="../../docs/quality/codebase_evaluation/prompts/L-TESTING/adversarial.html" title="Test Strategy &amp; Invariant Proofs Adversarial Auditor Prompt (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs (Adversarial)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Open Core Governance</span><span class="group-count">5</span></summary>
+<ul>
+<li><a href="../../README.html" title="ZQK OS">ZQK OS</a></li>
+<li><a href="../../CONTRIBUTING.html" title="Contributing to ZQK Community Edition">Contributing to ZQK Community Edition</a></li>
+<li><a href="../../CODE_OF_CONDUCT.html" title="Contributor Covenant Code of Conduct">Contributor Covenant Code of Conduct</a></li>
+<li><a href="../../GOVERNANCE.html" title="Project Governance">Project Governance</a></li>
+<li><a href="../../SECURITY.html" title="Security policy">Security policy</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Agent Directives &amp; Protocols</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../../agents/AGENTS.html" title="ZQK Agent Boot Protocol">ZQK Agent Boot Protocol</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Reference</span><span class="group-count">3</span></summary>
+<ul>
+<li><a href="../../docs/reference/README.html" title="Reference Documentation">Reference Documentation</a></li>
+<li><a href="../../docs/reference/CLI_REFERENCE.html" title="ZQK CLI Command Reference &amp; Operator Manual">ZQK CLI Command Reference &amp; Operator Manual</a></li>
+<li><a href="../../docs/reference/KERNEL_CONFIGURATIONS_GUIDE.html" title="ZQK Knowledge Kernel Configurations Reference">ZQK Knowledge Kernel Configurations Reference</a></li>
+</ul>
+</details>
+</nav>
+    </aside>
+    <article class="doc-body">
+      <div class="breadcrumb">
+        <div class="breadcrumb-trail">
+          <a href="../../index.html">Docs</a> &raquo; <span>Architecture &amp; Foundation</span> &raquo; <span class="current">Tiered Storage, Subtree Flattening, and Archival Lifecycle</span>
+        </div>
+        <a href="../../docs/architecture/TIERED_STORAGE_AND_ARCHIVAL_LIFECYCLE.md" class="raw-md-link" title="View canonical Markdown source">Raw .md</a>
+      </div>
+      <div class="markdown-body">
+        <h1 id="tiered-storage-subtree-flattening-and-archival-lifecycle">Tiered Storage, Subtree Flattening, and Archival Lifecycle</h1>
+<blockquote>
+<p><strong>Technical Specification:</strong> <code>TSP-TIERED-STORAGE-ARCHIVE-001</code><br />
+<strong>Governing Policy:</strong> <code>POL-STORAGE-RETENTION-001</code><br />
+<strong>Status:</strong> Approved / Active Architecture<br />
+<strong>Target Audience:</strong> Core Storage Architects, DevOps, Agent Operators, Platform Engineers</p>
+</blockquote>
+<hr />
+<h2 id="1-executive-summary-scaling-mandate">1. Executive Summary &amp; Scaling Mandate</h2>
+<p>In high-velocity AI coding environments, autonomous agent swarms produce immense volumes of process entities: goals, milestones, requirements, acceptance criteria, backlog items, tasks, and verification receipts. </p>
+<p>Historically, setting an entity's status to <code>archived</code> was purely a metadata label—the underlying YAML blob remained loose on local disk in <code>.zqk/process/&lt;kind&gt;/&lt;hash&gt;.yaml</code>. As the graph expands past tens of thousands of objects:</p>
+<ul>
+<li><strong>Filesystem &amp; Inode Exhaustion:</strong> Directory walking across 20,000+ files degrades filesystem caching and inflates I/O wait.</li>
+<li><strong>System Check Scan Penalties:</strong> Discovery routines must evaluate thousands of dead objects during every validation pass.</li>
+<li><strong>Active Edge Ambiguity:</strong> Completed historical nodes clutter active graph traversal queries.</li>
+</ul>
+<p>This architecture introduces <strong>Tiered Storage and Subgraph Archival</strong>, converting loose historical objects into <strong>immutable Semantic Capsules</strong> across a 4-tier lifecycle: <strong>Hot → Warm → Cold → Abyss</strong>.</p>
+<hr />
+<h2 id="2-the-4-tier-storage-topology">2. The 4-Tier Storage Topology</h2>
+<pre class="mermaid">flowchart TD
+    subgraph Tier0["Tier 0: HOT STORAGE (Active CAS Plane)"]
+        H1[".zqk/process/[kind]/[hash].yaml"]
+        H2["Loose CAS Blobs - Mutable Edges - 0ms Read/Write"]
+    end
+
+    subgraph Tier1["Tier 1: WARM STORAGE (Local Capsule Archive)"]
+        W1[".zqk/archive/bundles/[ROOT-ID].capsule.zst"]
+        W2["Apoptotic Plane - Strictly Immutable - Transparent Read-Through"]
+        W3["85-92% Storage and File Reduction"]
+    end
+
+    subgraph Tier2["Tier 2: COLD STORAGE (Detached Remote Vault)"]
+        C1["Remote Object Store (S3 / GCS / Git LFS / ~/.zqk/cold-vault)"]
+        C2["0 Bytes Local Payload - Tombstone Locator in Index"]
+        C3["On-Demand Fetch: Remote vault rehydration / zqk system state-restore"]
+    end
+
+    subgraph Tier3["Tier 3: THE ABYSS (A-Bits / Cryptographic Purge)"]
+        A1["Erased Data Payload (0 Bytes Local and Remote)"]
+        A2["Immutable Merkle Receipt in .zqk/streams/ WAL"]
+        A3["Non-Repudiation and Cryptographic Audit Proof"]
+    end
+
+    Tier0 --&gt;|Inactivity / Storage Watermark Trigger| Tier1
+    Tier1 --&gt;|Warm Retention Expiry / Local Quota Breach| Tier2
+    Tier2 --&gt;|Policy Expiration / Retention Purge| Tier3
+</pre>
+<h3 id="storage-tier-specification">Storage Tier Specification</h3>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th style="text-align: left;">Tier</th>
+<th style="text-align: left;">Lifecycle Plane</th>
+<th style="text-align: left;">Storage Media</th>
+<th style="text-align: left;">Index Footprint</th>
+<th style="text-align: left;">Read SLA</th>
+<th style="text-align: left;">Mutation Policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Hot</strong></td>
+<td style="text-align: left;"><code>promoted</code></td>
+<td style="text-align: left;">Loose CAS YAML (<code>.zqk/process/</code>)</td>
+<td style="text-align: left;">Full In-Memory Cache</td>
+<td style="text-align: left;">&lt; 1ms direct disk</td>
+<td style="text-align: left;">Fully mutable (via Mode A or Mode B socket)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Warm</strong></td>
+<td style="text-align: left;"><code>apoptotic</code></td>
+<td style="text-align: left;">Compressed Capsule (<code>.capsule.zst</code>)</td>
+<td style="text-align: left;">Tombstone Pointer in CAS Index</td>
+<td style="text-align: left;">1–2ms in-memory stream</td>
+<td style="text-align: left;"><strong>Forbidden</strong> (Mathematically Immutable)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Cold</strong></td>
+<td style="text-align: left;"><code>apoptotic</code></td>
+<td style="text-align: left;">Detached Vault (S3/GCS/FS)</td>
+<td style="text-align: left;">Remote URL Locator</td>
+<td style="text-align: left;">Network fetch on-demand</td>
+<td style="text-align: left;"><strong>Forbidden</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Abyss</strong></td>
+<td style="text-align: left;"><code>purged</code></td>
+<td style="text-align: left;">Zeroed (WAL Audit stream only)</td>
+<td style="text-align: left;">Historical Merkle Hash</td>
+<td style="text-align: left;">Non-recoverable (Proof only)</td>
+<td style="text-align: left;"><strong>Permanent Eviction</strong></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="3-subtree-flattening-semantic-compression">3. Subtree Flattening &amp; Semantic Compression</h2>
+<p>Archival operates at <strong>subgraph granularity</strong>, not object isolation. A <code>Goal</code> roots a directed acyclic graph (DAG):</p>
+<pre class="mermaid">flowchart LR
+    Goal["Goal"] --&gt; Milestones["Milestones"] --&gt; Requirements["Requirements"] --&gt; Criteria["Criteria / BLIs"] --&gt; Tasks["Tasks"] --&gt; QARecords["QA Records"]
+</pre>
+<h3 id="archival-pipeline">Archival Pipeline</h3>
+<pre class="mermaid">flowchart LR
+    subgraph Loose["Loose CAS Objects (100+ files)"]
+        direction TB
+        L_GOAL["GOAL-001 (Root)"]
+        L_MIL["- MIL-001, MIL-002"]
+        L_REQ["- REQ-010..030"]
+        L_BLI["- BLI-100..150"]
+        L_QA["- QA-001..090"]
+    end
+
+    subgraph Capsule["Immutable Semantic Capsule"]
+        direction TB
+        C_CAP["GOAL-001.capsule.zst"]
+        C_MAN["- manifest.json"]
+        C_TOP["- topology.json"]
+        C_NAR["- narrative_summary.md"]
+        C_BLOB["- blobs.bin.zst"]
+    end
+
+    Loose --&gt;|Archival Compactor: Flatten and Compress| Capsule
+    Loose -.-&gt;|Pruned from .zqk/process/| Pruned["Clean Working Tree"]
+    Capsule -.-&gt;|Lightweight Tombstone Pointer| Index["Index Entry in .zqk/process/goals/.goal.index"]
+</pre>
+<h3 id="31-pipeline-execution-stages">3.1 Pipeline Execution Stages</h3>
+<ol>
+<li><strong>Cascade Boundary Traversal:</strong> The compactor starts at <code>GOAL-xxx</code> and recursively collects all transitive child references.</li>
+<li><strong>Terminal Invariant Gate:</strong> Archival fails closed if any child object is non-terminal (e.g. <code>in_progress</code>, <code>open</code>, <code>under_review</code>).</li>
+<li><strong>Capsule Artifact Compilation:</strong>
+   - <code>manifest.json</code>: Root metadata, schema version, object inventory, and SHA-256 digests.
+   - <code>topology.json</code>: Inter-object reference graph preserving causal lineage.
+   - <code>narrative_summary.md</code>: Synthesized human- and LLM-readable summary detailing objectives delivered, completion dates, test pass metrics, and final commit SHAs.
+   - <code>blobs.bin.zst</code>: Zstandard level 19 compressed stream of all raw YAML files.</li>
+<li><strong>Hot Storage Pruning:</strong> Loose YAML files are deleted from <code>.zqk/process/</code>.</li>
+<li>
+<p><strong>CAS Index Tombstone:</strong> A tombstone record replaces the loose file entry:
+   <code>json
+   {
+     "id": "GOAL-001",
+     "tier": "warm",
+     "capsule_ref": ".zqk/archive/bundles/GOAL-001.capsule.zst",
+     "capsule_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+     "plane": "apoptotic",
+     "archived_at": "2026-09-19T10:15:00Z"
+   }</code></p>
+</li>
+<li>
+<p><strong>Apoptotic Plane Isolation:</strong> The object is assigned to <code>dna.PlaneApoptotic</code>. Apoptotic objects are strictly rejected from participating in active graph edges.</p>
+</li>
+</ol>
+<hr />
+<h2 id="4-configurable-retention-windows-zero-hardcoding">4. Configurable Retention Windows (Zero Hardcoding)</h2>
+<p>Per policy <code>POL-STORAGE-RETENTION-001</code>, <strong>no retention duration or tier boundary may be hardcoded</strong>. Environments exhibit vastly different throughput:</p>
+<ul>
+<li><strong>Ephemeral CI / Testbeds:</strong> High churn; hot retention measured in hours.</li>
+<li><strong>Developer Workstations:</strong> Medium churn; hot retention measured in days.</li>
+<li><strong>Regulated Enterprise Clusters:</strong> Low churn, high audit retention; cold storage retained for years.</li>
+</ul>
+<h3 id="dynamic-configuration-file-configarchive_policyyaml">Dynamic Configuration File: <code>config/archive_policy.yaml</code></h3>
+<pre><code class="language-yaml"># ZQK Archival Lifecycle &amp; Tiered Storage Configuration
+version: &quot;1.0&quot;
+
+tier_transitions:
+  hot:
+    # Time an object must remain in a terminal state before being eligible for warm compaction
+    inactivity_threshold: &quot;${ZQK_ARCHIVE_HOT_INACTIVITY:-30d}&quot;
+    terminal_grace_period: &quot;${ZQK_ARCHIVE_HOT_GRACE:-7d}&quot;
+
+    # Capacity watermarks that trigger early proactive compaction sweeps
+    max_volume_bytes: &quot;${ZQK_ARCHIVE_MAX_HOT_BYTES:-524288000}&quot;   # 500 MiB
+    max_object_count: &quot;${ZQK_ARCHIVE_MAX_HOT_OBJECTS:-5000}&quot;
+    auto_compact_on_watermark: true
+
+  warm:
+    # Duration capsules remain in local warm storage before offloading to cold vault
+    retention_threshold: &quot;${ZQK_ARCHIVE_WARM_RETENTION:-90d}&quot;
+    max_local_archive_bytes: &quot;${ZQK_ARCHIVE_MAX_WARM_BYTES:-5368709120}&quot; # 5 GiB
+    compression:
+      algorithm: &quot;zstd&quot;
+      level: 19
+
+  cold:
+    # Duration objects remain in external cold storage before abyss purge
+    retention_threshold: &quot;${ZQK_ARCHIVE_COLD_RETENTION:-365d}&quot; # e.g. '7y' or 'infinite'
+    vault:
+      backend: &quot;${ZQK_COLD_VAULT_BACKEND:-local_vault}&quot; # local_vault | s3 | gcs | git_lfs
+      endpoint: &quot;${ZQK_COLD_VAULT_ENDPOINT:-~/.zqk/cold-vault}&quot;
+      bucket: &quot;${ZQK_COLD_VAULT_BUCKET:-zqk-archive-cold}&quot;
+      prefix: &quot;vault/capsules&quot;
+      auto_offload_trigger: &quot;quota_breach&quot; # immediate | scheduled | quota_breach
+
+  abyss:
+    # Window before final eviction from cold vault
+    purge_after_duration: &quot;${ZQK_ABYSS_PURGE_DURATION:-never}&quot; # 'never' preserves cold vault indefinitely
+    preserve_audit_merkle_receipt: true # Guarantees non-repudiation in .zqk/streams/
+</code></pre>
+<hr />
+<h2 id="5-developer-agent-experience-access-model">5. Developer &amp; Agent Experience (Access Model)</h2>
+<p>Archival must never result in dangling pointers or confusing "Object Not Found" errors.</p>
+<h3 id="51-transparent-read-through-zqk-object-get">5.1 Transparent Read-Through (<code>zqk object get</code>)</h3>
+<p>When an agent or user retrieves an archived entity:</p>
+<pre><code class="language-bash">./bin/zqk object get GOAL-001
+</code></pre>
+<p>The CLI detects the tombstone record in the index:</p>
+<ol>
+<li>
+<p><strong>Warm Capsule:</strong> The engine streams the capsule header, parses <code>GOAL-001</code>, and outputs the object with an archival badge:
+   <code>[WARM ARCHIVE: .zqk/archive/bundles/GOAL-001.capsule.zst | Apoptotic Plane | Immutable]
+   id: GOAL-001
+   title: "Complete Core Microkernel DNA Architecture"
+   status: archived
+   ...</code></p>
+</li>
+<li>
+<p><strong>Cold Storage:</strong> If the local bundle was offloaded:
+   <code>⚠️ Object GOAL-001 resides in COLD STORAGE (Vault: s3://zqk-archive-cold/vault/capsules/GOAL-001.capsule.zst)
+   Payload not present on local disk. Restore state snapshot or fetch capsule:
+     zqk system state-restore --snapshot-file &lt;path&gt;</code></p>
+</li>
+</ol>
+<h3 id="52-executive-timeline-inspection-zqk-object-get-zqk-system-state-diff">5.2 Executive Timeline Inspection (<code>zqk object get</code> / <code>zqk system state-diff</code>)</h3>
+<p>Rather than sifting through hundreds of raw YAMLs, operators inspect the synthesized narrative or compare snapshots:</p>
+<pre><code class="language-bash">./bin/zqk object get GOAL-001 --format yaml
+./bin/zqk system state-diff --snapshot-file .zqk-state/system-state.csnap
+</code></pre>
+<p>Outputs the compiled executive history:</p>
+<ul>
+<li>Objective and final deliverables</li>
+<li>All satisfied requirements and graduation test suites</li>
+<li>Velocity analytics (commit hashes, contributors, duration)</li>
+<li>Cryptographic SHA-256 CAS verification tree</li>
+</ul>
+<h3 id="53-fail-closed-mutation-shield">5.3 Fail-Closed Mutation Shield</h3>
+<p>Attempts to modify an archived entity:</p>
+<pre><code class="language-bash">./bin/zqk object update GOAL-001 --field title=&quot;Altered Goal&quot;
+</code></pre>
+<p>Fails closed with immediate rejection:</p>
+<pre><code>Error: plane boundary violation: object GOAL-001 resides in plane 'apoptotic'.
+Warm capsules are mathematically immutable. To modify this object, unarchive or restore:
+  zqk system state-restore --snapshot-file &lt;path&gt;
+</code></pre>
+<h3 id="54-rehydration-state-restoration-workflow-zqk-system-state-restore">5.4 Rehydration / State Restoration Workflow (<code>zqk system state-restore</code>)</h3>
+<p>If a project is revived or requires new active iteration:</p>
+<pre><code class="language-bash">./bin/zqk system state-restore --snapshot-file .zqk-state/system-state.csnap
+</code></pre>
+<ol>
+<li>Decompresses the snapshot archive.</li>
+<li>Restores individual objects back into <code>.zqk/process/&lt;kind&gt;/</code>.</li>
+<li>Computes CAS hashes and restores active index pointers.</li>
+<li>Transitions plane from <code>apoptotic</code> back to <code>staged</code> or <code>promoted</code>.</li>
+<li>Removes the tombstone pointer.</li>
+</ol>
+<hr />
+<h2 id="6-verification-and-operational-hygiene">6. Verification and Operational Hygiene</h2>
+<p>The tiered storage engine integrates into <strong>Layer 4 Storage &amp; I/O Telemetry</strong>:</p>
+<ul>
+<li><code>zqk system check</code> reports:</li>
+<li>Total Hot CAS files and volume size.</li>
+<li>Number of local Warm Capsules and volume reduction ratio.</li>
+<li>Number of Cold Vault references.</li>
+<li>Verification that 0 apoptotic objects participate in active edges.</li>
+</ul>
+<hr />
+<h2 id="7-traceability-backlog-verification">7. Traceability &amp; Backlog Verification</h2>
+<p>This architecture is implemented and verified by <code>pkg/resourcehygiene</code> and CLI commands under <code>zqk system resource-hygiene</code>.</p>
+<hr />
+<h2 id="8-hot-storage-resource-caching-concurrency-hardening">8. Hot Storage Resource Caching &amp; Concurrency Hardening</h2>
+<p>Within the active Tier 0 (Hot) storage plane, <code>storage.ResourceCache[T]</code> manages lazily initialized, long-lived resources (such as <code>ObjectStorageProvider</code> routing instances and CAS file handles).</p>
+<h3 id="concurrency-invariants-promise-model">Concurrency Invariants &amp; Promise Model</h3>
+<ol>
+<li><strong>Channel Promise Synchronization (<code>ready chan struct{}</code>)</strong>: Rather than utilizing standard <code>sync.Once</code> which permanently records errors on initial failure, <code>ResourceCache</code> employs channel promise synchronizers. Waiting concurrent goroutines block on <code>&lt;-cached.ready</code> or the caller's context (<code>select { case &lt;-ctx.Done(): ... case &lt;-cached.ready: ... }</code>).</li>
+<li><strong>Atomic Transient Error Eviction (<code>CompareAndDelete</code>)</strong>: If an <code>initFunc</code> encounters a transient timeout, context cancellation, or I/O failure, the failed entry is evicted atomically via <code>sync.Map.CompareAndDelete(key, cached)</code>. This guarantees that subsequent or concurrent callers unwedge and retry initialization cleanly without poisoning the process-lifetime cache or deleting entries initialized by competing contenders.</li>
+<li><strong>In-Flight <code>Get()</code> Guarding</strong>: Non-blocking <code>Get(key)</code> queries evaluate promise readiness via <code>select { case &lt;-cached.ready: ... default: return zero, false }</code>. If initialization is in flight, <code>Get()</code> reports a cache miss (<code>false</code>) rather than returning zero-value uninitialized state as a false cache hit.</li>
+</ol>
+      </div>
+    </article>
+  </main>
+  <script src="../../search/search-index.js?v=72f6fac4"></script>
+</body>
+</html>

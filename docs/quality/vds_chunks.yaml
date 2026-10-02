@@ -1,0 +1,85 @@
+# ZQK Public Release Verification Driven Specification (VDS) Chunks.
+# Evaluated via: zqk workflow vds evaluate --format json
+schema: zqk_vds_chunks_v1
+chunks:
+  - chunk_id: launch-kernel-isolation
+    stage: operate_release
+    claim: ZQK CLI and runtime operations resolve this checkout kernel in hermetic isolation
+    rubric_ref: POL-KERNEL-ISOLATION
+    dsl_checks:
+      - path_exists:config/zqk.yaml
+      - path_exists:cmd/zqk/main.go
+    evidence_refs:
+      - config/zqk.yaml
+      - cmd/zqk/main.go
+    gate_operate: yes
+    independent_verify: yes
+    notes: Hermetic isolation is project root + config; no dependencies on external studio kernel.
+
+  - chunk_id: launch-documentation-completeness
+    stage: operate_release
+    claim: First-run onboarding, quickstart, and architecture indexes are present and verified
+    rubric_ref: POL-DOC-COMPLETENESS
+    dsl_checks:
+      - path_exists:docs/onboarding/COMMUNITY_FIRST_RUN.md
+      - path_exists:docs/onboarding/AI_AGENT_ONBOARDING.md
+      - path_exists:docs/architecture/README.md
+      - path_exists:docs/architecture/INDEX.md
+      - path_exists:docs/INDEX.md
+      - path_exists:README.md
+      - path_exists:ZQK_GETTING_STARTED.md
+    evidence_refs:
+      - docs/onboarding/COMMUNITY_FIRST_RUN.md
+      - docs/onboarding/AI_AGENT_ONBOARDING.md
+      - docs/architecture/README.md
+      - docs/architecture/INDEX.md
+      - docs/INDEX.md
+      - README.md
+      - ZQK_GETTING_STARTED.md
+    gate_operate: yes
+    independent_verify: yes
+
+  - chunk_id: launch-clean-tree
+    stage: operate_release
+    claim: No deprecated or private archive directories or artifacts exist in the public repository tree
+    rubric_ref: POL-CLEAN-TREE
+    dsl_checks:
+      - path_exists:scripts/open-core/police-community-tree.sh
+      - path_exists:scripts/open-core/check-public-release-payload.sh
+    evidence_refs:
+      - scripts/open-core/police-community-tree.sh
+      - scripts/open-core/check-public-release-payload.sh
+    gate_operate: yes
+    independent_verify: yes
+
+  - chunk_id: launch-go-module-canonical
+    stage: operate_release
+    claim: Canonical Go module is github.com/zqk-os/zqk and root binary builds from this module
+    rubric_ref: POL-MODULE-CANONICAL
+    dsl_checks:
+      - path_exists:go.mod
+      - path_exists:cmd/zqk/main.go
+      - tests_ok_per_customization
+    evidence_refs:
+      - go.mod
+      - cmd/zqk/main.go
+      - go test ./cmd/zqk/... -timeout 60s
+    gate_operate: yes
+    independent_verify: yes
+
+  - chunk_id: launch-public-release-gates
+    stage: operate_release
+    claim: Public release gates and tree policing scripts pass cleanly
+    rubric_ref: POL-RELEASE-GATES
+    dsl_checks:
+      - path_exists:scripts/open-core/check-public-release-payload.sh
+      - path_exists:scripts/open-core/test-public-release-gates.sh
+      - path_exists:SECURITY.md
+      - path_exists:LICENSE
+    evidence_refs:
+      - scripts/open-core/check-public-release-payload.sh
+      - scripts/open-core/test-public-release-gates.sh
+      - SECURITY.md
+      - LICENSE
+    gate_operate: yes
+    independent_verify: yes
