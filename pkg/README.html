@@ -1,0 +1,2754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Packages Directory - ZQK Core Documentation</title>
+  <link rel="stylesheet" href="../assets/style.css?v=886e58a9">
+  <link rel="icon" type="image/svg+xml" href="../assets/zqk-logo.svg?v=4bdd3a39">
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'loose',
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#0d1117',
+        primaryColor: '#1f6feb',
+        primaryTextColor: '#c9d1d9',
+        primaryBorderColor: '#30363d',
+        lineColor: '#58a6ff',
+        secondaryColor: '#161b22',
+        tertiaryColor: '#0d1117'
+      }
+    });
+
+    async function initMermaid() {
+      const els = document.querySelectorAll('.mermaid, pre code.language-mermaid');
+      if (!els.length) return;
+      document.querySelectorAll('pre code.language-mermaid').forEach(el => {
+        const pre = el.parentElement;
+        pre.className = 'mermaid';
+        pre.textContent = el.textContent;
+      });
+      try {
+        await mermaid.run({ querySelector: '.mermaid' });
+      } catch (err) {
+        console.warn('Mermaid rendering:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMermaid);
+    } else {
+      initMermaid();
+    }
+  </script>
+
+</head>
+<body data-root-rel="../">
+  <header class="header">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="../index.html" class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28" class="logo-mark">
+  <defs>
+    <filter id="cursor-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="1.5" flood-color="#00e676" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+  <!-- Background icon frame -->
+  <rect width="100" height="100" rx="22" fill="#05070a" stroke="#1f2937" stroke-width="1.5"/>
+  <!-- ZQK glyphs in pure vector geometry fill-rule evenodd for Q hole -->
+  <path d="M54.70,35.38 L59.41,35.38 L59.41,44.46 L59.74,44.46 L59.74,44.12 L60.08,44.12 L60.08,43.78 L60.75,43.45 L60.75,42.78 L61.09,42.78 L61.09,42.44 L61.76,42.10 L61.76,41.43 L62.10,41.43 L62.10,41.10 L62.43,41.10 L62.43,40.76 L63.10,40.42 L63.10,39.75 L63.44,39.75 L63.44,39.42 L63.78,39.42 L63.78,39.08 L64.45,38.74 L64.45,38.07 L64.78,38.07 L64.78,37.74 L65.46,37.40 L65.46,36.73 L65.79,36.73 L65.79,36.39 L66.13,36.39 L66.13,36.06 L66.46,36.06 L66.80,35.38 L71.84,35.38 L71.84,35.72 L71.50,35.72 L71.50,36.39 L71.17,36.39 L71.17,36.73 L70.83,36.73 L70.83,37.06 L70.16,37.40 L70.16,38.07 L69.82,38.07 L69.82,38.41 L69.49,38.41 L69.49,38.74 L68.82,39.08 L68.82,39.75 L68.48,39.75 L68.48,40.09 L68.14,40.09 L68.14,40.42 L67.47,40.76 L67.47,41.43 L67.14,41.43 L67.14,41.77 L66.80,41.77 L66.80,42.10 L66.13,42.44 L66.13,43.11 L65.79,43.11 L65.79,43.45 L65.46,43.45 L65.46,43.78 L64.78,44.12 L64.78,45.13 L65.12,45.13 L65.12,45.80 L65.46,45.80 L65.46,46.47 L65.79,46.47 L65.79,47.14 L66.13,47.14 L66.46,48.49 L67.14,48.82 L67.14,49.50 L67.47,49.50 L67.47,50.17 L67.81,50.17 L67.81,50.84 L68.14,50.84 L68.14,51.51 L68.48,51.51 L68.82,52.86 L69.49,53.19 L69.49,53.86 L69.82,53.86 L69.82,54.54 L70.16,54.54 L70.16,55.21 L70.50,55.21 L70.50,55.88 L70.83,55.88 L71.17,57.22 L71.84,57.56 L72.18,58.90 L67.14,58.90 L67.14,58.57 L66.80,58.57 L66.80,57.90 L66.46,57.90 L66.46,57.22 L66.13,57.22 L66.13,56.55 L65.79,56.55 L65.79,55.88 L65.46,55.88 L65.46,55.21 L64.78,54.87 L64.78,54.20 L64.45,54.20 L64.45,53.53 L64.11,53.53 L64.11,52.86 L63.78,52.86 L63.78,52.18 L63.44,52.18 L63.44,51.51 L63.10,51.51 L63.10,50.84 L62.77,50.84 L62.77,50.17 L62.43,50.17 L62.43,49.50 L62.10,49.50 L62.10,48.82 L61.76,48.82 L61.76,48.49 L61.42,48.49 L61.42,48.82 L61.09,48.82 L61.09,49.16 L60.42,49.50 L60.42,50.17 L60.08,50.17 L60.08,50.50 L59.41,50.84 L59.41,58.90 L54.70,58.90Z M8.00,54.87 L8.34,54.87 L8.34,54.20 L9.01,53.86 L9.01,53.19 L9.68,52.86 L9.68,52.18 L10.35,51.85 L10.35,51.18 L11.02,50.84 L11.02,50.17 L11.70,49.83 L11.70,49.16 L12.37,48.82 L12.37,48.15 L13.04,47.82 L13.04,47.14 L13.38,47.14 L13.38,46.81 L13.71,46.81 L13.71,46.14 L14.05,46.14 L14.05,45.80 L14.72,45.46 L14.72,44.79 L15.39,44.46 L15.39,43.78 L16.06,43.45 L16.06,42.78 L16.74,42.44 L16.74,41.77 L17.41,41.43 L17.41,40.76 L17.74,40.76 L17.74,40.42 L18.08,40.42 L18.08,39.75 L18.42,39.75 L18.42,39.42 L8.34,39.42 L8.34,35.38 L24.13,35.38 L24.13,39.42 L23.79,39.42 L23.79,40.09 L23.12,40.42 L23.12,41.10 L22.45,41.43 L22.45,42.10 L22.11,42.10 L22.11,42.44 L21.44,42.78 L21.44,43.45 L20.77,43.78 L20.77,44.46 L20.10,44.79 L20.10,45.46 L19.76,45.46 L19.76,45.80 L19.09,46.14 L19.09,46.81 L18.42,47.14 L18.42,47.82 L17.74,48.15 L17.74,48.82 L17.41,48.82 L17.41,49.16 L16.74,49.50 L16.74,50.17 L16.06,50.50 L16.06,51.18 L15.73,51.18 L15.73,51.51 L15.39,51.51 L15.39,52.18 L15.06,52.18 L15.06,52.52 L14.38,52.86 L14.38,53.53 L13.71,53.86 L13.71,54.54 L13.38,54.54 L13.38,54.87 L24.46,54.87 L24.46,58.90 L8.00,58.90Z M31.18,42.78 L31.52,42.78 L31.86,40.09 L32.19,40.09 L32.19,39.42 L32.53,39.42 L32.86,38.07 L33.20,38.07 L33.20,37.74 L33.54,37.74 L33.54,37.40 L33.87,37.40 L33.87,37.06 L34.21,37.06 L34.21,36.73 L34.54,36.73 L34.88,36.06 L35.55,36.06 L35.55,35.72 L36.22,35.72 L36.22,35.38 L37.23,35.38 L37.23,35.05 L41.26,35.05 L41.26,35.38 L43.28,35.72 L43.28,36.06 L43.62,36.06 L43.95,36.73 L44.62,36.73 L44.62,37.06 L44.96,37.06 L44.96,37.74 L45.63,38.07 L45.63,38.74 L45.97,38.74 L45.97,39.42 L46.30,39.42 L46.30,40.09 L46.64,40.09 L46.64,41.10 L46.98,41.10 L46.98,42.44 L47.31,42.44 L47.31,45.46 L47.65,45.46 L47.65,49.16 L47.31,49.16 L47.31,51.85 L46.98,51.85 L46.98,53.19 L46.64,53.19 L46.30,55.21 L45.97,55.21 L45.97,55.88 L45.30,56.22 L45.30,56.89 L44.96,56.89 L44.96,57.22 L44.62,57.22 L44.29,57.90 L43.62,57.90 L43.62,58.23 L43.95,58.23 L43.95,58.57 L44.29,58.57 L44.29,58.90 L44.62,58.90 L44.62,59.24 L44.96,59.24 L44.96,59.58 L45.30,59.58 L45.30,59.91 L45.63,59.91 L45.63,60.25 L46.30,60.58 L46.30,61.26 L45.97,61.26 L45.63,61.93 L44.96,61.93 L44.96,62.26 L44.62,62.26 L44.29,62.94 L43.62,62.94 L43.62,63.27 L43.28,63.27 L43.28,62.94 L42.94,62.94 L42.94,62.60 L42.61,62.60 L42.61,62.26 L41.94,61.93 L41.94,61.26 L41.60,61.26 L41.60,60.92 L41.26,60.92 L41.26,60.58 L40.93,60.58 L40.93,60.25 L40.59,60.25 L40.59,59.91 L40.26,59.91 L39.92,59.24 L36.90,59.24 L36.90,58.90 L35.89,58.90 L35.55,58.23 L34.88,58.23 L34.88,57.90 L34.54,57.90 L34.54,57.56 L34.21,57.56 L34.21,57.22 L33.87,57.22 L33.87,56.89 L33.54,56.89 L33.54,56.55 L32.86,56.22 L32.86,55.54 L32.53,55.54 L32.53,54.87 L32.19,54.87 L32.19,54.20 L31.86,54.20 L31.52,51.51 L31.18,51.51Z M35.89,43.45 L35.89,50.84 L36.22,50.84 L36.22,52.52 L36.56,52.52 L36.56,53.53 L36.90,53.53 L36.90,53.86 L37.23,53.86 L37.23,54.54 L37.90,54.54 L38.24,55.21 L40.26,55.21 L40.26,54.87 L40.93,54.87 L40.93,54.54 L41.60,54.20 L41.60,53.53 L41.94,53.53 L41.94,52.52 L42.27,52.52 L42.27,51.18 L42.61,51.18 L42.61,43.11 L42.27,43.11 L42.27,41.77 L41.94,41.77 L41.94,40.76 L41.60,40.76 L41.60,40.09 L41.26,40.09 L40.93,39.42 L39.92,39.42 L39.92,39.08 L38.58,39.08 L38.58,39.42 L37.23,39.75 L37.23,40.42 L36.56,40.76 L36.56,41.77 L36.22,41.77 L36.22,43.45Z" fill="#ffffff" fill-rule="evenodd"/>
+  <!-- Terminal cursor prompt _ with emerald green glow -->
+  <path d="M72.51,61.93 L92.00,61.93 L92.00,64.95 L72.51,64.95Z" fill="#00e676" filter="url(#cursor-glow)"/>
+</svg>
+          <span class="logo-text">ZQK <span class="logo-accent">Core</span></span>
+        </a>
+        <span class="badge-tag">Kernel Subsystems — Core Engines</span>
+      </div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Search core documentation..." onkeyup="runSearch()">
+        <div id="search-results"></div>
+      </div>
+    </div>
+  </header>
+  <main class="content-container">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+<div class="sidebar-home"><a href="../index.html">🏠 Portal Overview</a></div>
+<details class="sidebar-group">
+<summary><span class="group-title">Getting Started</span><span class="group-count">10</span></summary>
+<ul>
+<li><a href="../scripts/onboarding_roadmap/README.html" title="Curriculum as Data: Onboarding Roadmap">Curriculum as Data: Onboarding Roadmap</a></li>
+<li><a href="../docs/onboarding/README.html" title="Onboarding (ZQK Community)">Onboarding (ZQK Community)</a></li>
+<li><a href="../docs/INDEX.html" title="ZQK Core Documentation Index">ZQK Core Documentation Index</a></li>
+<li><a href="../docs/onboarding/COMMUNITY_FIRST_RUN.html" title="Community First-Run Guide (Agent + Human)">Community First-Run Guide (Agent + Human)</a></li>
+<li><a href="../ZQK_GETTING_STARTED.html" title="Welcome to ZQK">Welcome to ZQK</a></li>
+<li><a href="../docs/onboarding/QUICKSTART.html" title="ZQK Quickstart &amp; MCP Configuration Guide">ZQK Quickstart &amp; MCP Configuration Guide</a></li>
+<li><a href="../docs/onboarding/AI_AGENT_ONBOARDING.html" title="AI Agent Onboarding &amp; Operating Protocol">AI Agent Onboarding &amp; Operating Protocol</a></li>
+<li><a href="../docs/onboarding/EDGE_HEADLESS_FIRST_RUN.html" title="Edge &amp; Headless First-Run Guide">Edge &amp; Headless First-Run Guide</a></li>
+<li><a href="../docs/onboarding/FIRST_RUN_OBJECT_TUTORIAL.html" title="First-Run Object Tutorial (Mint ➔ Promote ➔ Reference Linking ➔ Lifecycle Transitions)">First-Run Object Tutorial (Mint ➔ Promote ➔ Reference Linking ➔ Lifecycle Transitions)</a></li>
+<li><a href="../docs/getting-started.html" title="Getting Started">Getting Started</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Architecture &amp; Foundation</span><span class="group-count">38</span></summary>
+<ul>
+<li><a href="../docs/architecture/README.html" title="ZQK Core Architecture">ZQK Core Architecture</a></li>
+<li><a href="../docs/architecture/INDEX.html" title="ZQK Knowledge Kernel Architecture Index">ZQK Knowledge Kernel Architecture Index</a></li>
+<li><a href="../docs/architecture/ACRONYM_VOCABULARY_SCHEME_AND_PROGRESSIVE_DISCLOSURE.html" title="Acronym Vocabulary Scheme &amp; Progressive Disclosure">Acronym Vocabulary Scheme &amp; Progressive Disclosure</a></li>
+<li><a href="../docs/architecture/ADAPTIVE_AGENT_DISAMBIGUATION.html" title="Adaptive Agent Feedback and Progressive Disambiguation Engine">Adaptive Agent Feedback and Progressive Disambiguation Engine</a></li>
+<li><a href="../docs/architecture/ADAPTIVE_TASK_SUPERVISION_SPECIFICATION.html" title="Adaptive Task Supervision &amp; Failure Delta Illumination Specification">Adaptive Task Supervision &amp; Failure Delta Illumination Specification</a></li>
+<li><a href="../docs/architecture/AMBIENT_SIGNAL_ACTION_RUBRIC.html" title="Ambient Signal Interpretation &amp; Action Rubric (Anti-Thrashing Protocol)">Ambient Signal Interpretation &amp; Action Rubric (Anti-Thrashing Protocol)</a></li>
+<li><a href="../docs/architecture/ASYNC_CHECK_DISCOVERY_DECOUPLING.html" title="Asynchronous Object Discovery &amp; Domain Decoupling Specification">Asynchronous Object Discovery &amp; Domain Decoupling Specification</a></li>
+<li><a href="../docs/architecture/ergonomics/ZQK_DO_AUTONOMOUS_EXECUTION.html" title="Autonomous Single-Command Execution Pipeline (`zqk do`)">Autonomous Single-Command Execution Pipeline (`zqk do`)</a></li>
+<li><a href="../docs/architecture/CLI_COMMAND_TAXONOMY_STANDARDS.html" title="Canonical CLI Command Taxonomy &amp; Architectural Standards">Canonical CLI Command Taxonomy &amp; Architectural Standards</a></li>
+<li><a href="../docs/architecture/ORPHAN_VERBS_RETIREMENT_AND_CANONICAL_DOMAIN_MAPPING.html" title="Canonical Domain Command Mapping &amp; Ergonomic Shortcuts">Canonical Domain Command Mapping &amp; Ergonomic Shortcuts</a></li>
+<li><a href="../docs/architecture/CELLULAR_MEMBRANE_MODE_B_CONFIGURATION.html" title="Cellular Membrane Lockdown &amp; Privileged Writer Mode B Configuration Runbook">Cellular Membrane Lockdown &amp; Privileged Writer Mode B Configuration Runbook</a></li>
+<li><a href="../docs/architecture/CELLULAR_SPECIALIZATION_TIERS.html" title="Cellular Specialization Tiers &amp; The Rubber Room Architecture">Cellular Specialization Tiers &amp; The Rubber Room Architecture</a></li>
+<li><a href="../docs/architecture/COMPOSITE_EXECUTION_ORGANIZER_VERIFICATION.html" title="Composite Execution Organizer Verification Topologies">Composite Execution Organizer Verification Topologies</a></li>
+<li><a href="../docs/architecture/KEYSTORE_SECURITY_AND_FALLBACK_SPECIFICATION.html" title="Cryptographic Keystore Security &amp; Fallback Guard Specification">Cryptographic Keystore Security &amp; Fallback Guard Specification</a></li>
+<li><a href="../docs/architecture/DAEMON_SINGLETON_MUTUAL_EXCLUSION.html" title="Daemon Singleton Mutual Exclusion &amp; Non-Nested Project Roots">Daemon Singleton Mutual Exclusion &amp; Non-Nested Project Roots</a></li>
+<li><a href="../docs/architecture/ergonomics/DIAGNOSTICS_AUTO_REMEDY.html" title="Diagnostics Auto-Remedy &amp; Precondition Self-Healing Engine">Diagnostics Auto-Remedy &amp; Precondition Self-Healing Engine</a></li>
+<li><a href="../docs/architecture/FAIL_CLOSED_ERROR_PROPAGATION_AND_TRANSACTION_RESILIENCE.html" title="Fail-Closed Error Propagation &amp; Transaction Resilience">Fail-Closed Error Propagation &amp; Transaction Resilience</a></li>
+<li><a href="../docs/architecture/FAIL_CLOSED_ERROR_PROPAGATION.html" title="Fail-Closed Error Propagation and Elimination of Swallowed Errors">Fail-Closed Error Propagation and Elimination of Swallowed Errors</a></li>
+<li><a href="../docs/architecture/FAIL_CLOSED_PANIC_RESILIENCE.html" title="Fail-Closed Panic Elimination and Resilient Fallback Architecture">Fail-Closed Panic Elimination and Resilient Fallback Architecture</a></li>
+<li><a href="../docs/architecture/KERNEL_VENDOR_INSTRUCTION_PROJECTION.html" title="Kernel → vendor instruction projection">Kernel → vendor instruction projection</a></li>
+<li><a href="../docs/architecture/MUTATION_GOVERNANCE.html" title="Membrane Mutation Governance &amp; Integrity Specification">Membrane Mutation Governance &amp; Integrity Specification</a></li>
+<li><a href="../docs/architecture/PACK_COMPOSITION_AND_EXTENSIBILITY.html" title="Modular Pack Composition and Extensibility Architecture Guide">Modular Pack Composition and Extensibility Architecture Guide</a></li>
+<li><a href="../docs/architecture/ergonomics/WORKTREE_KERNEL_RESOLUTION.html" title="Native Git Worktree Kernel Data Plane Resolution">Native Git Worktree Kernel Data Plane Resolution</a></li>
+<li><a href="../docs/architecture/ORCHESTRATION_RUNTIME_TAXONOMY.html" title="Orchestration, Swarm, and Agent Execution Runtime Taxonomy">Orchestration, Swarm, and Agent Execution Runtime Taxonomy</a></li>
+<li><a href="../PACK-COMPOSITION.html" title="Pack Composition Architecture">Pack Composition Architecture</a></li>
+<li><a href="../docs/architecture/PACKAGE_CONSOLIDATION_GOVERNANCE.html" title="Package Consolidation Governance and Codebase Complexity Budget">Package Consolidation Governance and Codebase Complexity Budget</a></li>
+<li><a href="../docs/architecture/POLYGLOT_AST_SEARCH_ROADMAP.html" title="Polyglot AST Code Search Architecture &amp; Roadmap (`zqk grep`)">Polyglot AST Code Search Architecture &amp; Roadmap (`zqk grep`)</a></li>
+<li><a href="../docs/architecture/PROJECT_SCOPED_REVERSE_REFERENCE_INDEX_AND_THREAD_SAFE_CACHES.html" title="Project-Scoped Reverse Reference Index and Thread-Safe Caches">Project-Scoped Reverse Reference Index and Thread-Safe Caches</a></li>
+<li><a href="../docs/architecture/SEAT_WORKER_SUPERVISOR_ARCHITECTURE.html" title="Seat Worker Supervisor Architecture">Seat Worker Supervisor Architecture</a></li>
+<li><a href="../docs/architecture/SOVEREIGN_AIRGAPPED_AI_ENGINEERING.html" title="Sovereign Air-Gapped AI Engineering Specification">Sovereign Air-Gapped AI Engineering Specification</a></li>
+<li><a href="../docs/architecture/SPECBUILDER_CODEGEN_CONSOLIDATION.html" title="SpecBuilder Code Generation &amp; AST Optimization Architecture">SpecBuilder Code Generation &amp; AST Optimization Architecture</a></li>
+<li><a href="../docs/architecture/STORAGE_WRITE_QUEUE_OBSERVER_GOVERNANCE.html" title="Storage Write Queue Observer Architecture &amp; Inverted Dependency Governance">Storage Write Queue Observer Architecture &amp; Inverted Dependency Governance</a></li>
+<li><a href="../docs/architecture/SYNTHETIC_CONSTANT_ERADICATION_GOVERNANCE.html" title="Synthetic Constant Eradication &amp; Code Readability Governance">Synthetic Constant Eradication &amp; Code Readability Governance</a></li>
+<li><a href="../docs/architecture/TIERED_STORAGE_AND_ARCHIVAL_LIFECYCLE.html" title="Tiered Storage, Subtree Flattening, and Archival Lifecycle">Tiered Storage, Subtree Flattening, and Archival Lifecycle</a></li>
+<li><a href="../docs/architecture/TRAY_COMMAND_CRYPTOGRAPHIC_SECURITY.html" title="Tray Command Cryptographic Security &amp; Indirect Execution Envelope">Tray Command Cryptographic Security &amp; Indirect Execution Envelope</a></li>
+<li><a href="../docs/architecture/VERIFIABLE_DECOMPOSITION_SPINE.html" title="Verifiable Decomposition Spine (VDS)">Verifiable Decomposition Spine (VDS)</a></li>
+<li><a href="../docs/architecture/LIFECYCLE_STATE_MACHINE.html" title="Visual Lifecycle State Machines and Transition Check-Valves Guide">Visual Lifecycle State Machines and Transition Check-Valves Guide</a></li>
+<li><a href="../docs/architecture/SERVICE_ADAPTER_SPECIFICATION.html" title="Zero-Coupling ServiceAdapter Specification &amp; Architecture">Zero-Coupling ServiceAdapter Specification &amp; Architecture</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Specifications &amp; Grammars</span><span class="group-count">10</span></summary>
+<ul>
+<li><a href="../docs/specs/README.html" title="Architecture Specifications">Architecture Specifications</a></li>
+<li><a href="../docs/specs/SPEC-ZPARQL-INDEXED-QUERY-PLANNER.html" title="Technical Specification: ZPARQL Indexed Secondary Query Planner &amp; Traversal Contract">ZPARQL Indexed Secondary Query Planner &amp; Traversal Contract</a></li>
+<li><a href="../docs/specs/SPEC-ZPARQL-RESULT-STREAMING.html" title="Technical Specification: ZPARQL Portable Result Envelopes, Reactive Streaming, and Backpressure Protocol">ZPARQL Portable Result Envelopes, Reactive Streaming, and Backpressure Protocol</a></li>
+<li><a href="../docs/specs/SPEC-ZPARQL-QUERY-PLANNER.html" title="Technical Specification: ZPARQL Query Planner Architecture &amp; Complexity Proof">ZPARQL Query Planner Architecture &amp; Complexity Proof</a></li>
+<li><a href="../docs/specs/SPEC-ZPARQL-GRAPH-TRAVERSAL-GRAMMAR.html" title="Technical Specification: ZQK Declarative Graph Query &amp; Traversal Engine (ZPARQL)">ZQK Declarative Graph Query &amp; Traversal Engine (ZPARQL)</a></li>
+<li><a href="../docs/specs/SPEC-ZQL-DECLARATIVE-MUTATION-GRAMMAR.html" title="Technical Specification: ZQK Declarative Mutation Language (ZQL) Grammar, AST, and Variable Resolution">ZQK Declarative Mutation Language (ZQL) Grammar, AST, and Variable Resolution</a></li>
+<li><a href="../docs/specs/SPEC-VALIDATION-RULE-DSL-GRAMMAR.html" title="Technical Specification: ZQK Declarative Validation &amp; Policy Rule DSL Grammar">ZQK Declarative Validation &amp; Policy Rule DSL Grammar</a></li>
+<li><a href="../docs/specs/SPEC-OBJECT-INSPECTOR-CONSOLE-001.html" title="Technical Specification: ZQK Interactive Object Inspector Console &amp; Policy Studio">ZQK Interactive Object Inspector Console &amp; Policy Studio</a></li>
+<li><a href="../docs/specs/SPEC-ZQL-TRANSACTION-EXECUTION.html" title="Technical Specification: ZQL ACID Transaction Execution, Staged Isolation, and Atomic Rollback">ZQL ACID Transaction Execution, Staged Isolation, and Atomic Rollback</a></li>
+<li><a href="../docs/specs/SPEC-ZQL-PREFLIGHT-VALIDATION.html" title="Technical Specification: ZQL In-Memory Preflight Validation and Diagnostic Receipt Protocol">ZQL In-Memory Preflight Validation and Diagnostic Receipt Protocol</a></li>
+</ul>
+</details>
+<details class="sidebar-group" open>
+<summary><span class="group-title">Kernel Subsystems — Core Engines</span><span class="group-count">35</span></summary>
+<ul>
+<li><a href="../pkg/README.html" class="active" title="Packages Directory">Packages Directory (pkg/)</a></li>
+<li><a href="../pkg/storage/README.html" title="Storage Package">Storage Subsystem &amp; Providers</a></li>
+<li><a href="../pkg/graph/README.html" title="Graph Backend Package">Graph Backend &amp; In-Memory Graph</a></li>
+<li><a href="../pkg/coordination/README.html" title="Coordination Package - Event Coordination System (Spinal Cord)">Event Coordination (Spinal Cord)</a></li>
+<li><a href="../pkg/concurrency/README.html" title="Concurrency Package">Concurrency &amp; Synchronization</a></li>
+<li><a href="../pkg/pipeline/README.html" title="Pipeline Package">Autonomous Pipelines &amp; Steps</a></li>
+<li><a href="../pkg/mcp/README.html" title="MCP Server Package">Model Context Protocol (MCP) Server</a></li>
+<li><a href="../pkg/functional/README.html" title="Functional Error Handling with Metrics (`pkg/functional`)">Functional Error Monad (Result[T])</a></li>
+<li><a href="../pkg/logging/README.html" title="Logging Package">Structured Zero-Allocation Logger</a></li>
+<li><a href="../pkg/telemetry/README.html" title="Telemetry Package">Kernel Telemetry &amp; Metrics</a></li>
+<li><a href="../pkg/validation/README.html" title="Validation Package">Schema &amp; Rule Validation Engine</a></li>
+<li><a href="../pkg/translation/README.html" title="Translation engine">Query &amp; AST Translation Engine</a></li>
+<li><a href="../pkg/loader/README.html" title="pkg/loader">Object &amp; Specification Loader</a></li>
+<li><a href="../pkg/migration/README.html" title="Migration Tools Package">Database &amp; Schema Migration</a></li>
+<li><a href="../pkg/migration/detector/README.html" title="Migration Binary Detector">Migration Binary Detector</a></li>
+<li><a href="../pkg/goroutinelabels/README.html" title="Goroutine Builder and Pool Factory">Goroutine Thread Tracking</a></li>
+<li><a href="../pkg/domain/organizational/README.html" title="Organizational Domain">Organizational Domain Models</a></li>
+<li><a href="../pkg/testing/README.html" title="Test Configuration Package">Kernel Testing Harness</a></li>
+<li><a href="../pkg/mcp/testing/README.html" title="MCP Testing Package">MCP Test Verification Harness</a></li>
+<li><a href="../pkg/storage/change_journal_compaction.html" title="Change Journal Compaction and Compression">Storage — Journal Compaction</a></li>
+<li><a href="../pkg/systemcheck/autofix/README.html" title="Auto-Fix Engine &amp; Remediation DAG (`pkg/systemcheck/autofix`)">Auto-Fix Engine &amp; Remediation DAG (`pkg/systemcheck/autofix`)</a></li>
+<li><a href="../pkg/bootstrap/README.html" title="Bootstrap package">Kernel Bootstrap Seeding</a></li>
+<li><a href="../pkg/cliapp/README.html" title="CLI Package">CLI Host</a></li>
+<li><a href="../pkg/specialization/README.html" title="Cellular Specialization Tiers (`pkg/specialization`)">Cellular Specialization Tiers (`pkg/specialization`)</a></li>
+<li><a href="../pkg/cliapp/context/README.html" title="Context Package">Execution Context &amp; Signals</a></li>
+<li><a href="../pkg/shellcmd/README.html" title="Cross-Platform Shell Execution Engine (`pkg/shellcmd`)">Cross-Platform Shell Execution Engine (`pkg/shellcmd`)</a></li>
+<li><a href="../pkg/search/README.html" title="In-Process Code Search Engine (`pkg/search`)">In-Process Code Search Engine (`pkg/search`)</a></li>
+<li><a href="../pkg/seatworker/README.html" title="Mesh Seat Worker &amp; Supervisor Daemon (`pkg/seatworker`)">Mesh Seat Worker &amp; Supervisor Daemon (`pkg/seatworker`)</a></li>
+<li><a href="../pkg/storage/binary/README.html" title="Positional Binary Storage (`pkg/storage/binary`)">Positional Binary Storage (`pkg/storage/binary`)</a></li>
+<li><a href="../pkg/skills/README.html" title="ZQK Agent Skills Architecture: Evolutionary Breeding &amp; Generative Mutation">ZQK Agent Skills Architecture: Evolutionary Breeding &amp; Generative Mutation</a></li>
+<li><a href="../pkg/screencap/README.html" title="ZQK Screen Capture &amp; Terminal Automation Engine (`pkg/screencap`)">ZQK Screen Capture &amp; Terminal Automation Engine (`pkg/screencap`)</a></li>
+<li><a href="../pkg/systemcheck/asynccheck/README.html" title="pkg/systemcheck/asynccheck">pkg/systemcheck/asynccheck</a></li>
+<li><a href="../pkg/systemcheck/congruence/README.html" title="pkg/systemcheck/congruence">pkg/systemcheck/congruence</a></li>
+<li><a href="../pkg/systemcheck/integrity/README.html" title="pkg/systemcheck/integrity">pkg/systemcheck/integrity</a></li>
+<li><a href="../pkg/systemcheck/snapshot/README.html" title="pkg/systemcheck/snapshot">pkg/systemcheck/snapshot</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Spec &amp; Command Builders</span><span class="group-count">7</span></summary>
+<ul>
+<li><a href="../pkg/specbuilder/README.html" title="Spec-Driven Builder Pattern - Core Package">Spec-Driven Builder Pattern</a></li>
+<li><a href="../pkg/cli/README.html" title="CLI Architecture &amp; Spec Command Builders">CLI Architecture &amp; Spec Framework</a></li>
+<li><a href="../pkg/cli/bldr_cli_cmd_v1/README.html" title="CLI Command Builders (`bldr_cli_cmd_v1`)">CLI Command Builders (bldr_cli_cmd_v1)</a></li>
+<li><a href="../pkg/specbuilder/bldr_v2/README.html" title="Spec Builders (bldr_v2)">Object Spec Builders (bldr_v2)</a></li>
+<li><a href="../pkg/specbuilder/builders/README.html" title="Versioned Spec Builders">Versioned Spec Builders Engine</a></li>
+<li><a href="../pkg/specbuilder/instance_builders/README.html" title="Instance Builders">Runtime Instance Builders</a></li>
+<li><a href="../pkg/specbuilder/bootstrap/README.html" title="Bootstrap System">Specbuilder Bootstrap Package</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — CLI Commands &amp; Tooling</span><span class="group-count">4</span></summary>
+<ul>
+<li><a href="../cmd/zqk/README.html" title="zqk CLI Commands">zqk Primary CLI Commands</a></li>
+<li><a href="../cmd/zqk-shim/README.html" title="ZQK CLI Shim (`zqk-shim`)">zqk-shim Compatibility Shim</a></li>
+<li><a href="../cmd/zqk/system/METRICS_ANALYSIS_README.html" title="Lock Metrics Analysis and Automatic Improvements">System Lock Metrics Analysis</a></li>
+<li><a href="../cmd/zqk/system/TESTING.html" title="System package tests">System Test Suite &amp; Diagnostics</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel Subsystems — Internal Runtime</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../internal/README.html" title="Internal Packages Directory">Internal Packages Directory (internal/)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Kernel DNA &amp; Object Schemas</span><span class="group-count">4</span></summary>
+<ul>
+<li><a href="../kernel-specs/objects/README.html" title="Object Specs Directory">Object Specs Directory</a></li>
+<li><a href="../kernel-specs/lifecycles/README.html" title="Readme">Readme</a></li>
+<li><a href="../kernel-specs/traits/README.html" title="Trait Definitions">Trait Definitions</a></li>
+<li><a href="../kernel-specs/configs/change_journal_entry_config.html" title="Change Journal Entry: Lifecycle, Collection, Aggregation, Bucketing">Change Journal Entry: Lifecycle, Collection, Aggregation, Bucketing</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Reference Manuals</span><span class="group-count">6</span></summary>
+<ul>
+<li><a href="../docs/manual/README.html" title="Reference Manual">Reference Manual</a></li>
+<li><a href="../docs/manual/MISSION_CONTROL_UI_VISUAL_GUIDE.html" title="Manual: Mission Control TUI, Web Studio &amp; Diagnostics Visual Guide">Mission Control TUI, Web Studio &amp; Diagnostics Visual Guide</a></li>
+<li><a href="../docs/manual/OBJECT_INSPECTOR_AND_POLICY_STUDIO.html" title="Manual: Object Inspector &amp; Policy Studio Reference">Object Inspector &amp; Policy Studio Reference</a></li>
+<li><a href="../docs/manual/ZPARQL_QUERY_LANGUAGE.html" title="ZPARQL Query Language Developer Manual">ZPARQL Query Language Developer Manual</a></li>
+<li><a href="../docs/manual/CLI_REFERENCE.html" title="ZQK CLI Command Reference &amp; Operator Manual">ZQK CLI Command Reference &amp; Operator Manual</a></li>
+<li><a href="../docs/manual/ZQL_MUTATIONS.html" title="ZQL Declarative Mutations Developer Manual">ZQL Declarative Mutations Developer Manual</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">How-To &amp; Incident Runbooks</span><span class="group-count">9</span></summary>
+<ul>
+<li><a href="../docs/howto/README.html" title="How-To Guides">How-To Guides</a></li>
+<li><a href="../docs/runbooks/README.html" title="Operational Incident Runbooks">Operational Incident Runbooks</a></li>
+<li><a href="../scripts/scheduler_jobs/README.html" title="Scheduler Job Templates">Scheduler Job Templates</a></li>
+<li><a href="../docs/howto/INSPECT_AND_VALIDATE_OBJECTS.html" title="How-To: Inspect, Link, and Validate Knowledge Kernel Objects">How-To: Inspect, Link, and Validate Knowledge Kernel Objects</a></li>
+<li><a href="../docs/runbooks/RB-CAS-001-CAS-CORRUPTION-RECOVERY.html" title="RB-CAS-001: Content-Addressed Storage (CAS) Hash Mismatch and Quarantine Exhaustion">RB-CAS-001: Content-Addressed Storage (CAS) Hash Mismatch and Quarantine Exhaustion</a></li>
+<li><a href="../docs/runbooks/RB-LCK-001-LOCK-CONTENTION-DEADLOCKS.html" title="RB-LCK-001: Concurrency Lock Contention and Deadlock Resolution">RB-LCK-001: Concurrency Lock Contention and Deadlock Resolution</a></li>
+<li><a href="../docs/runbooks/RB-SCH-001-SCHEDULER-DAEMON-TRIAGE.html" title="RB-SCH-001: Scheduler Daemon Exit Cascades and Job Triage">RB-SCH-001: Scheduler Daemon Exit Cascades and Job Triage</a></li>
+<li><a href="../docs/runbooks/RB-WAL-001-WAL-COMPACTION-FAILURES.html" title="RB-WAL-001: Write-Ahead Log (WAL) Compaction Failures">RB-WAL-001: Write-Ahead Log (WAL) Compaction Failures</a></li>
+<li><a href="../docs/howto/SCHEDULER_AND_MAINTENANCE.html" title="Use the scheduler and maintenance jobs">Use the scheduler and maintenance jobs</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Tutorials, Demos &amp; Guides</span><span class="group-count">15</span></summary>
+<ul>
+<li><a href="../docs/guides/README.html" title="Developer &amp; Agent Guides">Developer &amp; Agent Guides Index</a></li>
+<li><a href="../docs/tutorials/README.html" title="Tutorials">Tutorials</a></li>
+<li><a href="../docs/demos/README.html" title="ZQK Core Interactive Demonstrations &amp; Visual Showcase">ZQK Core Interactive Demonstrations &amp; Visual Showcase</a></li>
+<li><a href="../docs/guides/ZQL_ZPARQL_AGENT_GUIDE.html" title="Agent &amp; Developer Guide: Declarative Graph Queries (ZPARQL) and Atomic Mutations (ZQL)">ZQL &amp; ZPARQL Graph Operations</a></li>
+<li><a href="../docs/guides/SINGLE_COMMAND_EXECUTION_LOOP_GUIDE.html" title="Developer &amp; Agent Guide: Autonomous Single-Command Execution Loop (`zqk do`)">Single-Command Loop (zqk do)</a></li>
+<li><a href="../docs/guides/POLICY_CREATION_AND_VALIDATION_DSL_GUIDE.html" title="Developer &amp; Agent Guide: Custom Validation Policy Creation &amp; Rule DSL">Custom Policy &amp; Rule DSL</a></li>
+<li><a href="../docs/guides/DIAGNOSTICS_SELF_HEALING_AND_REMEDY_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Kernel Diagnostics, Auto-Remedies &amp; Self-Healing">Diagnostics &amp; Self-Healing</a></li>
+<li><a href="../docs/guides/KERNEL_OBJECT_USAGE_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Kernel Object Model &amp; Usage Guide">Kernel Object Model &amp; Usage Guide</a></li>
+<li><a href="../docs/guides/KNOWLEDGE_MANAGEMENT_AND_SEMANTIC_RECALL_GUIDE.html" title="Developer &amp; Agent Guide: Knowledge Management, Vocabularies, Libraries, and On-Demand Semantic Recall">Knowledge Management &amp; Semantic Recall</a></li>
+<li><a href="../docs/guides/AGENT_ORCHESTRATION_AND_SWARM_COLLABORATION_GUIDE.html" title="Developer &amp; Agent Guide: Multi-Agent Swarm Orchestration &amp; Mesh Collaboration">Swarm Orchestration &amp; Mesh</a></li>
+<li><a href="../docs/guides/OBJECT_LIFECYCLE_AND_CAS_STORAGE_GUIDE.html" title="Developer &amp; Agent Guide: Object Lifecycle, State Machines, and Content-Addressed Storage (CAS)">Object Lifecycle, States &amp; CAS</a></li>
+<li><a href="../docs/guides/VISION_TO_EXECUTION_ORCHESTRATION_GUIDE.html" title="From Vision to Code: Complete Multi-Agent Orchestration Walkthrough">From Vision to Code: Complete Multi-Agent Orchestration Walkthrough</a></li>
+<li><a href="../docs/guides/KERNEL_OBJECT_ADMINISTRATION.html" title="Process Administration &amp; Management: Kernel Objects">Process Administration &amp; Management: Kernel Objects</a></li>
+<li><a href="../docs/guides/SCREEN_CAPTURE_AND_TERMINAL_AUTOMATION.html" title="Screen Capture &amp; Terminal Automation Guide">Screen Capture &amp; Terminal Automation Guide</a></li>
+<li><a href="../docs/tutorials/INTERACTIVE_OBJECT_INSPECTION_TUTORIAL.html" title="Tutorial: Interactive Object Inspection, Mission Control &amp; Visual Studio">Interactive Object Inspection, Mission Control &amp; Visual Studio</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Agent Skills &amp; Protocols</span><span class="group-count">16</span></summary>
+<ul>
+<li><a href="../skills/zqk-expert/SKILL.html" title="ZQK Expert">ZQK Expert</a></li>
+<li><a href="../skills/community-feed-correspondence/SKILL.html" title="Agent Feed Correspondence">Agent Feed Correspondence</a></li>
+<li><a href="../skills/zqk-expert/references/data-cell.html" title="Data cell model (logical unit + storage profiles)">Data cell model (logical unit + storage profiles)</a></li>
+<li><a href="../skills/community-distributed-systems/SKILL.html" title="Elite Distributed Systems Engineering: Event-Driven, Resilient &amp; Self-Healing">Elite Distributed Systems Engineering: Event-Driven, Resilient &amp; Self-Healing</a></li>
+<li><a href="../skills/community-functional-craftsman/SKILL.html" title="Elite Functional &amp; Readable Code Craftsmanship">Elite Functional &amp; Readable Code Craftsmanship</a></li>
+<li><a href="../skills/community-object-steward/SKILL.html" title="Kernel Object Stewardship (CLI-only CAS)">Kernel Object Stewardship (CLI-only CAS)</a></li>
+<li><a href="../skills/zqk-expert/references/code-search.html" title="Native Code Search &amp; AST Inspection (`zqk grep` / `zgrep`)">Native Code Search &amp; AST Inspection (`zqk grep` / `zgrep`)</a></li>
+<li><a href="../skills/community-ontological-architecture/SKILL.html" title="Ontological Architecture &amp; Verifiable Decomposition">Ontological Architecture &amp; Verifiable Decomposition</a></li>
+<li><a href="../skills/community-qa-verification/SKILL.html" title="QA Audit and Done-Gate Verification">QA Audit and Done-Gate Verification</a></li>
+<li><a href="../skills/community-code-craftsman/SKILL.html" title="Software Engineering and Code Craftsmanship">Software Engineering and Code Craftsmanship</a></li>
+<li><a href="../skills/zqk-expert/references/stream-storage.html" title="Stream Storage: Append-Only Segments for High-Volume Kinds">Stream Storage: Append-Only Segments for High-Volume Kinds</a></li>
+<li><a href="../skills/community-arch-design/SKILL.html" title="System Architecture and Package Boundary Design">System Architecture and Package Boundary Design</a></li>
+<li><a href="../skills/zqk-expert/references/tpm-orchestration.html" title="TPM orchestration plane (Gantt matrix + branch collaboration)">TPM orchestration plane (Gantt matrix + branch collaboration)</a></li>
+<li><a href="../skills/community-tpm-orchestration/SKILL.html" title="Technical Program Management and Swarm Orchestration">Technical Program Management and Swarm Orchestration</a></li>
+<li><a href="../skills/zqk-expert/references/testing.html" title="Testing standards (ZQK agents)">Testing standards (ZQK agents)</a></li>
+<li><a href="../skills/zqk-expert/references/vds.html" title="Verifiable Decomposition Spine (VDS) — skill reference">Verifiable Decomposition Spine (VDS) — skill reference</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Maintenance &amp; Development</span><span class="group-count">3</span></summary>
+<ul>
+<li><a href="../docs/explanation/README.html" title="Conceptual Architecture &amp; Design Philosophy: The Knowledge Kernel">Conceptual Architecture &amp; Design Philosophy: The Knowledge Kernel</a></li>
+<li><a href="../docs/development/README.html" title="Maintenance and Development Guide">Maintenance and Development Guide</a></li>
+<li><a href="../docs/development/POLICY_GOVERNANCE_AND_DURABILITY.html" title="Policy Governance, Durability, and Maintenance Conventions">Policy Governance, Durability, and Maintenance Conventions</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Quality &amp; Evaluation</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../docs/quality/README.html" title="First-Run Quality &amp; Verification Gates">First-Run Quality &amp; Verification Gates</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Framework &amp; Governance</span><span class="group-count">11</span></summary>
+<ul>
+<li><a href="../docs/quality/codebase_evaluation/README.html" title="Codebase Evaluation Framework (CEF) Overview">Overview &amp; Quickstart</a></li>
+<li><a href="../docs/quality/codebase_evaluation/CONSTITUTION.html" title="CEF Constitution (Binding Rules &amp; Evidence Grades)">Constitution (Binding Rules)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/DIAMOND_SCALE.html" title="Diamond Scale Multi-Axis Quality Grading">Diamond Scale Grading</a></li>
+<li><a href="../docs/quality/codebase_evaluation/WAVE_PLAN.html" title="Multi-Wave Analysis Execution Plan">Multi-Wave Plan</a></li>
+<li><a href="../docs/quality/codebase_evaluation/LENSES.html" title="Evaluation Lens Catalog &amp; Density Rules">Evaluation Lens Catalog</a></li>
+<li><a href="../docs/quality/codebase_evaluation/DIAGRAM_CONTRACT.html" title="Diagram Contract &amp; Architecture Anchoring">Diagram Contract</a></li>
+<li><a href="../docs/quality/codebase_evaluation/OPERATOR.html" title="Operator Quickstart Runbook">Operator Runbook</a></li>
+<li><a href="../docs/quality/codebase_evaluation/KICKOFF_PROMPT.html" title="Solo Operator Kickoff Prompt">Solo Kickoff Prompt</a></li>
+<li><a href="../docs/quality/codebase_evaluation/HANDOFF_SCHEMA.html" title="Handoff Schema &amp; Downstream Integration">Handoff Schema</a></li>
+<li><a href="../docs/quality/codebase_evaluation/EXTENSIONS.html" title="Framework Extensions &amp; Adapter Architecture">Extensions &amp; Adapters</a></li>
+<li><a href="../docs/quality/codebase_evaluation/adapters/go.html" title="Go Language Adapter Specification">Go Language Adapter</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Evaluation Rubrics</span><span class="group-count">12</span></summary>
+<ul>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-ARCHITECTURE.html" title="Architecture &amp; Abstractions Rubric (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-CODE-QUALITY.html" title="Code Quality &amp; Maintainability Rubric (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-CONCURRENCY.html" title="Concurrency &amp; Synchronization Rubric (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-USABILITY.html" title="Developer Usability &amp; Ergonomics Rubric (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-DOCS-MODEL.html" title="Documentation &amp; Domain Model Rubric (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-OBSERVABILITY.html" title="Observability &amp; Diagnostics Rubric (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-PERFORMANCE.html" title="Performance &amp; Complexity Rubric (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-PREFLIGHT.html" title="Preflight &amp; Inventory Rubric (L-PREFLIGHT)">L-PREFLIGHT — Preflight &amp; Inventory</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-RELIABILITY.html" title="Reliability &amp; Error Recovery Rubric (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-SECURITY.html" title="Security &amp; Threat Modeling Rubric (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-SUPPLY-RELEASE.html" title="Supply Chain &amp; Packaging Rubric (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging</a></li>
+<li><a href="../docs/quality/codebase_evaluation/rubrics/L-TESTING.html" title="Test Strategy &amp; Invariant Proofs Rubric (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Specialist Prompts</span><span class="group-count">13</span></summary>
+<ul>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-ARCHITECTURE/specialist.html" title="Architecture &amp; Abstractions Specialist Evaluator Prompt (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/_SHARED_PREAMBLE.html" title="CEF Shared Agent Preamble">Shared Agent Preamble</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-CODE-QUALITY/specialist.html" title="Code Quality &amp; Maintainability Specialist Evaluator Prompt (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-CONCURRENCY/specialist.html" title="Concurrency &amp; Synchronization Specialist Evaluator Prompt (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-USABILITY/specialist.html" title="Developer Usability &amp; Ergonomics Specialist Evaluator Prompt (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-DOCS-MODEL/specialist.html" title="Documentation &amp; Domain Model Specialist Evaluator Prompt (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-INTEGRATOR/specialist.html" title="Lead Integrator &amp; Synthesis Specialist Prompt">L-INTEGRATOR — Lead Integrator</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-OBSERVABILITY/specialist.html" title="Observability &amp; Diagnostics Specialist Evaluator Prompt (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-PERFORMANCE/specialist.html" title="Performance &amp; Complexity Specialist Evaluator Prompt (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-RELIABILITY/specialist.html" title="Reliability &amp; Error Recovery Specialist Evaluator Prompt (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-SECURITY/specialist.html" title="Security &amp; Threat Modeling Specialist Evaluator Prompt (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-SUPPLY-RELEASE/specialist.html" title="Supply Chain &amp; Packaging Specialist Evaluator Prompt (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging (Specialist)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-TESTING/specialist.html" title="Test Strategy &amp; Invariant Proofs Specialist Evaluator Prompt (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs (Specialist)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Codebase Evaluation — Adversarial Prompts</span><span class="group-count">11</span></summary>
+<ul>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-ARCHITECTURE/adversarial.html" title="Architecture &amp; Abstractions Adversarial Auditor Prompt (L-ARCHITECTURE)">L-ARCHITECTURE — Architecture &amp; Abstractions (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-CODE-QUALITY/adversarial.html" title="Code Quality &amp; Maintainability Adversarial Auditor Prompt (L-CODE-QUALITY)">L-CODE-QUALITY — Code Quality &amp; Maintainability (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-CONCURRENCY/adversarial.html" title="Concurrency &amp; Synchronization Adversarial Auditor Prompt (L-CONCURRENCY)">L-CONCURRENCY — Concurrency &amp; Synchronization (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-USABILITY/adversarial.html" title="Developer Usability &amp; Ergonomics Adversarial Auditor Prompt (L-USABILITY)">L-USABILITY — Developer Usability &amp; Ergonomics (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-DOCS-MODEL/adversarial.html" title="Documentation &amp; Domain Model Adversarial Auditor Prompt (L-DOCS-MODEL)">L-DOCS-MODEL — Documentation &amp; Domain Model (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-OBSERVABILITY/adversarial.html" title="Observability &amp; Diagnostics Adversarial Auditor Prompt (L-OBSERVABILITY)">L-OBSERVABILITY — Observability &amp; Diagnostics (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-PERFORMANCE/adversarial.html" title="Performance &amp; Complexity Adversarial Auditor Prompt (L-PERFORMANCE)">L-PERFORMANCE — Performance &amp; Complexity (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-RELIABILITY/adversarial.html" title="Reliability &amp; Error Recovery Adversarial Auditor Prompt (L-RELIABILITY)">L-RELIABILITY — Reliability &amp; Error Recovery (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-SECURITY/adversarial.html" title="Security &amp; Threat Modeling Adversarial Auditor Prompt (L-SECURITY)">L-SECURITY — Security &amp; Threat Modeling (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-SUPPLY-RELEASE/adversarial.html" title="Supply Chain &amp; Packaging Adversarial Auditor Prompt (L-SUPPLY-RELEASE)">L-SUPPLY-RELEASE — Supply Chain &amp; Packaging (Adversarial)</a></li>
+<li><a href="../docs/quality/codebase_evaluation/prompts/L-TESTING/adversarial.html" title="Test Strategy &amp; Invariant Proofs Adversarial Auditor Prompt (L-TESTING)">L-TESTING — Test Strategy &amp; Invariant Proofs (Adversarial)</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Open Core Governance</span><span class="group-count">5</span></summary>
+<ul>
+<li><a href="../README.html" title="ZQK OS">ZQK OS</a></li>
+<li><a href="../CONTRIBUTING.html" title="Contributing to ZQK Community Edition">Contributing to ZQK Community Edition</a></li>
+<li><a href="../CODE_OF_CONDUCT.html" title="Contributor Covenant Code of Conduct">Contributor Covenant Code of Conduct</a></li>
+<li><a href="../GOVERNANCE.html" title="Project Governance">Project Governance</a></li>
+<li><a href="../SECURITY.html" title="Security Policy">Security Policy</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Agent Directives &amp; Protocols</span><span class="group-count">1</span></summary>
+<ul>
+<li><a href="../agents/AGENTS.html" title="ZQK Agent Boot Protocol">ZQK Agent Boot Protocol</a></li>
+</ul>
+</details>
+<details class="sidebar-group">
+<summary><span class="group-title">Reference</span><span class="group-count">3</span></summary>
+<ul>
+<li><a href="../docs/reference/README.html" title="Reference Documentation">Reference Documentation</a></li>
+<li><a href="../docs/reference/CLI_REFERENCE.html" title="ZQK CLI Command Reference &amp; Operator Manual">ZQK CLI Command Reference &amp; Operator Manual</a></li>
+<li><a href="../docs/reference/KERNEL_CONFIGURATIONS_GUIDE.html" title="ZQK Knowledge Kernel Configurations Reference">ZQK Knowledge Kernel Configurations Reference</a></li>
+</ul>
+</details>
+</nav>
+    </aside>
+    <article class="doc-body">
+      <div class="breadcrumb">
+        <div class="breadcrumb-trail">
+          <a href="../index.html">Docs</a> &raquo; <span>Kernel Subsystems — Core Engines</span> &raquo; <span class="current">Packages Directory</span>
+        </div>
+        <a href="../pkg/README.md" class="raw-md-link" title="View canonical Markdown source">Raw .md</a>
+      </div>
+      <div class="markdown-body">
+        <h1 id="packages-directory">Packages Directory</h1>
+<p><strong>Status</strong>: Active<br />
+<strong>Last Updated</strong>: AUTO-GENERATED - Do not edit manually</p>
+<p>This directory contains Go packages for the ZQK project. Each package is a modular component with a defined boundary and contract.</p>
+<p><strong>⚠️ This README is auto-generated. To update it, run:</strong></p>
+<pre><code class="language-bash">./scripts/open-core/generate-code-readme-index.sh pkg
+</code></pre>
+<h2 id="packages-index">Packages Index</h2>
+<div class="table-container"><table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Import Path</th>
+<th>Files</th>
+<th>Tests</th>
+<th>Subpackages</th>
+<th>README</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/accumulator">accumulator</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/accumulator</code></td>
+<td>4+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Aggregation and time-windowed rollups for execution metrics, status events, and telemetry.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/acronyms">acronyms</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/acronyms</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Acronyms component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/adapters">adapters</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/adapters</code></td>
+<td>4+1</td>
+<td>1</td>
+<td>antigravity, gemini, +6 more</td>
+<td>❌ -</td>
+<td>The vendor-neutral factory for host/IDE message delivery. Kernel code depends on [MessageDelivery] and [Resolve] only. Concrete...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agent">agent</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agent</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Cryptographic utilities, key management, and security identity primitives for agents.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentclaim">agentclaim</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentclaim</code></td>
+<td>6+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Agent work claiming, cadence check-ins, lease acquisition, and write gating.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentdelivery">agentdelivery</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentdelivery</code></td>
+<td>8+4</td>
+<td>4</td>
+<td>adapter</td>
+<td>❌ -</td>
+<td>Host-neutral delivery of messages, steers, and task notifications to agent environments.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentfeed">agentfeed</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentfeed</code></td>
+<td>20+19</td>
+<td>19</td>
+<td>bridge, httpapi</td>
+<td>❌ -</td>
+<td>Bidirectional agent message feed, event streaming, human-in-the-loop correspondence, and HTTP API.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentidle">agentidle</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentidle</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Agent idle state detection, persistence, sleep management, and reactive wakeup triggers.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentonboard">agentonboard</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentonboard</code></td>
+<td>7+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Workspace-to-kernel synchronization and agent seating for first-contact initialization.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentpack">agentpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentpack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Domain object pack loader and runtime registration for agent entities.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentprompt">agentprompt</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentprompt</code></td>
+<td>11+11</td>
+<td>11</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Prompt assembly, template rendering, and contextual prompt injection for agent sessions.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/agentrules">agentrules</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/agentrules</code></td>
+<td>1+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Parsing, validation, and enforcement of agent behavioral rules, directives, and constraints.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/aliases">aliases</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/aliases</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Command and object alias resolution, shorthand mapping, and synonym expansion.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/ambience">ambience</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/ambience</code></td>
+<td>4+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Background ambient intelligence, contextual awareness, and environment state tracking.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/ambient">ambient</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/ambient</code></td>
+<td>17+15</td>
+<td>15</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Filesystem watcher daemon, ambient change detection, and reactive event triggering.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/appledouble">appledouble</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/appledouble</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Sanitization and handling of AppleDouble and macOS resource fork metadata files.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/architecture">architecture</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/architecture</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Codebase architectural boundaries, layering rules, and static AST governance checks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/audit">audit</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/audit</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>High-volume audit log streaming, event persistence, and validation policies.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/authcred">authcred</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/authcred</code></td>
+<td>16+14</td>
+<td>14</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Secure credential storage, token management, and authentication provider integration.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/batchaf">batchaf</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/batchaf</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Batch aggregation and resolution for orphaned requirements, goals, and backlog items.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/bootstrap">bootstrap</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/bootstrap</code></td>
+<td>4+6</td>
+<td>6</td>
+<td>-</td>
+<td>✅ <a href="bootstrap/README.html">README</a></td>
+<td>Embedded bootstrap archive for zqk system init.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/brand">brand</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/brand</code></td>
+<td>2+4</td>
+<td>4</td>
+<td>substitution</td>
+<td>❌ -</td>
+<td>Product branding, executable names, channel flags, and environment variable namespace configuration.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/bridge">bridge</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/bridge</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>engine, impl</td>
+<td>❌ -</td>
+<td>Bidirectional communication bridge connecting IDEs and external tools with the kernel.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/bufferpool">bufferpool</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/bufferpool</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Reusable memory buffer pools for high-throughput zero-allocation I/O operations.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/cef">cef</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/cef</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Critical Evidence Framework (CEF) evaluation, evidence lift tracking, and proof aggregation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/circuitbreaker">circuitbreaker</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/circuitbreaker</code></td>
+<td>5+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Fault tolerance circuit breaker pattern preventing cascade failures in distributed calls.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/cleanup">cleanup</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/cleanup</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Workspace cleanup, orphaned temp file purging, and transient artifact garbage collection.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/cli">cli</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/cli</code></td>
+<td>51+34</td>
+<td>34</td>
+<td>bldr_cli_cmd_v1, commands, +3 more</td>
+<td>✅ <a href="cli/README.html">README</a></td>
+<td>This package provides the command-line interface infrastructure for zqk, following the spec-driven builder pattern established...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/cliapp">cliapp</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/cliapp</code></td>
+<td>29+14</td>
+<td>14</td>
+<td>context, errorsuggest, flagutil</td>
+<td>✅ <a href="cliapp/README.html">README</a></td>
+<td>Import path: github.com/zqk-os/zqk/pkg/cliapp.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/clihooks">clihooks</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/clihooks</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>CLI execution hooks, pre/post-command intercepts, and telemetry emission.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/closureevidence">closureevidence</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/closureevidence</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Evidence collection and cryptographic verification for backlog item closure.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/community">community</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/community</code></td>
+<td>16+47</td>
+<td>47</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Open-source community distribution, telemetry anonymization, docs portal, and packaging.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/concurrency">concurrency</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/concurrency</code></td>
+<td>11+11</td>
+<td>11</td>
+<td>-</td>
+<td>✅ <a href="concurrency/README.html">README</a></td>
+<td>This package provides standardized concurrency primitives and patterns to ensure consistent, safe, and observable concurrent op...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/config">config</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/config</code></td>
+<td>10+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Kernel configuration loading, YAML parsing, environment overrides, and schema validation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/context">context</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/context</code></td>
+<td>15+6</td>
+<td>6</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Context management, security principal propagation, and request-scoped state.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/contextevents">contextevents</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/contextevents</code></td>
+<td>3+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Event dispatching and subscription scoped to execution contexts.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/contractchange">contractchange</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/contractchange</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Tracking and auditing schema and contract mutations across kernel versions.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/convergence">convergence</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/convergence</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Target state convergence controllers, admission checks, and milestone progression.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/convergerollup">convergerollup</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/convergerollup</code></td>
+<td>8+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Rollup reporting and outcome aggregation for convergence evaluation ticks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/coordination">coordination</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/coordination</code></td>
+<td>15+10</td>
+<td>10</td>
+<td>-</td>
+<td>✅ <a href="coordination/README.html">README</a></td>
+<td>The coordination package provides the central event coordination system for the entire codebase. It serves as the "spinal cord"...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/crypto">crypto</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/crypto</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Ed25519 cryptographic signing, token validation, and artifact provenance verification.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/daemon">daemon</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/daemon</code></td>
+<td>0+0</td>
+<td>0</td>
+<td>overseer, singleton</td>
+<td>❌ -</td>
+<td>Background daemon supervisor, process lifecycle management, and health monitoring.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/datacell">datacell</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/datacell</code></td>
+<td>22+22</td>
+<td>22</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Data cell coordinator membrane around stream storage and content-addressable storage nuclei.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/datacellregistry">datacellregistry</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/datacellregistry</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Registry and discovery catalog for active project data cells.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/decisionpack">decisionpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/decisionpack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Decision domain pack registering decision object lifecycles, options, and rationale.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/diagnostics">diagnostics</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/diagnostics</code></td>
+<td>9+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Runtime diagnostics, stack dumps, memory profiling, and system health checks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/diskusage">diskusage</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/diskusage</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Storage footprint calculation, quota monitoring, and disk capacity reporting.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/dispatch">dispatch</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/dispatch</code></td>
+<td>4+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Thread-safe execution dispatching, worker routing, and context propagation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/displaypack">displaypack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/displaypack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Display and visual formatting pack for terminal rendering and UI output.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/dna">dna</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/dna</code></td>
+<td>6+6</td>
+<td>6</td>
+<td>pm</td>
+<td>❌ -</td>
+<td>Dna component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/docman">docman</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/docman</code></td>
+<td>5+7</td>
+<td>7</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Documentation discovery, frontmatter verification, and index management.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/domain">domain</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/domain</code></td>
+<td>0+0</td>
+<td>0</td>
+<td>organizational</td>
+<td>❌ -</td>
+<td>Domain-driven design entity models, value objects, and organizational boundaries.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/drifthotspots">drifthotspots</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/drifthotspots</code></td>
+<td>4+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Detection and heatmapping of code and specification drift across the codebase.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/economy">economy</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/economy</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Agent token economy, resource budgeting, compute metering, and credit tracking.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/entitlements">entitlements</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/entitlements</code></td>
+<td>1+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Role-based feature access control, license entitlement gates, and tier verification.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/envelope">envelope</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/envelope</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Standardized message envelope format for inter-process and network communication.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/errfmt">errfmt</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/errfmt</code></td>
+<td>1+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Structured error formatting, actionable error reporting, and troubleshooting suggestions.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/events">events</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/events</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Event bus, overlay event streams, and asynchronous event pub/sub routing.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/evolution">evolution</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/evolution</code></td>
+<td>5+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Schema migration, data model version evolution, and compatibility adapters.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/evolutionpack">evolutionpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/evolutionpack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Model evolution pack managing version upgrade chains and deprecation schedules.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/execwrap">execwrap</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/execwrap</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Context-aware, safe execution wrappers around operating system commands.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/featureflags">featureflags</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/featureflags</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Dynamic runtime feature toggles and progressive rollout switches.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/federation">federation</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/federation</code></td>
+<td>5+2</td>
+<td>2</td>
+<td>meshbroker</td>
+<td>❌ -</td>
+<td>Cross-kernel mesh federation, remote project peering, and distributed sync.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/filter">filter</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/filter</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Lexical filter expressions, object predicate evaluation, and search query compilation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/fitness">fitness</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/fitness</code></td>
+<td>4+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Architecture fitness functions and automated compliance scoring.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/functional">functional</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/functional</code></td>
+<td>3+1</td>
+<td>1</td>
+<td>-</td>
+<td>✅ <a href="functional/README.html">README</a></td>
+<td>A fluent, functional-style Go API for monadic error handling, safe map operations, and telemetry-integrated execution with auto...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/gantt">gantt</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/gantt</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Gantt timeline generation, SVG visual rendering, and roadmap scheduling displays.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/git">git</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/git</code></td>
+<td>7+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Git operations wrapper, branch inspection, worktree management, and status reporting.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/gitconstants">gitconstants</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/gitconstants</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Centralized Git command, subcommand, flag, and option constant definitions.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/gitevidence">gitevidence</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/gitevidence</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Git commit evidence verification, trunk tip freshness, and branch validation gates.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/gitplumbing">gitplumbing</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/gitplumbing</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Gitplumbing component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/goroutinelabels">goroutinelabels</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/goroutinelabels</code></td>
+<td>5+4</td>
+<td>4</td>
+<td>-</td>
+<td>✅ <a href="goroutinelabels/README.html">README</a></td>
+<td>The GoroutineBuilder provides a fluent API for creating goroutines with consistent patterns and best practices. It ensures all...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/gotestparse">gotestparse</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/gotestparse</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Streaming parser and event normalizer for go test terminal output and JSON test events.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/graph">graph</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/graph</code></td>
+<td>4+4</td>
+<td>4</td>
+<td>databook, memgraph, +4 more</td>
+<td>✅ <a href="graph/README.html">README</a></td>
+<td>This package implements the pluggable graph backend interface for the zqk knowledge kernel.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/grooming">grooming</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/grooming</code></td>
+<td>0+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Automated backlog grooming, criteria validation, and orphaned object detection.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/handslapper">handslapper</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/handslapper</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Path containment enforcement, directory traversal prevention, and boundary guards.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/healthcheck">healthcheck</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/healthcheck</code></td>
+<td>3+10</td>
+<td>10</td>
+<td>monitors</td>
+<td>❌ -</td>
+<td>Subsystem health monitors, liveness/readiness probes, and diagnostic suites.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/hive">hive</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/hive</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>capability, inbox, media</td>
+<td>❌ -</td>
+<td>Multi-agent hive primitives, shared memory structures, and collective decision making.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/hivemind">hivemind</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/hivemind</code></td>
+<td>3+4</td>
+<td>4</td>
+<td>bridge, indexer, +2 more</td>
+<td>❌ -</td>
+<td>Distributed agent knowledge graph, activity logging, and shared context storage.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/hostload">hostload</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/hostload</code></td>
+<td>8+9</td>
+<td>9</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Host machine CPU, memory, and I/O load monitoring for dynamic worker scheduling.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/httpheaders">httpheaders</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/httpheaders</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>HTTP header constants, canonical header names, and utility parsers.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/idebridge">idebridge</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/idebridge</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>IDE communication protocol bridge, editor command integration, and live sync.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/idehooks">idehooks</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/idehooks</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>IDE lifecycle event hooks, workspace notification triggers, and editor bindings.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/infrastructure">infrastructure</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/infrastructure</code></td>
+<td>4+2</td>
+<td>2</td>
+<td>crypto, hts</td>
+<td>❌ -</td>
+<td>Core infrastructure components, hardware abstraction, and cryptographic storage.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/ingestion">ingestion</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/ingestion</code></td>
+<td>0+0</td>
+<td>0</td>
+<td>adapters</td>
+<td>❌ -</td>
+<td>Data ingestion pipeline, file format adapters, and document translation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/integrity">integrity</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/integrity</code></td>
+<td>4+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Kernel state integrity verification, hash validation, and tamper detection.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/interactionpolicy">interactionpolicy</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/interactionpolicy</code></td>
+<td>9+7</td>
+<td>7</td>
+<td>-</td>
+<td>❌ -</td>
+<td>User-agent interaction constraints, confirmation prompts, and safe intervention rules.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/interactive">interactive</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/interactive</code></td>
+<td>6+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Interactive terminal UI components, prompts, select menus, and survey wizards.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/interfacepack">interfacepack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/interfacepack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Interface contract and API boundary specifications pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/kernel">kernel</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/kernel</code></td>
+<td>4+3</td>
+<td>3</td>
+<td>intake, mutation, +2 more</td>
+<td>❌ -</td>
+<td>Knowledge Kernel bootstrap sequence, runtime lifecycle, and core state coordination.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/kernelcas">kernelcas</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/kernelcas</code></td>
+<td>5+4</td>
+<td>4</td>
+<td>compose</td>
+<td>❌ -</td>
+<td>Kernel Content-Addressable Storage (CAS) integration and object hash trees.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/kindnames">kindnames</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/kindnames</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Canonical naming constants and normalization rules for kernel object kinds.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/kindsynonyms">kindsynonyms</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/kindsynonyms</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Synonym mapping, alias resolution, and plural-to-singular kind translation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/librarypack">librarypack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/librarypack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Reusable component library pack registering shared traits and behaviors.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/license">license</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/license</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Open-source license compliance, copyright header verification, and SPDX tracking.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/lifecycle">lifecycle</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/lifecycle</code></td>
+<td>13+17</td>
+<td>17</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Kernel object lifecycle state machine, phase transitions, and validation rules.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/llm">llm</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/llm</code></td>
+<td>14+13</td>
+<td>13</td>
+<td>semanticcache</td>
+<td>❌ -</td>
+<td>LLM client abstractions, prompt completion handlers, and model provider routing.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/loader">loader</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/loader</code></td>
+<td>3+4</td>
+<td>4</td>
+<td>-</td>
+<td>✅ <a href="loader/README.html">README</a></td>
+<td>Abstract <strong>component loader</strong> pattern: shared state as atomics, callback on state change, configurable timeouts (default config...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/localci">localci</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/localci</code></td>
+<td>4+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Local CI runner simulation, fast-fail checks, and pre-push verification.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/lockhealth">lockhealth</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/lockhealth</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Verified stale-lock cleanup primitives with fail-closed semantics, usable across subsystems (scheduler, file lock strategies, s...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/logging">logging</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/logging</code></td>
+<td>21+14</td>
+<td>14</td>
+<td>-</td>
+<td>✅ <a href="logging/README.html">README</a></td>
+<td>This package provides structured logging with context-aware routing, MCP protocol protection, and multi-destination support.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/maintenance">maintenance</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/maintenance</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Scheduled maintenance tasks, garbage collection, and database compaction.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/mcp">mcp</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/mcp</code></td>
+<td>139+121</td>
+<td>121</td>
+<td>ideadapter, mcp_helpers, testing</td>
+<td>✅ <a href="mcp/README.html">README</a></td>
+<td>This package provides a complete MCP server implementation that enables AI assistants and other MCP clients to interact with th...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/mesh">mesh</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/mesh</code></td>
+<td>10+12</td>
+<td>12</td>
+<td>multimodal</td>
+<td>❌ -</td>
+<td>Peer-to-peer agent mesh networking, ambient signal exchange, and distributed sync.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/metricpack">metricpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/metricpack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>System and agent metric definitions pack for performance tracking.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/metrics">metrics</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/metrics</code></td>
+<td>25+17</td>
+<td>17</td>
+<td>tsdb</td>
+<td>❌ -</td>
+<td>Lock operation names for RunInLockWithLogger / RunInRLockWithLogger. CONSTANTS_AND_DRY_INVENTORY_PLAN Phase A.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/metricsrecording">metricsrecording</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/metricsrecording</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Centralizes whether test runs should record metrics (storage counters, pipeline sampling, metric object creation). Production b...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/migration">migration</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/migration</code></td>
+<td>10+7</td>
+<td>7</td>
+<td>detector, exporter, +6 more</td>
+<td>✅ <a href="migration/README.html">README</a></td>
+<td>This package implements the file-based to graph backend migration tools as defined in the Migration Strategy v1.0.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/mutation">mutation</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/mutation</code></td>
+<td>7+10</td>
+<td>10</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Atomic kernel object mutation, version incrementing, and change event publishing.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/nildecode">nildecode</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/nildecode</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Generic helpers for type assertions with non-zero checks. Kept separate from pkg/pipeline so low-level packages (e.g. pkg/objec...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/objectcreate">objectcreate</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/objectcreate</code></td>
+<td>0+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Knowledge Kernel object creation helpers and schema validation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/objectget">objectget</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/objectget</code></td>
+<td>8+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Object retrieval, lazy loading, dereferencing, and relationship expansion.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/objectidcache">objectidcache</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/objectidcache</code></td>
+<td>11+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>The ObjectIDCache implementation extracted from cmd/zqk/system. CLI audit, coordinator events, cache-item strategy, and project...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/objectrecord">objectrecord</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/objectrecord</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Objectrecord component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/objects">objects</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/objects</code></td>
+<td>88+94</td>
+<td>94</td>
+<td>koi</td>
+<td>❌ -</td>
+<td>Kernel object graph repository, schema registration, and persistence adapters.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/observability">observability</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/observability</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Telemetry, distributed tracing spans, and operational visibility.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/observer">observer</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/observer</code></td>
+<td>9+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Event observation, AST entity extraction, and state tracking across system components.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/ontology">ontology</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/ontology</code></td>
+<td>5+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Ontological relationship validation, semantic modeling, and hierarchy graphs.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/opencore">opencore</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/opencore</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Open core boundary enforcement, feature segregation, and open-source distribution.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/operational">operational</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/operational</code></td>
+<td>6+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Operational congruence reporting: disk vs index vs internal counts, disparity detection, and hooks for metrics and alerts.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/orchestration">orchestration</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/orchestration</code></td>
+<td>14+9</td>
+<td>9</td>
+<td>adversarial, intent, +4 more</td>
+<td>❌ -</td>
+<td>Orchestration component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/orgpack">orgpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/orgpack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Organizational hierarchy and team structure pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/osmosis">osmosis</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/osmosis</code></td>
+<td>0+0</td>
+<td>0</td>
+<td>github</td>
+<td>❌ -</td>
+<td>Bi-directional state osmosis between local workspace and Knowledge Kernel graph.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/osslaunch">osslaunch</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/osslaunch</code></td>
+<td>0+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Open-source launch automation, release readiness gates, and pre-flight checks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/outputtypes">outputtypes</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/outputtypes</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Standardized CLI output format types, table formatters, and serialization.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/packrecord">packrecord</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/packrecord</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Verifies an uploaded spec pack and records its specs so those kinds load as typed objects. Spec-only packs need no rebuild.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/paths">paths</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/paths</code></td>
+<td>21+26</td>
+<td>26</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Canonical project directory paths, file location resolvers, and path safety.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/pipeline">pipeline</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/pipeline</code></td>
+<td>24+19</td>
+<td>19</td>
+<td>plugins</td>
+<td>✅ <a href="pipeline/README.html">README</a></td>
+<td>This package provides a robust builder and runtime for the standardized data pipeline lifecycle, enabling structured, multi-sta...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/pipelinepack">pipelinepack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/pipelinepack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Pipeline and task workflow step pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/pm">pm</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/pm</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Program and project management models, milestones, and deliverables.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/policy">policy</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/policy</code></td>
+<td>2+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Kernel policy definitions, enforcement hooks, and rule evaluation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/policyinterrupt">policyinterrupt</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/policyinterrupt</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Emergency policy interrupts, execution halting, and safety interlocks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/precommit">precommit</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/precommit</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Types and logic for the pre-commit hook that reads background-check results. Category files are written by scheduler jobs (lint...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/predicate">predicate</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/predicate</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Predicate component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/primaryorch">primaryorch</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/primaryorch</code></td>
+<td>3+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Primary agent orchestration engine, session coordination, and run tracking.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/process">process</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/process</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Operating system process management, PID tracking, and graceful signal handling.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/processhygiene">processhygiene</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/processhygiene</code></td>
+<td>6+15</td>
+<td>15</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Workspace hygiene auditing, dead-code detection, and repository cleanliness.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/processing">processing</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/processing</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Processing component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/projecttemp">projecttemp</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/projecttemp</code></td>
+<td>3+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Hosts isolated temp-project teardown helpers that must not import pkg/storage (storage imports pkg/validation and other consume...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/qapack">qapack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/qapack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Quality assurance, test coverage, and verification pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/quality">quality</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/quality</code></td>
+<td>13+17</td>
+<td>17</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Quality component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/quick">quick</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/quick</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Parsing and helpers for one-click creation of system objects from text or files.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/relay">relay</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/relay</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Message relay, inter-process communication, and agent event forwarding.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/releasegate">releasegate</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/releasegate</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Verification gates and multi-platform compilation tests for release candidates.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/releasepack">releasepack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/releasepack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Release gates, artifact generation, and deployment pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/reports">reports</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/reports</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Reports component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/reqharness">reqharness</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/reqharness</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>The test-requirements verification harness. It closes the loop between a requirement (kernel object shape: id, claim, test_crit...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/resourcehygiene">resourcehygiene</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/resourcehygiene</code></td>
+<td>5+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Resourcehygiene component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/rollback">rollback</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/rollback</code></td>
+<td>6+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>A reusable snapshot-and-rollback pattern for lifecycle transitions, maintenance tasks, and other operations. See docs/architect...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/rollup">rollup</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/rollup</code></td>
+<td>3+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Rollup component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/runtime">runtime</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/runtime</code></td>
+<td>3+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Runtime environment detection, OS capabilities, and hardware specs.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/safepath">safepath</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/safepath</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Builds filesystem paths confined under a root directory to mitigate directory traversal when joining untrusted or external segm...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/scenario">scenario</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/scenario</code></td>
+<td>6+7</td>
+<td>7</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Convergence lifecycle end-to-end tests (storage-backed CVS updates). Coverage: measure → BuildSuggestedConvergenceSessionFields...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/scheduler">scheduler</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/scheduler</code></td>
+<td>201+250</td>
+<td>250</td>
+<td>clusterstatus, hostservice, transceiver</td>
+<td>❌ -</td>
+<td>Distributed job scheduler, cron execution, maintenance tasks, and test scans.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/screencap">screencap</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/screencap</code></td>
+<td>2+3</td>
+<td>3</td>
+<td>-</td>
+<td>✅ <a href="screencap/README.html">README</a></td>
+<td>pkg/screencap provides headless and interactive terminal automation coupled with native screen, window, and rectangular region...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/search">search</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/search</code></td>
+<td>6+2</td>
+<td>2</td>
+<td>-</td>
+<td>✅ <a href="search/README.html">README</a></td>
+<td>pkg/search provides an in-process, pure-Go code search engine featuring trigram inverted indexing, Go AST structural queries, a...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/seatworker">seatworker</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/seatworker</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>✅ <a href="seatworker/README.html">README</a></td>
+<td>pkg/seatworker provides OS supervisor installation and lifecycle management for persistent autonomous agent worker processes (z...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/security">security</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/security</code></td>
+<td>4+3</td>
+<td>3</td>
+<td>secretpatterns</td>
+<td>❌ -</td>
+<td>Security policies, credential isolation, and capability verification.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/semantic">semantic</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/semantic</code></td>
+<td>5+7</td>
+<td>7</td>
+<td>graph, translator</td>
+<td>❌ -</td>
+<td>Semantic component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/service">service</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/service</code></td>
+<td>6+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Core service lifecycle, daemon startup, and background worker orchestration.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/shellcmd">shellcmd</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/shellcmd</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>✅ <a href="shellcmd/README.html">README</a></td>
+<td>pkg/shellcmd converts configured command strings into safe, cross-platform argv argument lists for process execution across POS...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/shockwave">shockwave</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/shockwave</code></td>
+<td>4+7</td>
+<td>7</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Event shockwave propagation, reactive state invalidation, and dependent notifications.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/shovelready">shovelready</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/shovelready</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Shovel-ready work discovery, execution scoring, and backlog ranking.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/skill">skill</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/skill</code></td>
+<td>2+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Agent skill model definitions, capability declarations, and tool bindings.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/skills">skills</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/skills</code></td>
+<td>0+0</td>
+<td>0</td>
+<td>breeding, mutation</td>
+<td>✅ <a href="skills/README.html">README</a></td>
+<td>This package tree (pkg/skills) implements autonomous agent skill maintenance, fitness-driven evolution, and generative synthesi...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/specbuilder">specbuilder</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/specbuilder</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>adapters, api_builders, +20 more</td>
+<td>✅ <a href="specbuilder/README.html">README</a></td>
+<td>This package provides the core infrastructure for the Spec-Driven Builder Pattern, a reusable pattern for generating artifacts...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/specialization">specialization</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/specialization</code></td>
+<td>6+4</td>
+<td>4</td>
+<td>-</td>
+<td>✅ <a href="specialization/README.html">README</a></td>
+<td>pkg/specialization governs horizontal node segregation, component filtering, and side-effect sandboxing within ZQK swarm deploy...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/specorigination">specorigination</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/specorigination</code></td>
+<td>6+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Stable stage names for spec origination pipelines. Wire these with pkg/pipeline.Builder.AddStage using pipeline kind PipelineKi...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/stampmemo">stampmemo</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/stampmemo</code></td>
+<td>6+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>A stamp-invalidated memo: the key is a stable identity, the stamp is the generation. There is no size limit, LRU, or TTL. Maps...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/stewardbase">stewardbase</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/stewardbase</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Base interfaces and common abstractions for stream storage stewards.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/storage">storage</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/storage</code></td>
+<td>329+315</td>
+<td>315</td>
+<td>audit, binary, +11 more</td>
+<td>✅ <a href="storage/README.html">README</a></td>
+<td>This package provides a unified storage abstraction layer for zqk, supporting both file-based and graph-based storage backends...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/storagetesting">storagetesting</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/storagetesting</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Holds the minimal interfaces and option structs shared by [github.com/zqk-os/zqk/pkg/testing.SetupCompleteTestEnvironment] and...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/strutil">strutil</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/strutil</code></td>
+<td>4+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>String manipulation, token extraction, and text formatting utilities.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/studio">studio</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/studio</code></td>
+<td>3+2</td>
+<td>2</td>
+<td>components</td>
+<td>❌ -</td>
+<td>Visual Studio Web UI backend, asset serving, and interactive dashboard APIs.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/supervision">supervision</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/supervision</code></td>
+<td>4+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Process supervision trees, worker restarts, and crash resilience.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/supply">supply</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/supply</code></td>
+<td>1+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Dependency supply chain validation, vendor verification, and bill of materials.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/swarm">swarm</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/swarm</code></td>
+<td>17+18</td>
+<td>18</td>
+<td>metabolism, pack, remote</td>
+<td>❌ -</td>
+<td>Multi-agent swarm coordination, task allocation, and consensus protocols.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/swarminit">swarminit</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/swarminit</code></td>
+<td>6+7</td>
+<td>7</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Runs configurable mesh bring-up recipes stored as kernel pipeline (PIP-*) objects. It is a mesh ops runner, not the kernel CAS...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/system">system</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/system</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>System-level diagnostics, host environment inspection, and OS capabilities.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/systemcheck">systemcheck</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/systemcheck</code></td>
+<td>6+5</td>
+<td>5</td>
+<td>asynccheck, autofix, +4 more</td>
+<td>❌ -</td>
+<td>Holds shared types and helpers for zqk system check / validation surfaces that used to live only in cmd/zqk/system (F-ARCH-001)...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/systemcheckwake">systemcheckwake</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/systemcheckwake</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Evaluates system-check summaries and optionally wakes a mesh seat. Opt-in only via <code>zqk system check --notify [agent-id]</code> — nev...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/systempeel">systempeel</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/systempeel</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Layered system abstraction peeling and kernel introspection tools.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/tde">tde</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/tde</code></td>
+<td>5+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Tde component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/tdval">tdval</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/tdval</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Test-driven validation engines, acceptance criteria gates, and verification suites.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/telemetry">telemetry</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/telemetry</code></td>
+<td>10+9</td>
+<td>9</td>
+<td>-</td>
+<td>✅ <a href="telemetry/README.html">README</a></td>
+<td>This package provides telemetry tracking, diagnostics hooks, and daemon synchronization capabilities to monitor Knowledge Kerne...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testdiscovery">testdiscovery</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testdiscovery</code></td>
+<td>7+8</td>
+<td>8</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Go:build integration &amp;&amp; !race +build integration,!race</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testenvroot">testenvroot</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testenvroot</code></td>
+<td>4+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>A minimal test project layout (.zqk/process + test-settings) without importing pkg/testing (import-cycle hygiene for packages l...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testing">testing</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testing</code></td>
+<td>11+1</td>
+<td>1</td>
+<td>-</td>
+<td>✅ <a href="testing/README.html">README</a></td>
+<td>This package provides test configuration support to isolate test data from actual project data.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testkit">testkit</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testkit</code></td>
+<td>18+18</td>
+<td>18</td>
+<td>dummy_policy</td>
+<td>❌ -</td>
+<td>Reusable test helpers intended for extraction into a shared Go testing library later. It composes storage/CAS/audit teardown us...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testpackageconcurrency">testpackageconcurrency</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testpackageconcurrency</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Concurrency test fixtures, race detection harnesses, and synchronization benchmarks.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testrunner">testrunner</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testrunner</code></td>
+<td>6+7</td>
+<td>7</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Automated test runner execution, timeout management, and report generation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/testservices">testservices</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/testservices</code></td>
+<td>1+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Manages optional test-side services (e.g. MemGraph via Docker) without pulling in the full pkg/testing surface.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/tpm">tpm</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/tpm</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Technical Program Management scheduling, Gantt tracking, and priority plans.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/tracing">tracing</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/tracing</code></td>
+<td>1+1</td>
+<td>1</td>
+<td>-</td>
+<td>❌ -</td>
+<td>OpenTelemetry and distributed trace context propagation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/translation">translation</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/translation</code></td>
+<td>10+4</td>
+<td>4</td>
+<td>-</td>
+<td>✅ <a href="translation/README.html">README</a></td>
+<td>Translates imported ontology/schema formats (RDF/OWL, JSON Schema, etc.) into zqk-domain structures for traceability and downst...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/transport">transport</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/transport</code></td>
+<td>3+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Transport component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/traversal">traversal</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/traversal</code></td>
+<td>5+6</td>
+<td>6</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Knowledge graph traversal algorithms, depth-bounded search, and cycle detection.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/tray">tray</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/tray</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Loads named shortcuts ("Tray") that expand to zqk argv lists. Default entries are embedded; merge with .zqk/tray.yaml (see Load...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/tui">tui</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/tui</code></td>
+<td>4+1</td>
+<td>1</td>
+<td>tds</td>
+<td>❌ -</td>
+<td>Tui component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/utils">utils</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/utils</code></td>
+<td>0+0</td>
+<td>0</td>
+<td>chunking, fileutil, +3 more</td>
+<td>❌ -</td>
+<td>Generic cross-cutting utility functions and data structures.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/validation">validation</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/validation</code></td>
+<td>67+98</td>
+<td>98</td>
+<td>qa, scenario</td>
+<td>✅ <a href="validation/README.html">README</a></td>
+<td>This package provides object validation for zqk: instance validation (schema, lifecycle, semantic types), ID validation (prefix...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/vds">vds</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/vds</code></td>
+<td>10+6</td>
+<td>6</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Verifiable Decomposition Spine (VDS) verification, traceability, and done-gates.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/verification">verification</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/verification</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Formal verification of kernel constraints, schemas, and invariants.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/vet">vet</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/vet</code></td>
+<td>13+5</td>
+<td>5</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Code quality vetting, static analysis rules, and repository linting.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/vocabularypack">vocabularypack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/vocabularypack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Canonical domain terminology and glossary definitions pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/walutil">walutil</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/walutil</code></td>
+<td>3+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Walutil component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/when">when</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/when</code></td>
+<td>5+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>When component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/workflow">workflow</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/workflow</code></td>
+<td>2+1</td>
+<td>1</td>
+<td>whatsnext</td>
+<td>❌ -</td>
+<td>Workflow execution engine, what's next recommendation, and step evaluation.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/workflowpack">workflowpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/workflowpack</code></td>
+<td>1+0</td>
+<td>0</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Standard workflow step execution and sequence pack.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/workpack">workpack</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/workpack</code></td>
+<td>3+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>The included planning and verification pack. The composition root links it by default. A root that passes the build tag zqk_omi...</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/wsobs">wsobs</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/wsobs</code></td>
+<td>1+2</td>
+<td>2</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Wsobs component and domain abstractions for ZQK Core.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/zqkcli">zqkcli</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/zqkcli</code></td>
+<td>30+20</td>
+<td>20</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Cobra command integration, flag binding, and CLI command dispatch.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/zqkdev">zqkdev</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/zqkdev</code></td>
+<td>14+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Developer tooling, local test fixtures, and environment setup aids.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/zqkenv">zqkenv</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/zqkenv</code></td>
+<td>9+11</td>
+<td>11</td>
+<td>agentguard</td>
+<td>❌ -</td>
+<td>Environment variable configuration, test mode detection, and runtime switches.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/zqksession">zqksession</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/zqksession</code></td>
+<td>4+4</td>
+<td>4</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Manages persisted ZQK session lifecycle state.</td>
+</tr>
+<tr>
+<td><a href="https://github.com/zqk-os/zqk/blob/main/pkg/zqktime">zqktime</a></td>
+<td><code>github.com/zqk-os/zqk/pkg/zqktime</code></td>
+<td>1+3</td>
+<td>3</td>
+<td>-</td>
+<td>❌ -</td>
+<td>Deterministic UTC time helpers and RFC3339 compliance enforcement.</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="package-structure">Package Structure</h2>
+<pre><code>pkg/
+├── accumulator/          # Aggregation and time-windowed rollups for execution metrics,
+├── acronyms/          # Acronyms component and domain abstractions for ZQK Core.
+├── adapters/          # The vendor-neutral factory for host/IDE message delivery. Ke
+│   └── antigravity/
+│   └── gemini/
+│   └── golang/
+│   └── macos/
+│   └── ollama/
+│   └── openai/
+│   └── qwen/
+│   └── sync/
+├── agent/          # Cryptographic utilities, key management, and security identi
+├── agentclaim/          # Agent work claiming, cadence check-ins, lease acquisition, a
+├── agentdelivery/          # Host-neutral delivery of messages, steers, and task notifica
+│   └── adapter/
+├── agentfeed/          # Bidirectional agent message feed, event streaming, human-in-
+│   └── bridge/
+│   └── httpapi/
+├── agentidle/          # Agent idle state detection, persistence, sleep management, a
+├── agentonboard/          # Workspace-to-kernel synchronization and agent seating for fi
+├── agentpack/          # Domain object pack loader and runtime registration for agent
+├── agentprompt/          # Prompt assembly, template rendering, and contextual prompt i
+├── agentrules/          # Parsing, validation, and enforcement of agent behavioral rul
+├── aliases/          # Command and object alias resolution, shorthand mapping, and 
+├── ambience/          # Background ambient intelligence, contextual awareness, and e
+├── ambient/          # Filesystem watcher daemon, ambient change detection, and rea
+├── appledouble/          # Sanitization and handling of AppleDouble and macOS resource 
+├── architecture/          # Codebase architectural boundaries, layering rules, and stati
+├── audit/          # High-volume audit log streaming, event persistence, and vali
+├── authcred/          # Secure credential storage, token management, and authenticat
+├── batchaf/          # Batch aggregation and resolution for orphaned requirements, 
+├── bootstrap/          # Embedded bootstrap archive for zqk system init.
+├── brand/          # Product branding, executable names, channel flags, and envir
+│   └── substitution/
+├── bridge/          # Bidirectional communication bridge connecting IDEs and exter
+│   └── engine/
+│   └── impl/
+├── bufferpool/          # Reusable memory buffer pools for high-throughput zero-alloca
+├── cef/          # Critical Evidence Framework (CEF) evaluation, evidence lift 
+├── circuitbreaker/          # Fault tolerance circuit breaker pattern preventing cascade f
+├── cleanup/          # Workspace cleanup, orphaned temp file purging, and transient
+├── cli/          # This package provides the command-line interface infrastruct
+│   └── bldr_cli_cmd_v1/
+│   └── commands/
+│   └── flagutil/
+│   └── printer/
+│   └── ux/
+├── cliapp/          # Import path: github.com/zqk-os/zqk/pkg/cliapp.
+│   └── context/
+│   └── errorsuggest/
+│   └── flagutil/
+├── clihooks/          # CLI execution hooks, pre/post-command intercepts, and teleme
+├── closureevidence/          # Evidence collection and cryptographic verification for backl
+├── community/          # Open-source community distribution, telemetry anonymization,
+├── concurrency/          # This package provides standardized concurrency primitives an
+├── config/          # Kernel configuration loading, YAML parsing, environment over
+├── context/          # Context management, security principal propagation, and requ
+├── contextevents/          # Event dispatching and subscription scoped to execution conte
+├── contractchange/          # Tracking and auditing schema and contract mutations across k
+├── convergence/          # Target state convergence controllers, admission checks, and 
+├── convergerollup/          # Rollup reporting and outcome aggregation for convergence eva
+├── coordination/          # The coordination package provides the central event coordina
+├── crypto/          # Ed25519 cryptographic signing, token validation, and artifac
+├── daemon/          # Background daemon supervisor, process lifecycle management, 
+│   └── overseer/
+│   └── singleton/
+├── datacell/          # Data cell coordinator membrane around stream storage and con
+├── datacellregistry/          # Registry and discovery catalog for active project data cells
+├── decisionpack/          # Decision domain pack registering decision object lifecycles,
+├── diagnostics/          # Runtime diagnostics, stack dumps, memory profiling, and syst
+├── diskusage/          # Storage footprint calculation, quota monitoring, and disk ca
+├── dispatch/          # Thread-safe execution dispatching, worker routing, and conte
+├── displaypack/          # Display and visual formatting pack for terminal rendering an
+├── dna/          # Dna component and domain abstractions for ZQK Core.
+│   └── pm/
+├── docman/          # Documentation discovery, frontmatter verification, and index
+├── domain/          # Domain-driven design entity models, value objects, and organ
+│   └── organizational/
+├── drifthotspots/          # Detection and heatmapping of code and specification drift ac
+├── economy/          # Agent token economy, resource budgeting, compute metering, a
+├── entitlements/          # Role-based feature access control, license entitlement gates
+├── envelope/          # Standardized message envelope format for inter-process and n
+├── errfmt/          # Structured error formatting, actionable error reporting, and
+├── events/          # Event bus, overlay event streams, and asynchronous event pub
+├── evolution/          # Schema migration, data model version evolution, and compatib
+├── evolutionpack/          # Model evolution pack managing version upgrade chains and dep
+├── execwrap/          # Context-aware, safe execution wrappers around operating syst
+├── featureflags/          # Dynamic runtime feature toggles and progressive rollout swit
+├── federation/          # Cross-kernel mesh federation, remote project peering, and di
+│   └── meshbroker/
+├── filter/          # Lexical filter expressions, object predicate evaluation, and
+├── fitness/          # Architecture fitness functions and automated compliance scor
+├── functional/          # A fluent, functional-style Go API for monadic error handling
+├── gantt/          # Gantt timeline generation, SVG visual rendering, and roadmap
+├── git/          # Git operations wrapper, branch inspection, worktree manageme
+├── gitconstants/          # Centralized Git command, subcommand, flag, and option consta
+├── gitevidence/          # Git commit evidence verification, trunk tip freshness, and b
+├── gitplumbing/          # Gitplumbing component and domain abstractions for ZQK Core.
+├── goroutinelabels/          # The GoroutineBuilder provides a fluent API for creating goro
+├── gotestparse/          # Streaming parser and event normalizer for go test terminal o
+├── graph/          # This package implements the pluggable graph backend interfac
+│   └── databook/
+│   └── memgraph/
+│   └── provider/
+│   └── rpcpool/
+│   └── schema/
+│   └── sync/
+├── grooming/          # Automated backlog grooming, criteria validation, and orphane
+├── handslapper/          # Path containment enforcement, directory traversal prevention
+├── healthcheck/          # Subsystem health monitors, liveness/readiness probes, and di
+│   └── monitors/
+├── hive/          # Multi-agent hive primitives, shared memory structures, and c
+│   └── capability/
+│   └── inbox/
+│   └── media/
+├── hivemind/          # Distributed agent knowledge graph, activity logging, and sha
+│   └── bridge/
+│   └── indexer/
+│   └── providers/
+│   └── sync/
+├── hostload/          # Host machine CPU, memory, and I/O load monitoring for dynami
+├── httpheaders/          # HTTP header constants, canonical header names, and utility p
+├── idebridge/          # IDE communication protocol bridge, editor command integratio
+├── idehooks/          # IDE lifecycle event hooks, workspace notification triggers, 
+├── infrastructure/          # Core infrastructure components, hardware abstraction, and cr
+│   └── crypto/
+│   └── hts/
+├── ingestion/          # Data ingestion pipeline, file format adapters, and document 
+│   └── adapters/
+├── integrity/          # Kernel state integrity verification, hash validation, and ta
+├── interactionpolicy/          # User-agent interaction constraints, confirmation prompts, an
+├── interactive/          # Interactive terminal UI components, prompts, select menus, a
+├── interfacepack/          # Interface contract and API boundary specifications pack.
+├── kernel/          # Knowledge Kernel bootstrap sequence, runtime lifecycle, and 
+│   └── intake/
+│   └── mutation/
+│   └── steward/
+│   └── verification/
+├── kernelcas/          # Kernel Content-Addressable Storage (CAS) integration and obj
+│   └── compose/
+├── kindnames/          # Canonical naming constants and normalization rules for kerne
+├── kindsynonyms/          # Synonym mapping, alias resolution, and plural-to-singular ki
+├── librarypack/          # Reusable component library pack registering shared traits an
+├── license/          # Open-source license compliance, copyright header verificatio
+├── lifecycle/          # Kernel object lifecycle state machine, phase transitions, an
+├── llm/          # LLM client abstractions, prompt completion handlers, and mod
+│   └── semanticcache/
+├── loader/          # Abstract **component loader** pattern: shared state as atomi
+├── localci/          # Local CI runner simulation, fast-fail checks, and pre-push v
+├── lockhealth/          # Verified stale-lock cleanup primitives with fail-closed sema
+├── logging/          # This package provides structured logging with context-aware 
+├── maintenance/          # Scheduled maintenance tasks, garbage collection, and databas
+├── mcp/          # This package provides a complete MCP server implementation t
+│   └── ideadapter/
+│   └── mcp_helpers/
+│   └── testing/
+├── mesh/          # Peer-to-peer agent mesh networking, ambient signal exchange,
+│   └── multimodal/
+├── metricpack/          # System and agent metric definitions pack for performance tra
+├── metrics/          # Lock operation names for RunInLockWithLogger / RunInRLockWit
+│   └── tsdb/
+├── metricsrecording/          # Centralizes whether test runs should record metrics (storage
+├── migration/          # This package implements the file-based to graph backend migr
+│   └── detector/
+│   └── exporter/
+│   └── parser/
+│   └── reporter/
+│   └── resolver/
+│   └── scanner/
+│   └── validator/
+│   └── writer/
+├── mutation/          # Atomic kernel object mutation, version incrementing, and cha
+├── nildecode/          # Generic helpers for type assertions with non-zero checks. Ke
+├── objectcreate/          # Knowledge Kernel object creation helpers and schema validati
+├── objectget/          # Object retrieval, lazy loading, dereferencing, and relations
+├── objectidcache/          # The ObjectIDCache implementation extracted from cmd/zqk/syst
+├── objectrecord/          # Objectrecord component and domain abstractions for ZQK Core.
+├── objects/          # Kernel object graph repository, schema registration, and per
+│   └── koi/
+├── observability/          # Telemetry, distributed tracing spans, and operational visibi
+├── observer/          # Event observation, AST entity extraction, and state tracking
+├── ontology/          # Ontological relationship validation, semantic modeling, and 
+├── opencore/          # Open core boundary enforcement, feature segregation, and ope
+├── operational/          # Operational congruence reporting: disk vs index vs internal 
+├── orchestration/          # Orchestration component and domain abstractions for ZQK Core
+│   └── adversarial/
+│   └── intent/
+│   └── monitor/
+│   └── reporting/
+│   └── service/
+│   └── ticker/
+├── orgpack/          # Organizational hierarchy and team structure pack.
+├── osmosis/          # Bi-directional state osmosis between local workspace and Kno
+│   └── github/
+├── osslaunch/          # Open-source launch automation, release readiness gates, and 
+├── outputtypes/          # Standardized CLI output format types, table formatters, and 
+├── packrecord/          # Verifies an uploaded spec pack and records its specs so thos
+├── paths/          # Canonical project directory paths, file location resolvers, 
+├── pipeline/          # This package provides a robust builder and runtime for the s
+│   └── plugins/
+├── pipelinepack/          # Pipeline and task workflow step pack.
+├── pm/          # Program and project management models, milestones, and deliv
+├── policy/          # Kernel policy definitions, enforcement hooks, and rule evalu
+├── policyinterrupt/          # Emergency policy interrupts, execution halting, and safety i
+├── precommit/          # Types and logic for the pre-commit hook that reads backgroun
+├── predicate/          # Predicate component and domain abstractions for ZQK Core.
+├── primaryorch/          # Primary agent orchestration engine, session coordination, an
+├── process/          # Operating system process management, PID tracking, and grace
+├── processhygiene/          # Workspace hygiene auditing, dead-code detection, and reposit
+├── processing/          # Processing component and domain abstractions for ZQK Core.
+├── projecttemp/          # Hosts isolated temp-project teardown helpers that must not i
+├── qapack/          # Quality assurance, test coverage, and verification pack.
+├── quality/          # Quality component and domain abstractions for ZQK Core.
+├── quick/          # Parsing and helpers for one-click creation of system objects
+├── relay/          # Message relay, inter-process communication, and agent event 
+├── releasegate/          # Verification gates and multi-platform compilation tests for 
+├── releasepack/          # Release gates, artifact generation, and deployment pack.
+├── reports/          # Reports component and domain abstractions for ZQK Core.
+├── reqharness/          # The test-requirements verification harness. It closes the lo
+├── resourcehygiene/          # Resourcehygiene component and domain abstractions for ZQK Co
+├── rollback/          # A reusable snapshot-and-rollback pattern for lifecycle trans
+├── rollup/          # Rollup component and domain abstractions for ZQK Core.
+├── runtime/          # Runtime environment detection, OS capabilities, and hardware
+├── safepath/          # Builds filesystem paths confined under a root directory to m
+├── scenario/          # Convergence lifecycle end-to-end tests (storage-backed CVS u
+├── scheduler/          # Distributed job scheduler, cron execution, maintenance tasks
+│   └── clusterstatus/
+│   └── hostservice/
+│   └── transceiver/
+├── screencap/          # pkg/screencap provides headless and interactive terminal aut
+├── search/          # pkg/search provides an in-process, pure-Go code search engin
+├── seatworker/          # pkg/seatworker provides OS supervisor installation and lifec
+├── security/          # Security policies, credential isolation, and capability veri
+│   └── secretpatterns/
+├── semantic/          # Semantic component and domain abstractions for ZQK Core.
+│   └── graph/
+│   └── translator/
+├── service/          # Core service lifecycle, daemon startup, and background worke
+├── shellcmd/          # pkg/shellcmd converts configured command strings into safe, 
+├── shockwave/          # Event shockwave propagation, reactive state invalidation, an
+├── shovelready/          # Shovel-ready work discovery, execution scoring, and backlog 
+├── skill/          # Agent skill model definitions, capability declarations, and 
+├── skills/          # This package tree (pkg/skills) implements autonomous agent s
+│   └── breeding/
+│   └── mutation/
+├── specbuilder/          # This package provides the core infrastructure for the Spec-D
+│   └── adapters/
+│   └── api_builders/
+│   └── bldr_config_v1/
+│   └── bldr_instance_v1/
+│   └── bldr_lifecycle_v1/
+│   └── bldr_profile_v1/
+│   └── bldr_routing_v1/
+│   └── bldr_trait_v1/
+│   └── bldr_v2/
+│   └── bootstrap/
+│   └── builders/
+│   └── cli_builders/
+│   └── config_builders/
+│   └── core/
+│   └── generators/
+│   └── instance_builders/
+│   └── lifecycle_builders/
+│   └── profile_builders/
+│   └── registry/
+│   └── routing_builders/
+│   └── trait_builders/
+│   └── yaml/
+├── specialization/          # pkg/specialization governs horizontal node segregation, comp
+├── specorigination/          # Stable stage names for spec origination pipelines. Wire thes
+├── stampmemo/          # A stamp-invalidated memo: the key is a stable identity, the 
+├── stewardbase/          # Base interfaces and common abstractions for stream storage s
+├── storage/          # This package provides a unified storage abstraction layer fo
+│   └── audit/
+│   └── binary/
+│   └── cas/
+│   └── crud/
+│   └── file/
+│   └── filecas/
+│   └── graph/
+│   └── id_generation/
+│   └── locknames/
+│   └── migration/
+│   └── signedurl/
+│   └── systemcheck/
+│   └── wal/
+├── storagetesting/          # Holds the minimal interfaces and option structs shared by [g
+├── strutil/          # String manipulation, token extraction, and text formatting u
+├── studio/          # Visual Studio Web UI backend, asset serving, and interactive
+│   └── components/
+├── supervision/          # Process supervision trees, worker restarts, and crash resili
+├── supply/          # Dependency supply chain validation, vendor verification, and
+├── swarm/          # Multi-agent swarm coordination, task allocation, and consens
+│   └── metabolism/
+│   └── pack/
+│   └── remote/
+├── swarminit/          # Runs configurable mesh bring-up recipes stored as kernel pip
+├── system/          # System-level diagnostics, host environment inspection, and O
+├── systemcheck/          # Holds shared types and helpers for zqk system check / valida
+│   └── asynccheck/
+│   └── autofix/
+│   └── congruence/
+│   └── integrity/
+│   └── policy/
+│   └── snapshot/
+├── systemcheckwake/          # Evaluates system-check summaries and optionally wakes a mesh
+├── systempeel/          # Layered system abstraction peeling and kernel introspection 
+├── tde/          # Tde component and domain abstractions for ZQK Core.
+├── tdval/          # Test-driven validation engines, acceptance criteria gates, a
+├── telemetry/          # This package provides telemetry tracking, diagnostics hooks,
+├── testdiscovery/          # Go:build integration &amp;&amp; !race +build integration,!race
+├── testenvroot/          # A minimal test project layout (.zqk/process + test-settings)
+├── testing/          # This package provides test configuration support to isolate 
+├── testkit/          # Reusable test helpers intended for extraction into a shared 
+│   └── dummy_policy/
+├── testpackageconcurrency/          # Concurrency test fixtures, race detection harnesses, and syn
+├── testrunner/          # Automated test runner execution, timeout management, and rep
+├── testservices/          # Manages optional test-side services (e.g. MemGraph via Docke
+├── tpm/          # Technical Program Management scheduling, Gantt tracking, and
+├── tracing/          # OpenTelemetry and distributed trace context propagation.
+├── translation/          # Translates imported ontology/schema formats (RDF/OWL, JSON S
+├── transport/          # Transport component and domain abstractions for ZQK Core.
+├── traversal/          # Knowledge graph traversal algorithms, depth-bounded search, 
+├── tray/          # Loads named shortcuts (&quot;Tray&quot;) that expand to zqk argv lists
+├── tui/          # Tui component and domain abstractions for ZQK Core.
+│   └── tds/
+├── utils/          # Generic cross-cutting utility functions and data structures.
+│   └── chunking/
+│   └── fileutil/
+│   └── mcp_harness/
+│   └── sortutil/
+│   └── syscallutil/
+├── validation/          # This package provides object validation for zqk: instance va
+│   └── qa/
+│   └── scenario/
+├── vds/          # Verifiable Decomposition Spine (VDS) verification, traceabil
+├── verification/          # Formal verification of kernel constraints, schemas, and inva
+├── vet/          # Code quality vetting, static analysis rules, and repository 
+├── vocabularypack/          # Canonical domain terminology and glossary definitions pack.
+├── walutil/          # Walutil component and domain abstractions for ZQK Core.
+├── when/          # When component and domain abstractions for ZQK Core.
+├── workflow/          # Workflow execution engine, what's next recommendation, and s
+│   └── whatsnext/
+├── workflowpack/          # Standard workflow step execution and sequence pack.
+├── workpack/          # The included planning and verification pack. The composition
+├── wsobs/          # Wsobs component and domain abstractions for ZQK Core.
+├── zqkcli/          # Cobra command integration, flag binding, and CLI command dis
+├── zqkdev/          # Developer tooling, local test fixtures, and environment setu
+├── zqkenv/          # Environment variable configuration, test mode detection, and
+│   └── agentguard/
+├── zqksession/          # Manages persisted ZQK session lifecycle state.
+├── zqktime/          # Deterministic UTC time helpers and RFC3339 compliance enforc
+</code></pre>
+<h2 id="usage">Usage</h2>
+<p>Import packages using their canonical import path:</p>
+<pre><code class="language-go">import &quot;github.com/zqk-os/zqk/pkg/agentfeed&quot;
+</code></pre>
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../README.html">Project README</a> - Project overview</li>
+<li><a href="https://github.com/zqk-os/zqk/blob/main/docs/architecture">Architecture Docs</a> - System architecture</li>
+<li><a href="../docs/architecture/VERIFIABLE_DECOMPOSITION_SPINE.html">Verifiable Decomposition Spine</a> - Done-gates and contracts</li>
+</ul>
+<hr />
+<p><em>This README was auto-generated. Packages are discovered dynamically from the file system.</em></p>
+      </div>
+    </article>
+  </main>
+  <script src="../search/search-index.js?v=3e8ce7c1"></script>
+</body>
+</html>
